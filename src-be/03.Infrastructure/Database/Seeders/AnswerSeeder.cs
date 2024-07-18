@@ -1,33 +1,40 @@
-﻿using Delta.Polling.Domain.Voters.Entities;
+﻿using Delta.Polling.Domain.Answers.Entities;
 using Delta.Polling.Services.Database;
 
 namespace Delta.Polling.Infrastructure.Database.Seeders;
 
-public class VoterSeeder(
-    ILogger<VoterSeeder> logger,
+public class AnswerSeeder(
+    ILogger<AnswerSeeder> logger,
     IDatabaseService databaseService)
 {
 
-    public async Task SeedVoters()
+    public async Task SeedAnswers()
     {
-        logger.LogInformation("Seeding data {EntityType}...", "Voter");
+        logger.LogInformation("Seeding data {EntityType}...", "Answer");
 
         var ongoingPoll = databaseService.Polls.Single(poll => poll.Title == "list of footballer street never forget");
+
+        var choice1 = databaseService.Choices.Single(choice => choice.Description == "Taarabt");
+        var choice2 = databaseService.Choices.Single(choice => choice.Description == "Obi");
 
         var member1 = "polling.member.satu";
         var member4 = "polling.member.empat";
 
-        List<Voter> initialVoters =
+        var voterMember1 = databaseService.Voters.Single(voter => voter.Username == member1);
+        var voterMember4 = databaseService.Voters.Single(voter => voter.Username == member4);
+
+        List<Answer> initialAnswers =
         [
-            new Voter {PollId = ongoingPoll.Id, Username = member1, Created = DateTimeOffset.Now, CreatedBy = member1},
-            new Voter {PollId = ongoingPoll.Id, Username = member4, Created = DateTimeOffset.Now, CreatedBy = member4},
+            new Answer {ChoiceId = choice1.Id, VoterId = voterMember1.Id, Created = DateTimeOffset.Now, CreatedBy = member1},
+            new Answer {ChoiceId = choice2.Id, VoterId = voterMember1.Id, Created = DateTimeOffset.Now, CreatedBy = member1},
+            new Answer {ChoiceId = choice2.Id, VoterId = voterMember4.Id, Created = DateTimeOffset.Now, CreatedBy = member4},
         ];
 
-        if (!databaseService.Voters.Any())
+        if (!databaseService.Answers.Any())
         {
-            foreach (var initialVoter in initialVoters)
+            foreach (var initialAnswer in initialAnswers)
             {
-                _ = await databaseService.Voters.AddAsync(initialVoter);
+                _ = await databaseService.Answers.AddAsync(initialAnswer);
             }
         }
 

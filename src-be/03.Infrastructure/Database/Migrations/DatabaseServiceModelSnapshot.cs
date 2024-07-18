@@ -294,7 +294,7 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                     b.HasOne("Delta.Polling.Domain.Groups.Entities.Group", "Group")
                         .WithMany("GroupMembers")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -316,7 +316,7 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                     b.HasOne("Delta.Polling.Domain.Polls.Entities.Poll", "Poll")
                         .WithMany("Voters")
                         .HasForeignKey("PollId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Poll");

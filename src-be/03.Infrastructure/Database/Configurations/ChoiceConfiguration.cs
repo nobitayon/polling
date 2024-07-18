@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Delta.Polling.Infrastructure.Database.Extensions;
+using Delta.Polling.Services.Database;
 
 namespace Delta.Polling.Infrastructure.Database.Configurations;
 
@@ -9,7 +10,7 @@ public class ChoiceConfiguration : IEntityTypeConfiguration<Choice>
 {
     public void Configure(EntityTypeBuilder<Choice> builder)
     {
-        _ = builder.ToTable("Choices");
+        _ = builder.ToTable(nameof(IDatabaseService.Choices));
         builder.ConfigureModifiableProperties();
         _ = builder.Property(e => e.Description).HasMaxLength(ChoicesMaxLengthFor.Description);
 

@@ -2,13 +2,14 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Delta.Polling.Infrastructure.Database.Extensions;
+using Delta.Polling.Services.Database;
 
 namespace Delta.Polling.Infrastructure.Database.Configurations;
 public class PollConfiguration : IEntityTypeConfiguration<Poll>
 {
     public void Configure(EntityTypeBuilder<Poll> builder)
     {
-        _ = builder.ToTable("Polls");
+        _ = builder.ToTable(nameof(IDatabaseService.Polls));
         builder.ConfigureModifiableProperties();
         _ = builder.Property(e => e.Title).HasMaxLength(PollsMaxLengthFor.Title);
         _ = builder.Property(e => e.Question).HasMaxLength(PollsMaxLengthFor.Question);

@@ -64,7 +64,7 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                         column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -136,7 +136,7 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                         column: x => x.PollId,
                         principalTable: "Polls",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

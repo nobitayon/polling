@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Delta.Polling.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(DatabaseService))]
-    [Migration("20240718090230_M001_Awalan")]
+    [Migration("20240718102035_M001_Awalan")]
     partial class M001_Awalan
     {
         /// <inheritdoc />
@@ -297,7 +297,7 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                     b.HasOne("Delta.Polling.Domain.Groups.Entities.Group", "Group")
                         .WithMany("GroupMembers")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -319,7 +319,7 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                     b.HasOne("Delta.Polling.Domain.Polls.Entities.Poll", "Poll")
                         .WithMany("Voters")
                         .HasForeignKey("PollId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Poll");
