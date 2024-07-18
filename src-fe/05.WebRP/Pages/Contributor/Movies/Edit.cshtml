@@ -1,0 +1,31 @@
+﻿@page
+@model EditModel
+
+<h1 class="text-white">Update Movie</h1>
+@{
+    if (Model.Input is not null)
+    {
+        <form method="post">
+            <div class="mb-3">
+                <label asp-for="@Model.Input.Title" class="form-label text-warning"></label>
+                <input asp-for="@Model.Input.Title" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="@Model.Input.Budget" class="form-label text-warning"></label>
+                <input type="number" asp-for="@Model.Input.Budget" min="1000" max="100000" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="@Model.Input.Storyline" class="form-label text-warning"></label>
+                <textarea asp-for="@Model.Input.Storyline" class="form-control" rows="5" cols="50" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-outline-primary">Save</button>
+            <a asp-page="Details" asp-route-movieId="@Model.Input.MovieId" class="btn btn-outline-warning">Back</a>
+        </form>
+    }
+    else
+    {
+        <h1>Opps something went wrong!</h1>
+    }
+}

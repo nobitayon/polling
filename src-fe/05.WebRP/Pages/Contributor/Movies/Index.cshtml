@@ -1,0 +1,64 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "My Movies";
+}
+
+<h1 class="text-white">My Movies</h1>
+
+@{
+    string statusColor = "";
+}
+
+@if (TempData["success"] is not null)
+{
+    <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
+        <strong>Success!</strong> @TempData["success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["failed"] is not null)
+{
+    <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
+        <strong>Failed!</strong> @TempData["failed"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<a class="btn btn-dark btn-outline-success mb-3" asp-page="Add">Add Movie</a>
+
+<div class="row">
+    @{
+        foreach (var movie in Model.Movies)
+        {
+            if (movie.Status == MovieStatus.Draft) statusColor = "bg-secondary";
+            if (movie.Status == MovieStatus.Pending) statusColor = "bg-warning";
+            if (movie.Status == MovieStatus.Rejected) statusColor = "bg-danger";
+            if (movie.Status == MovieStatus.Approved) statusColor = "bg-success";
+            if (movie.Status == MovieStatus.Returned) statusColor = "bg-primary";
+
+            <div class="col-4 mb-4">
+                <div class="card h-100 bg-secondary custom-shadow2">
+                    <div class="card-body">
+                        <h4>
+                            <a class="text-decoration-none text-white" asp-page="Details" asp-route-movieId="@movie.Id">
+                                @movie.Title
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="card-footer @statusColor">
+                        <small class="text-body-secondary">
+                            <b>Status : @movie.Status</b>
+                        </small>
+                    </div>
+
+                </div>
+            </div>
+        }
+    }
+</div>
+
+
+

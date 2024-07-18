@@ -1,0 +1,10 @@
+﻿global using Delta.Polling.Base.Movies.Enums;
+global using Delta.Polling.Services.Authorization;
+global using Delta.Polling.Services.CurrentUser;
+global using Delta.Polling.Services.Database;
+global using Delta.Polling.Both.Common.Exceptions;
+global using Delta.Polling.Both.Common.Extensions;
+global using Delta.Polling.Both.Configurables;
+global using FluentValidation;
+global using MediatR;
+global using Microsoft.EntityFrameworkCore;

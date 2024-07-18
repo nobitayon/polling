@@ -1,0 +1,5 @@
+set ASPNETCORE_ENVIRONMENT=Local
+
+dotnet ef migrations add M001_Awalan -p src-be\03.Infrastructure --startup-project src-be\05.WebAPI --output-dir Database/Migrations
+
+dotnet ef migrations remove -p src-be\03.Infrastructure --startup-project src-be\05.WebAPI

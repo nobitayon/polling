@@ -1,0 +1,46 @@
+﻿@page "{MovieId}"
+@model DetailsModel
+
+@if (Model.Movie is not null)
+{
+    ViewData["Title"] = Model.Movie.Title;
+
+    <div class="row">
+        <div class="col-md-12 justify-content-center mt-3">
+            <div class="card mb-3 bg-dark text-white custom-shadow1">
+                <div class="card-body">
+                    <h1 class="text-warning"> @Model.Movie.Title </h1>
+                    <small>Created at : @Model.Movie.Created</small>
+                    <br />
+                    <small>Budget : @Model.Movie.Budget</small>
+                    <br />
+                    <small>Status : @Model.Movie.Status</small>
+                    <br />
+                    @if (@Model.Movie.ApprovedBy != null)
+                    {
+                        <small>Approved By : @Model.Movie.ApprovedBy</small>
+                        <br />
+                    }
+                    @if (@Model.Movie.Approved != null)
+                    {
+                        <small>Approved at : @Model.Movie.Approved</small>
+                        <br />
+                    }
+                    <hr class="text-primary" />
+                    <h3 class="text-warning">Storyline</h3>
+                    <p class="card-text">@Model.Movie.Storyline </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Movie.Status is MovieStatus.Draft or MovieStatus.Returned)
+    {
+        <a class="btn btn-outline-primary" asp-page="Submit" asp-route-movieId="@Model.MovieId">Submit Movie</a>
+        <a class="btn btn-outline-warning" asp-page="Edit" asp-route-movieId="@Model.MovieId">Edit Movie</a>
+        <a class="btn btn-outline-danger" asp-page="Delete" asp-route-movieId="@Model.MovieId">Delete Movie</a>
+    }
+
+    <a asp-page="Index" class="btn btn-outline-info">Back</a>
+}
+

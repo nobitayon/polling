@@ -1,0 +1,46 @@
+﻿@page
+@model AddModel
+
+<h1>Add Movie</h1>
+<form method="post" class="col-8">
+    <div class="mb-3">
+        <label asp-for="@Model.Input.Title" class="form-label text-warning"></label>
+        <input asp-for="@Model.Input.Title" class="form-control" required>
+    </div>
+    
+    <div class="mb-3">
+        <label asp-for="@Model.Input.Budget" class="form-label text-warning"></label>
+        <input type="number" asp-for="@Model.Input.Budget" class="form-control" min="1000" max="100000" required>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="@Model.Input.Storyline" class="form-label text-warning"></label>
+        <textarea asp-for="@Model.Input.Storyline" class="form-control" rows="5" cols="50" maxlength="333" required></textarea>
+    </div>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+        Save
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModalLabel">Add Movie!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to add this movie ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-outline-success">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a asp-page="/Contributor/Index" class="btn btn-outline-warning">Back</a>
+</form>

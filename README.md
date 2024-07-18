@@ -1,3 +1,7 @@
+# Migration db command related
+- Set connection string in `DefaultConnection` field at `ConnectionStrings` section at appsettings.json
+- `dotnet ef database update -p src\03.Infrastructure --startup-project src\06.WebAPI`
+
 # Introduction 
 TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
 
