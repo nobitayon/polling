@@ -6,3 +6,6 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using DomainMaxLengthFor = Delta.Polling.Domain.Common.Statics.MaxLengthFor;
 global using MoviesMaxLengthFor = Delta.Polling.Base.Movies.Statics.MaxLengthFor;
+global using GroupsMaxLengthFor = Delta.Polling.Base.Groups.Statics.MaxLengthFor;
+global using PollsMaxLengthFor = Delta.Polling.Base.Polls.Statics.MaxLengthFor;
+global using ChoicesMaxLengthFor = Delta.Polling.Base.Choices.Statics.MaxLengthFor;
