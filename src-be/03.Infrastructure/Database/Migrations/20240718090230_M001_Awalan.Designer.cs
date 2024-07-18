@@ -4,6 +4,7 @@ using Delta.Polling.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Delta.Polling.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(DatabaseService))]
-    partial class DatabaseServiceModelSnapshot : ModelSnapshot
+    [Migration("20240718090230_M001_Awalan")]
+    partial class M001_Awalan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

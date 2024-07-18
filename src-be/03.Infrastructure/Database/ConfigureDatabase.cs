@@ -20,6 +20,12 @@ public static class ConfigureDatabase
 
         _ = services.AddScoped<DatabaseMigrator>();
         _ = services.AddScoped<MovieSeeder>();
+        _ = services.AddScoped<AnswerSeeder>();
+        _ = services.AddScoped<ChoiceSeeder>();
+        _ = services.AddScoped<GroupMemberSeeder>();
+        _ = services.AddScoped<GroupSeeder>();
+        _ = services.AddScoped<PollSeeder>();
+        _ = services.AddScoped<VoterSeeder>();
     }
 
     public static async Task InitializeDatabaseAsync(this IHost host)
@@ -32,5 +38,23 @@ public static class ConfigureDatabase
 
         var movieSeeder = serviceProvider.GetRequiredService<MovieSeeder>();
         await movieSeeder.SeedMovies();
+
+        var groupSeeder = serviceProvider.GetRequiredService<GroupSeeder>();
+        await groupSeeder.SeedGroups();
+
+        var groupMemberSeeder = serviceProvider.GetRequiredService<GroupMemberSeeder>();
+        await groupMemberSeeder.SeedGroupMembers();
+
+        var pollSeeder = serviceProvider.GetRequiredService<PollSeeder>();
+        await pollSeeder.SeedPolls();
+
+        var choiceSeeder = serviceProvider.GetRequiredService<ChoiceSeeder>();
+        await choiceSeeder.SeedChoices();
+
+        var voterSeeder = serviceProvider.GetRequiredService<VoterSeeder>();
+        await voterSeeder.SeedVoters();
+
+        var answerSeeder = serviceProvider.GetRequiredService<AnswerSeeder>();
+        await answerSeeder.SeedAnswers();
     }
 }
