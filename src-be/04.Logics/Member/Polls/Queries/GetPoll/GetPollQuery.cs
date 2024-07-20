@@ -64,6 +64,7 @@ public class GetPollQueryHandler(
                             .Where(c => c.PollId == request.PollId)
                             .Select(c => new ChoiceItem
                             {
+                                Id = c.Id,
                                 Description = c.Description,
                                 IsOther = c.IsOther
                             }).ToListAsync(cancellationToken);

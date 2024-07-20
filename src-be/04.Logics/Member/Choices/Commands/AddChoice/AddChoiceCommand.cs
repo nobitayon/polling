@@ -55,6 +55,11 @@ public class AddChoiceCommandHandler(
             throw new ForbiddenException($"Can't add choice to poll with status that is not draft");
         }
 
+        if (poll.CreatedBy != currentUserService.Username)
+        {
+            throw new ForbiddenException("Can't add choice to this draft poll because this poll is not yours");
+        }
+
         var choice = new Choice
         {
             PollId = request.PollId,
