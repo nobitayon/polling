@@ -5,3 +5,6 @@ global using FluentValidation;
 global using MoviesMaxLengthFor = Delta.Polling.Base.Movies.Statics.MaxLengthFor;
 global using MoviesMaxValueFor = Delta.Polling.Base.Movies.Statics.MaxValueFor;
 global using MoviesMinValueFor = Delta.Polling.Base.Movies.Statics.MinValueFor;
+global using PollsMaxLengthFor = Delta.Polling.Base.Polls.Statics.MaxLengthFor;
+global using PollsMaxValueFor = Delta.Polling.Base.Polls.Statics.MaxValueFor;
+global using PollsMinValueFor = Delta.Polling.Base.Polls.Statics.MinValueFor;
