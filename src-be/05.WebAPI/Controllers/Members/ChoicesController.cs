@@ -1,5 +1,6 @@
 ﻿using Delta.Polling.Both.Member.Choices.Commands.AddChoice;
 using Delta.Polling.Logics.Member.Choices.Commands.AddChoice;
+using Delta.Polling.Logics.Member.Choices.Commands.DeleteChoice;
 using Delta.Polling.Logics.Member.Choices.Commands.UpdateChoice;
 
 namespace Delta.Polling.WebAPI.Controllers.Members;
@@ -16,6 +17,12 @@ public class ChoicesController : ApiControllerBase
 
     [HttpPut]
     public async Task UpdateChoice([FromForm] UpdateChoiceCommand request)
+    {
+        await Sender.Send(request);
+    }
+
+    [HttpDelete]
+    public async Task DeleteChoice([FromForm] DeleteChoiceCommand request)
     {
         await Sender.Send(request);
     }
