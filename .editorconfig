@@ -172,8 +172,8 @@ csharp_style_expression_bodied_indexers = when_on_single_line:error
 csharp_style_expression_bodied_accessors = when_on_single_line:error
 
 ### IDE0053: Use expression body for lambdas
-csharp_style_expression_bodied_lambdas = false:suggestion
-
+csharp_style_expression_bodied_lambdas = when_on_single_line:suggestion
+dotnet_diagnostic.IDE0053.severity = suggestion
 ### IDE0061: Use expression body for local functions
 csharp_style_expression_bodied_local_functions = false:error
 
