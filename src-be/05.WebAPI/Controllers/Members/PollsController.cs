@@ -1,5 +1,7 @@
-﻿using Delta.Polling.Both.Member.Polls.Queries.GetMyPolls;
+﻿using Delta.Polling.Both.Member.Polls.Commands.AddPoll;
+using Delta.Polling.Both.Member.Polls.Queries.GetMyPolls;
 using Delta.Polling.Both.Member.Polls.Queries.GetPoll;
+using Delta.Polling.Logics.Member.Polls.Commands.AddPoll;
 using Delta.Polling.Logics.Member.Polls.Queries.GetMyPolls;
 using Delta.Polling.Logics.Member.Polls.Queries.GetPoll;
 
@@ -19,6 +21,12 @@ public class PollsController : ApiControllerBase
     {
         var request = new GetPollQuery { PollId = pollId };
 
+        return await Sender.Send(request);
+    }
+
+    [HttpPost]
+    public async Task<AddPollOutput> AddPoll([FromForm] AddPollCommand request)
+    {
         return await Sender.Send(request);
     }
 }
