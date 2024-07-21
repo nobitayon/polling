@@ -1,30 +1,28 @@
 ﻿using Delta.Polling.Base.Polls.Enums;
-using Delta.Polling.Both.Member.Polls.Commands.AddVote;
+using Delta.Polling.Both.Member.Polls.Commands.UpdateVote;
 using Delta.Polling.Domain.Answers.Entities;
-using Delta.Polling.Domain.Voters.Entities;
 
-namespace Delta.Polling.Logics.Member.Polls.Commands.AddVote;
+namespace Delta.Polling.Logics.Member.Polls.Commands.UpdateVote;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class AddVoteCommand : AddVoteRequest, IRequest<AddVoteOutput>
+public class UpdateVoteCommand : UpdateVoteRequest, IRequest<UpdateVoteOutput>
 {
 }
 
-public class AddVoteCommandValidator : AbstractValidator<AddVoteCommand>
+public class UpdateVoteCommandValidator : AbstractValidator<UpdateVoteCommand>
 {
-    public AddVoteCommandValidator()
+    public UpdateVoteCommandValidator()
     {
-        Include(new AddVoteRequestValidator());
+        Include(new UpdateVoteRequestValidator());
     }
 }
 
-// TODO: Mikirin lagi apakah dengan membedakan endpoint saat orang submit dan resubmit(ketika mungkin ingin ubah vote) itu perlu atau tidak
-public class AddVoteCommandHandler(
+public class UpdateVoteCommandHandler(
     IDatabaseService databaseService,
     ICurrentUserService currentUserService)
-    : IRequestHandler<AddVoteCommand, AddVoteOutput>
+    : IRequestHandler<UpdateVoteCommand, UpdateVoteOutput>
 {
-    public async Task<AddVoteOutput> Handle(AddVoteCommand request, CancellationToken cancellationToken)
+    public async Task<UpdateVoteOutput> Handle(UpdateVoteCommand request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(currentUserService.Username))
         {
@@ -65,9 +63,9 @@ public class AddVoteCommandHandler(
         var isAlreadyFirstTimeVote = await databaseService.Voters
                                 .AnyAsync(v => v.PollId == poll.Id && v.CreatedBy == currentUserService.Username);
 
-        if (isAlreadyFirstTimeVote)
+        if (!isAlreadyFirstTimeVote)
         {
-            throw new Exception("You can't submit this vote using this endpoint, but you can try resubmit endpoint to change your vote");
+            throw new Exception("You never vote to this poll before");
         }
 
         var choiceThatAddedByThisUser = await databaseService.Choices
@@ -85,18 +83,18 @@ public class AddVoteCommandHandler(
             }
         }
 
-        var voter = new Voter
-        {
-            PollId = poll.Id,
-            Username = currentUserService.Username,
-            Created = DateTimeOffset.Now,
-            CreatedBy = currentUserService.Username,
-        };
+        var voter = await databaseService.Voters
+                        .Where(v => v.PollId == request.PollId && v.CreatedBy == currentUserService.Username)
+                        .SingleOrDefaultAsync(cancellationToken)
+                        ?? throw new Exception("You never vote to this poll before");
 
-        _ = await databaseService.Voters.AddAsync(voter, cancellationToken);
+        var previousVote = await databaseService.Answers
+                                .Where(a => a.VoterId == voter.Id)
+                                .ToListAsync(cancellationToken);
 
-        var listAnswer = new List<Answer>();
-        var addVoteResult = new List<AnswerItem>();
+        databaseService.Answers.RemoveRange(previousVote);
+
+        var newVoteResult = new List<AnswerItem>();
         foreach (var choice in request.ListChoice)
         {
             var answer = new Answer
@@ -107,17 +105,16 @@ public class AddVoteCommandHandler(
                 CreatedBy = currentUserService.Username
             };
 
-            addVoteResult.Add(new AnswerItem { AnswerId = answer.Id });
+            newVoteResult.Add(new AnswerItem { AnswerId = answer.Id });
 
             _ = await databaseService.Answers.AddAsync(answer, cancellationToken);
         }
 
         _ = await databaseService.SaveAsync(cancellationToken);
 
-        return new AddVoteOutput
+        return new UpdateVoteOutput
         {
-            Data = addVoteResult
+            Data = newVoteResult
         };
     }
 }
-

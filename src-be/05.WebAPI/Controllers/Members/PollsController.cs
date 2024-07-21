@@ -1,9 +1,11 @@
 ﻿using Delta.Polling.Both.Member.Polls.Commands.AddPoll;
 using Delta.Polling.Both.Member.Polls.Commands.AddVote;
+using Delta.Polling.Both.Member.Polls.Commands.UpdateVote;
 using Delta.Polling.Both.Member.Polls.Queries.GetMyPolls;
 using Delta.Polling.Both.Member.Polls.Queries.GetPoll;
 using Delta.Polling.Logics.Member.Polls.Commands.AddPoll;
 using Delta.Polling.Logics.Member.Polls.Commands.AddVote;
+using Delta.Polling.Logics.Member.Polls.Commands.UpdateVote;
 using Delta.Polling.Logics.Member.Polls.Commands.UpdatePoll;
 using Delta.Polling.Logics.Member.Polls.Queries.GetMyPolls;
 using Delta.Polling.Logics.Member.Polls.Queries.GetPoll;
@@ -48,6 +50,18 @@ public class PollsController : ApiControllerBase
     // TODO: redundant pollid
     [HttpPost("{pollId:guid}/vote")]
     public async Task<AddVoteOutput> SubmitVote([FromRoute] Guid pollId, [FromForm] AddVoteCommand request)
+    {
+        if (pollId != request.PollId)
+        {
+            throw new MismatchException(nameof(request.PollId), pollId, request.PollId);
+        }
+
+        return await Sender.Send(request);
+    }
+
+    // TODO: redundant pollid
+    [HttpPost("{pollId:guid}/update-vote")]
+    public async Task<UpdateVoteOutput> UpdateVote([FromRoute] Guid pollId, [FromForm] UpdateVoteCommand request)
     {
         if (pollId != request.PollId)
         {
