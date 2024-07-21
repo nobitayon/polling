@@ -83,7 +83,8 @@ public class GetPollQueryHandler(
                                 .Where(a => a.VoterId == voterId)
                                 .Select(a => new AnswerItem
                                 {
-                                    ChoiceId = a.ChoiceId
+                                    ChoiceId = a.ChoiceId,
+                                    Description = a.Choice.Description
                                 }).ToListAsync(cancellationToken);
         }
 

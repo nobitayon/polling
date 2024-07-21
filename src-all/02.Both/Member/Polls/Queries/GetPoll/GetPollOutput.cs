@@ -28,5 +28,6 @@ public record ChoiceItem
 public record AnswerItem
 {
     public required Guid ChoiceId { get; init; }
+    public required string Description { get; init; } // TODO: Mungkin ini dihapus saja nanti
 }
 
