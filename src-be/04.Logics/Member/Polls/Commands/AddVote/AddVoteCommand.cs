@@ -70,6 +70,21 @@ public class AddVoteCommandHandler(
             throw new Exception("You can't submit this vote using this endpoint, but you can try resubmit endpoint to change your vote");
         }
 
+        var choiceThatAddedByThisUser = await databaseService.Choices
+                                        .Where(c => c.CreatedBy == currentUserService.Username && c.IsOther)
+                                        .SingleOrDefaultAsync(cancellationToken);
+
+        if (choiceThatAddedByThisUser != null)
+        {
+            var isUserPickHisChoice = request.ListChoice
+                                        .Any(c => c == choiceThatAddedByThisUser.Id);
+
+            if (!isUserPickHisChoice)
+            {
+                throw new ForbiddenException($"You must pick choice you add");
+            }
+        }
+
         var voter = new Voter
         {
             PollId = poll.Id,
