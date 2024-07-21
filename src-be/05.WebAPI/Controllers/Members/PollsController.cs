@@ -9,6 +9,7 @@ using Delta.Polling.Logics.Member.Polls.Commands.UpdateVote;
 using Delta.Polling.Logics.Member.Polls.Commands.UpdatePoll;
 using Delta.Polling.Logics.Member.Polls.Queries.GetMyPolls;
 using Delta.Polling.Logics.Member.Polls.Queries.GetPoll;
+using Delta.Polling.Logics.Member.Polls.Commands.StartPoll;
 
 namespace Delta.Polling.WebAPI.Controllers.Members;
 
@@ -69,5 +70,12 @@ public class PollsController : ApiControllerBase
         }
 
         return await Sender.Send(request);
+    }
+
+    // TODO: redundant pollid
+    [HttpPost("{pollId:guid}/start")]
+    public async Task StartPoll([FromRoute] StartPollCommand request)
+    {
+        await Sender.Send(request);
     }
 }
