@@ -1,4 +1,6 @@
-﻿using Delta.Polling.Both.Member.Choices.Commands.AddChoice;
+﻿using Delta.Polling.Both.Member.Choices.Commands.AddAnotherChoiceOngoingPoll;
+using Delta.Polling.Both.Member.Choices.Commands.AddChoice;
+using Delta.Polling.Logics.Member.Choices.Commands.AddAnotherChoiceOngoingPoll;
 using Delta.Polling.Logics.Member.Choices.Commands.AddChoice;
 using Delta.Polling.Logics.Member.Choices.Commands.DeleteChoice;
 using Delta.Polling.Logics.Member.Choices.Commands.UpdateChoice;
@@ -25,5 +27,11 @@ public class ChoicesController : ApiControllerBase
     public async Task DeleteChoice([FromForm] DeleteChoiceCommand request)
     {
         await Sender.Send(request);
+    }
+
+    [HttpPost("another-choice")]
+    public async Task<AddAnotherChoiceOngoingPollOutput> AddChoice([FromForm] AddAnotherChoiceOngoingPollCommand request)
+    {
+        return await Sender.Send(request);
     }
 }
