@@ -2,6 +2,7 @@
 using Delta.Polling.Both.Member.Polls.Queries.GetMyPolls;
 using Delta.Polling.Both.Member.Polls.Queries.GetPoll;
 using Delta.Polling.Logics.Member.Polls.Commands.AddPoll;
+using Delta.Polling.Logics.Member.Polls.Commands.UpdatePoll;
 using Delta.Polling.Logics.Member.Polls.Queries.GetMyPolls;
 using Delta.Polling.Logics.Member.Polls.Queries.GetPoll;
 
@@ -28,5 +29,17 @@ public class PollsController : ApiControllerBase
     public async Task<AddPollOutput> AddPoll([FromForm] AddPollCommand request)
     {
         return await Sender.Send(request);
+    }
+
+    // TODO: redundant pollid
+    [HttpPut("{pollId:guid}")]
+    public async Task UpdatePoll([FromRoute] Guid pollId, [FromForm] UpdatePollCommand request)
+    {
+        if (pollId != request.PollId)
+        {
+            throw new MismatchException(nameof(request.PollId), pollId, request.PollId);
+        }
+
+        await Sender.Send(request);
     }
 }
