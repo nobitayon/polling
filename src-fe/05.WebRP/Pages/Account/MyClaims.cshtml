@@ -3,12 +3,28 @@
 
 @{
     ViewData["Title"] = "My Claims";
+    ViewBag.CurrentMenu = MenuFor.AccountMyClaims;
 }
 
-<h1>My Claims</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Index">
+                Home
+            </a>
+        </li>
+        <li class="breadcrumb-item active"
+            aria-current="page">
+            @ViewData["Title"]
+        </li>
+    </ol>
+</nav>
 
-<table class="table table-bordered">
-    <thead>
+<h1>@ViewData["Title"]</h1>
+
+<table class="table table-hover table-striped table-bordered">
+    <thead class="table-dark">
         <tr>
             <th>Type</th>
             <th>Value</th>
@@ -19,7 +35,7 @@
         {
             <tr>
                 <td>@claim.Type</td>
-                <td>@claim.Value</td>
+                <td class="is-breakable">@claim.Value</td>
             </tr>
         }
     </tbody>

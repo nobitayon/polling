@@ -14,10 +14,7 @@ public static class ConfigureDocumentation
 
         _ = services.AddSwaggerGen(options =>
         {
-            options.CustomSchemaIds(type =>
-            {
-                return type.FullName;
-            });
+            options.CustomSchemaIds(type => type.FullName);
 
             options.SwaggerDoc(documentationOptions.Version, new OpenApiInfo
             {

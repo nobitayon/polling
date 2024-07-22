@@ -1,5 +1,4 @@
-﻿using Delta.Polling.Both.Common.Enums;
-using Delta.Polling.Both.Member.Groups.Queries.GetMyGroup;
+﻿using Delta.Polling.Both.Member.Groups.Queries.GetMyGroup;
 using Delta.Polling.Both.Member.Groups.Queries.GetMyGroups;
 using Delta.Polling.Logics.Member.Groups.Queries.GetMyGroup;
 using Delta.Polling.Logics.Member.Groups.Queries.GetMyGroups;
@@ -19,28 +18,10 @@ public class GroupsController : ApiControllerBase
     [HttpGet("{groupId:guid}")]
     public async Task<GetMyGroupOutput> GetMyGroup(
         [FromRoute] Guid groupId,
-        [FromQuery] string? searchText,
-        [FromQuery] SortOrder? sortOrder,
-        [FromQuery] string? sortField,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 10)
     {
         var request = new GetMyGroupQuery { GroupId = groupId, Page = page, PageSize = pageSize };
-
-        if (searchText != null)
-        {
-            request.SearchText = searchText;
-        }
-
-        if (sortOrder != null)
-        {
-            request.SortOrder = sortOrder;
-        }
-
-        if (sortField != null)
-        {
-            request.SortField = sortField;
-        }
 
         return await Sender.Send(request);
     }

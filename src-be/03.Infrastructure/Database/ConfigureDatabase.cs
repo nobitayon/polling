@@ -15,7 +15,11 @@ public static class ConfigureDatabase
 
         _ = services.AddDbContext<IDatabaseService, DatabaseService>(options =>
         {
-            _ = options.UseSqlServer(databaseOptions.ConnectionString);
+            _ = options.UseSqlServer(databaseOptions.ConnectionString, builder =>
+            {
+                _ = builder.MigrationsAssembly(typeof(DatabaseService).Assembly.FullName);
+                _ = builder.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+            });
         });
 
         _ = services.AddScoped<DatabaseMigrator>();

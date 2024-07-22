@@ -1,5 +1,4 @@
-﻿using IdentityModel;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Delta.Polling.WebAPI.Infrastructure.Authentication.SimpleTen;
@@ -23,7 +22,7 @@ public static class ConfigureSimpleTenAuthentication
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ClockSkew = TimeSpan.Zero,
-                    NameClaimType = JwtClaimTypes.PreferredUserName
+                    NameClaimType = KnownClaimTypes.PreferredUsername
                 };
 
                 options.EventsType = typeof(CustomJwtBearerEvents);

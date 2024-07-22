@@ -2,7 +2,7 @@
 
 namespace Delta.Polling.Logics.Member.Polls.Queries.GetMyPolls;
 [Authorize(RoleName = RoleNameFor.Member)]
-public class GetMyPollsQuery : GetMyPollsRequest, IRequest<GetMyPollsOutput>
+public record GetMyPollsQuery : GetMyPollsRequest, IRequest<GetMyPollsOutput>
 {
 
 }

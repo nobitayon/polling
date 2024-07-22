@@ -13,19 +13,10 @@ public class SimpleTorUserProfileService : IUserProfileService
         _restClient = new RestClient(_simpleTorUserProfileOptions.ApiBaseUrl);
     }
 
-    public async Task<UserProfileItem> GetUserProfileAsync(string username, CancellationToken cancellationToken = default)
+    public async Task<UserProfileItem> GetMyProfileAsync(string jwt, CancellationToken cancellationToken = default)
     {
-        var getAccessTokenInput = new GetAccessTokenInput
-        {
-            TokenUrl = _simpleTorUserProfileOptions.TokenUrl,
-            ClientId = _simpleTorUserProfileOptions.ClientId,
-            ClientSecret = _simpleTorUserProfileOptions.ClientSecret,
-            Scopes = _simpleTorUserProfileOptions.Scopes
-        };
-
-        var accessToken = await AccessTokenHelper.GetAccessToken(getAccessTokenInput, cancellationToken);
-        var restRequest = new RestRequest($"Users/{username}");
-        _ = restRequest.AddHeader(KnownHeaders.Authorization, $"Bearer {accessToken}");
+        var restRequest = new RestRequest("Users/My");
+        _ = restRequest.AddHeader(KnownHeaders.Authorization, $"Bearer {jwt}");
 
         var restResponse = await _restClient.ExecuteAsync<UserProfileItem>(restRequest, cancellationToken);
 

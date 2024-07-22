@@ -3,30 +3,16 @@
 
 @{
     ViewData["Title"] = "Home";
+    ViewBag.CurrentMenu = MenuFor.Index;
 }
 
-@if (TempData["failed"] is not null)
-{
-    <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
-        <strong>Failed!</strong> @TempData["failed"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active"
+            aria-current="page">
+            Home
+        </li>
+    </ol>
+</nav>
 
-<div class="container col-xxl-8 px-4 py-5 bg-secondary">
-    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-        <div class="col-10 col-sm-8 col-lg-6">
-            <img src="~/img/hods.jpg" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="350" loading="lazy">
-        </div>
-        <div class="col-lg-6">
-            <h1 class="display-5 fw-bold lh-1 mb-1 text-warning">Polling Delta DuA</h1>
-            <p class="lead text-white">
-                Welcome to Polling Delta DuA, this project was build with Razor Pages,
-                and this page is intended for contributors and moderators, for movie management.
-            </p>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                <a type="button" class="btn btn-danger btn-lg px-4 me-md-2" asp-page="AboutUs">About Us</a>
-            </div>
-        </div>
-    </div>
-</div>
+<h1>@ViewData["Title"]</h1>

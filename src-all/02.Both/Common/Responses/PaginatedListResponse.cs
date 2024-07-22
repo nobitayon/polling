@@ -1,7 +1,7 @@
 ﻿namespace Delta.Polling.Both.Common.Responses;
 
-public class PaginatedListResponse<T>
+public record PaginatedListResponse<T>
 {
-    public IList<T> Items { get; set; } = [];
-    public int TotalCount { get; set; }
+    public required IEnumerable<T> Items { get; init; }
+    public required int TotalCount { get; init; }
 }

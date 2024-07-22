@@ -1,0 +1,16 @@
+﻿global using Delta.Polling.Base.Movies.Enums;
+global using Delta.Polling.Both.Common.Enums;
+global using Delta.Polling.Both.Common.Extensions;
+global using Delta.Polling.Both.Common.Models;
+global using Delta.Polling.Both.Common.Requests;
+global using Delta.Polling.Both.Common.Responses;
+global using Delta.Polling.Both.Common.Statics;
+global using FluentValidation;
+global using MoviesMaxLengthFor = Delta.Polling.Base.Movies.Statics.MaxLengthFor;
+global using GroupsMaxLengthFor = Delta.Polling.Base.Groups.Statics.MaxLengthFor;
+global using ChoicesMaxLengthFor = Delta.Polling.Base.Choices.Statics.MaxLengthFor;
+global using PollsMaxLengthFor = Delta.Polling.Base.Polls.Statics.MaxLengthFor;
+global using PollsMaxValueFor = Delta.Polling.Base.Polls.Statics.MaxValueFor;
+global using MoviesMaxValueFor = Delta.Polling.Base.Movies.Statics.MaxValueFor;
+global using MoviesMinValueFor = Delta.Polling.Base.Movies.Statics.MinValueFor;
+global using PollsMinValueFor = Delta.Polling.Base.Polls.Statics.MinValueFor;

@@ -19,36 +19,52 @@ public class AuthorizationBehavior<TRequest>(
             return Task.CompletedTask;
         }
 
-        var authorizeAttribute = authorizeAttributes.Single();
-        var roleName = authorizeAttribute.RoleName;
+        var requiredRoleNames = new List<string>();
+        var isInRole = false;
 
-        // Kalau request ini tidak membutuhkan Role tertentu, maka cukup cek apakah user sudah login
-        if (string.IsNullOrWhiteSpace(roleName))
+        foreach (var authorizeAttribute in authorizeAttributes)
         {
-            var username = currentUserService.Username;
+            var requiredRoleName = authorizeAttribute.RoleName;
 
-            if (string.IsNullOrWhiteSpace(username))
+            // Kalau request ini tidak membutuhkan Role tertentu, maka cukup cek apakah user sudah login
+            if (string.IsNullOrWhiteSpace(requiredRoleName))
             {
-                logger.LogError("User is not authenticated.");
+                var username = currentUserService.Username;
 
-                throw new ForbiddenException("User harus sudah login");
+                if (string.IsNullOrWhiteSpace(username))
+                {
+                    logger.LogError("User is not authenticated.");
+
+                    throw new ForbiddenException("User harus sudah login");
+                }
+
+                return Task.CompletedTask;
             }
 
-            return Task.CompletedTask;
-        }
+            requiredRoleNames.Add(requiredRoleName);
 
-        var isInRole = currentUserService.RoleNames
-            .Any(currentRoleName =>
-            {
-                return currentRoleName == roleName;
-            });
+            isInRole |= currentUserService.RoleNames
+                .Any(roleName => roleName == requiredRoleName);
+        }
 
         if (!isInRole)
         {
-            logger.LogError("User {Username} is not in role {RoleName}.",
-                currentUserService.Username, roleName);
+            if (requiredRoleNames.Count == 1)
+            {
+                logger.LogError("User {Username} does not have the role {RoleName}.",
+                    currentUserService.Username, requiredRoleNames.Single());
 
-            throw new ForbiddenException($"You are not authorized to perform this action because you are not in role {roleName}.");
+                throw new ForbiddenException($"You are not authorized to perform this action because you don't have the role {requiredRoleNames.Single()}.");
+            }
+            else if (requiredRoleNames.Count > 1)
+            {
+                var roleNames = string.Join(", ", requiredRoleNames);
+
+                logger.LogError("User {Username} does not have one of these roles {RoleNames}.",
+                    currentUserService.Username, roleNames);
+
+                throw new ForbiddenException($"You are not authorized to perform this action because you don't have one of these roles {roleNames}.");
+            }
         }
 
         return Task.CompletedTask;

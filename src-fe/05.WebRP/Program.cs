@@ -19,7 +19,7 @@ builder.Services.AddUserRoleService(builder.Configuration);
 builder.Services.AddCurrentUserService();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
-
+builder.Services.AddPager();
 
 var app = builder.Build();
 

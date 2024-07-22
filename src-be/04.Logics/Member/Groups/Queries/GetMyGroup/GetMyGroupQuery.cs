@@ -3,7 +3,7 @@
 namespace Delta.Polling.Logics.Member.Groups.Queries.GetMyGroup;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class GetMyGroupQuery : GetMyGroupRequest, IRequest<GetMyGroupOutput>
+public record GetMyGroupQuery : GetMyGroupRequest, IRequest<GetMyGroupOutput>
 {
 
 }

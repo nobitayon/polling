@@ -14,24 +14,12 @@ public class ValidationBehavior<TRequest>(
         if (validators.Any())
         {
             var context = new ValidationContext<TRequest>(request);
-            var validationResults = await Task.WhenAll(validators.Select(validator =>
-            {
-                return validator.ValidateAsync(context, cancellationToken);
-            }));
+            var validationResults = await Task.WhenAll(validators.Select(validator => validator.ValidateAsync(context, cancellationToken)));
 
             var errorMessages = validationResults
-                .Where(result =>
-                {
-                    return result.Errors.Count is not 0;
-                })
-                .SelectMany(result =>
-                {
-                    return result.Errors;
-                })
-                .Select(failure =>
-                {
-                    return failure.ErrorMessage;
-                });
+                .Where(result => result.Errors.Count is not 0)
+                .SelectMany(result => result.Errors)
+                .Select(failure => failure.ErrorMessage);
 
             if (errorMessages.Any())
             {
