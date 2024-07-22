@@ -56,7 +56,7 @@ public class AddAnotherChoiceOngoingPollCommandHandler(
         }
 
         var choiceAddedByThisUser = await databaseService.Choices
-                                        .Where(c => c.CreatedBy == currentUserService.Username && c.IsOther)
+                                        .Where(c => c.CreatedBy == currentUserService.Username && c.PollId == request.PollId && c.IsOther)
                                         .ToListAsync(cancellationToken);
 
         // TODO: Asumsikan semua orang hanya boleh add choice-nya 1 maks
