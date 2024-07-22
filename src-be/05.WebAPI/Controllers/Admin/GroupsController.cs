@@ -1,9 +1,11 @@
 ﻿using Delta.Polling.Both.Admin.Groups.Commands.AddGroup;
 using Delta.Polling.Both.Admin.Groups.Commands.AddMember;
+using Delta.Polling.Both.Admin.Groups.Queries.GetGroup;
 using Delta.Polling.Both.Admin.Groups.Queries.GetGroups;
 using Delta.Polling.Logics.Admin.Groups.Commands.AddGroup;
 using Delta.Polling.Logics.Admin.Groups.Commands.AddMember;
 using Delta.Polling.Logics.Admin.Groups.Commands.RemoveMember;
+using Delta.Polling.Logics.Admin.Groups.Queries.GetGroup;
 using Delta.Polling.Logics.Admin.Groups.Queries.GetGroups;
 
 namespace Delta.Polling.WebAPI.Controllers.Admin;
@@ -43,5 +45,11 @@ public class GroupsController : ApiControllerBase
         }
 
         await Sender.Send(request);
+    }
+
+    [HttpGet("{groupId:guid}")]
+    public async Task<GetGroupOutput> GetGroupDetails([FromRoute] GetGroupQuery request)
+    {
+        return await Sender.Send(request);
     }
 }
