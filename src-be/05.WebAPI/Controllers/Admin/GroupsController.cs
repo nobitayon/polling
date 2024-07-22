@@ -3,6 +3,7 @@ using Delta.Polling.Both.Admin.Groups.Commands.AddMember;
 using Delta.Polling.Both.Admin.Groups.Queries.GetGroups;
 using Delta.Polling.Logics.Admin.Groups.Commands.AddGroup;
 using Delta.Polling.Logics.Admin.Groups.Commands.AddMember;
+using Delta.Polling.Logics.Admin.Groups.Commands.RemoveMember;
 using Delta.Polling.Logics.Admin.Groups.Queries.GetGroups;
 
 namespace Delta.Polling.WebAPI.Controllers.Admin;
@@ -31,5 +32,16 @@ public class GroupsController : ApiControllerBase
         }
 
         return await Sender.Send(request);
+    }
+
+    [HttpPost("{groupId:guid}/remove-member")]
+    public async Task RemoveMember([FromRoute] Guid groupId, [FromForm] RemoveMemberCommand request)
+    {
+        if (groupId != request.GroupId)
+        {
+            throw new MismatchException(nameof(request.GroupId), groupId, request.GroupId);
+        }
+
+        await Sender.Send(request);
     }
 }
