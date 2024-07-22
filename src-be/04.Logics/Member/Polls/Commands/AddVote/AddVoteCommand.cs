@@ -85,6 +85,17 @@ public class AddVoteCommandHandler(
             }
         }
 
+        foreach (var choiceId in request.ListChoice)
+        {
+            var isChoiceInPoll = await databaseService.Choices
+                                    .AnyAsync(c => c.Id == choiceId && c.PollId == request.PollId, cancellationToken);
+
+            if (!isChoiceInPoll)
+            {
+                throw new Exception($"Choice {choiceId} tidak berada pada poll dengan id {request.PollId}");
+            }
+        }
+
         var voter = new Voter
         {
             PollId = poll.Id,
