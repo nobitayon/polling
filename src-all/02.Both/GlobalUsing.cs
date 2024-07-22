@@ -8,4 +8,5 @@ global using MoviesMinValueFor = Delta.Polling.Base.Movies.Statics.MinValueFor;
 global using PollsMaxLengthFor = Delta.Polling.Base.Polls.Statics.MaxLengthFor;
 global using PollsMaxValueFor = Delta.Polling.Base.Polls.Statics.MaxValueFor;
 global using PollsMinValueFor = Delta.Polling.Base.Polls.Statics.MinValueFor;
+global using GroupsMaxLengthFor = Delta.Polling.Base.Groups.Statics.MaxLengthFor;
 global using ChoicesMaxLengthFor = Delta.Polling.Base.Choices.Statics.MaxLengthFor;

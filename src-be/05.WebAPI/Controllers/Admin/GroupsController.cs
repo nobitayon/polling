@@ -1,4 +1,6 @@
-﻿using Delta.Polling.Both.Admin.Groups.Queries.GetGroups;
+﻿using Delta.Polling.Both.Admin.Groups.Commands.AddGroup;
+using Delta.Polling.Both.Admin.Groups.Queries.GetGroups;
+using Delta.Polling.Logics.Admin.Groups.Commands.AddGroup;
 using Delta.Polling.Logics.Admin.Groups.Queries.GetGroups;
 
 namespace Delta.Polling.WebAPI.Controllers.Admin;
@@ -8,6 +10,12 @@ public class GroupsController : ApiControllerBase
 {
     [HttpGet]
     public async Task<GetGroupsOutput> GetGroups([FromQuery] GetGroupsQuery request)
+    {
+        return await Sender.Send(request);
+    }
+
+    [HttpPost]
+    public async Task<AddGroupOutput> AddGroup([FromForm] AddGroupCommand request)
     {
         return await Sender.Send(request);
     }
