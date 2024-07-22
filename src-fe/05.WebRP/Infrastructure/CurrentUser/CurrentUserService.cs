@@ -22,8 +22,8 @@ public class CurrentUserService : ICurrentUserService
     public string? Username => _claimsIdentity.Name;
 
     public IEnumerable<string> RoleNames => _claimsIdentity.Claims
-        .Where(claim => { return claim.Type == ClaimTypes.Role; })
-        .Select(claim => { return claim.Value; });
+        .Where(claim => claim.Type == ClaimTypes.Role)
+        .Select(claim => claim.Value);
 
     public string? AccessToken => _claimsIdentity.FindFirst(ClaimTypeFor.AccessToken)?.Value;
 }

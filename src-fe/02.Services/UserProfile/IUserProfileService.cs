@@ -2,7 +2,7 @@
 
 public interface IUserProfileService
 {
-    Task<UserProfileItem> GetUserProfileAsync(string username, CancellationToken cancellationToken = default);
+    Task<UserProfileItem> GetMyProfileAsync(string jwt, CancellationToken cancellationToken = default);
 }
 
 public record UserProfileItem

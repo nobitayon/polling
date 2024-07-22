@@ -1,10 +1,9 @@
-﻿using Delta.Polling.Both.Common.Enums;
-using Delta.Polling.Both.Member.Groups.Queries.GetMyGroups;
+﻿using Delta.Polling.Both.Member.Groups.Queries.GetMyGroups;
 
 namespace Delta.Polling.Logics.Member.Groups.Queries.GetMyGroups;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class GetMyGroupsQuery : GetMyGroupsRequest, IRequest<GetMyGroupsOutput>
+public record GetMyGroupsQuery : GetMyGroupsRequest, IRequest<GetMyGroupsOutput>
 {
 
 }

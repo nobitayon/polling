@@ -1,11 +1,13 @@
 ﻿using Delta.Polling.FrontEnd.Services.BackEnd;
 using Delta.Polling.FrontEnd.Services.CurrentUser;
+using Microsoft.Extensions.Logging;
 
 namespace Delta.Polling.FrontEnd.Infrastructure.BackEnd;
 
 public class BackEndService(
     IOptions<BackEndOptions> backEndOptions,
-    ICurrentUserService currentUserService)
+    ICurrentUserService currentUserService,
+    ILogger<BackEndService> logger)
     : IBackEndService
 {
     private readonly RestClient _restClient = new(backEndOptions.Value.ApiBaseUrl);
@@ -14,8 +16,16 @@ public class BackEndService(
     {
         if (!string.IsNullOrWhiteSpace(currentUserService.AccessToken))
         {
+            logger.LogInformation("BackEndService.SendRequestAsync Access Token: {AccessToken}",
+                currentUserService.AccessToken);
+
             _ = restRequest.AddHeader(KnownHeaders.Authorization, $"Bearer {currentUserService.AccessToken}");
         }
+
+        var uri = _restClient.BuildUri(restRequest);
+
+        logger.LogInformation("BackEndService.SendRequestAsync URI: {Uri}",
+            uri);
 
         var restResponse = await _restClient.ExecuteAsync(restRequest, cancellationToken);
 

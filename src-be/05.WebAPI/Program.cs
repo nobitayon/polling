@@ -21,10 +21,7 @@ builder.Services.AddLogics();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthenticationService(builder.Configuration);
 builder.Services.AddAuthorizationService();
-builder.Services.AddControllers(options =>
-{
-    _ = options.Filters.Add<CustomExceptionFilterAttribute>();
-});
+builder.Services.AddControllers(options => _ = options.Filters.Add<CustomExceptionFilterAttribute>());
 
 builder.Services.AddEndpointsApiExplorer();
 

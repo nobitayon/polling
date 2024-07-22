@@ -14,7 +14,6 @@ public static class ConfigureLogics
         {
             _ = configuration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             _ = configuration.AddOpenRequestPreProcessor(typeof(LoggingBehavior<>));
-            //_ = configuration.AddOpenRequestPreProcessor(typeof(AuthorizationBehavior<>));
             _ = configuration.AddOpenRequestPreProcessor(typeof(ValidationBehavior<>));
         });
     }

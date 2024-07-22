@@ -1,107 +1,136 @@
-﻿<!DOCTYPE html>
+﻿@using Delta.Polling.WebRP.Common.Extensions
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] | Polling Contributor</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>@ViewData["Title"] | Polling</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Delta.Polling.WebRP.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark container-fluid">
-            <div class="container-fluid">
-                <a class="navbar-brand text-warning" asp-page="Index">Polling-Delta2</a>
-                <button class="navbar-toggler"
+    <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white"
+           asp-page="/Index">
+            Delta Polling
+        </a>
+        <ul class="navbar-nav flex-row d-md-none">
+            <li class="nav-item text-nowrap">
+                <button class="nav-link px-3 text-white"
                         type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#sidebarMenu"
+                        aria-controls="sidebarMenu"
                         aria-expanded="false"
                         aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                    <i class="bi bi-list"></i>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/">Home</a>
-                        </li>
+            </li>
+        </ul>
+    </header>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+                <div class="offcanvas-md offcanvas-end bg-body-tertiary"
+                     tabindex="-1"
+                     id="sidebarMenu"
+                     aria-labelledby="sidebarMenuLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title"
+                            id="sidebarMenuLabel">
+                            Delta Polling
+                        </h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="offcanvas"
+                                data-bs-target="#sidebarMenu"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="@this.GetNavLinkClass(MenuFor.Index)"
+                                   asp-page="/Index">
+                                    <i class="bi bi-house-fill"></i>
+                                    Home
+                                </a>
+                            </li>
+                        </ul>
+
                         @if (User.IsInRole(RoleNameFor.Contributor))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-page="/Contributor/Index">Contributor</a>
-                            </li>
+                            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-2 text-body-secondary text-uppercase">
+                                <span>Contributor</span>
+                            </h6>
+                            <ul class="nav flex-column mb-auto">
+                                <li class="nav-item">
+                                    <a class="@this.GetNavLinkClass(MenuFor.ContributorIndex)"
+                                       asp-page="/Contributor/Index">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                        Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="@this.GetNavLinkClass(MenuFor.ContributorMoviesIndex)"
+                                       asp-page="/Contributor/Movies/Index">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                        My Movies
+                                    </a>
+                                </li>
+                            </ul>
                         }
 
-                        @if (!User.Identity!.IsAuthenticated)
-                        {
+                        <hr class="my-3">
+                        <ul class="nav flex-column mb-auto">
                             <li class="nav-item">
-                                <a class="nav-link" asp-page="/Account/Login">Login</a>
+                                <a class="@this.GetNavLinkClass(MenuFor.About)"
+                                   asp-page="/About">
+                                    <i class="bi bi-file-person"></i>
+                                    About
+                                </a>
                             </li>
-                        }
-                        else
-                        {
-                            <li>
-                                <div class="d-flex flex-row align-items-center ms-4">
-                                    <span class="nav-link text-white">
-                                        Welcome, @User.Identity.Name
-                                    </span>
-                                    <span class="text-white">
-                                        |
-                                    </span>
-                                    <a class="nav-link text-white" style="cursor: pointer;" asp-page="/Account/MyClaims">
+                            @if (User.Identity!.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    <a class="@this.GetNavLinkClass(MenuFor.AccountMyClaims)"
+                                       asp-page="/Account/MyClaims">
+                                        <i class="bi bi-box-arrow-in-left"></i>
                                         My Claims
                                     </a>
-                                    <span class="text-white">
-                                        |
-                                    </span>
-                                    <!-- Button trigger modal -->
-                                    <a class="nav-link" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalLogout">
+                                </li>
+                                <li class="nav-item">
+                                    <a class="@CssClassFor.NavLink"
+                                       asp-page="/Account/Logout">
+                                        <i class="bi bi-box-arrow-in-left"></i>
                                         Logout
                                     </a>
-                                </div>
-                                <!-- Modal -->
-                                <div class="modal fade" id="modalLogout" tabindex="-1" aria-labelledby="modalLogoutLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Logout!</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                Are you sure want to Logout ?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <a class="btn btn-outline-primary" asp-page="/Account/Logout">Logout</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        }
-                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="@CssClassFor.NavLink"
+                                       asp-page="/Account/Login">
+                                        <i class="bi bi-box-arrow-in-right"></i>
+                                        Login
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Polling Razor Pages
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-md-3">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    @* <script src="~/lib/Chart.js/chart.umd.js"></script> *@
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    @* <script src="~/js/dashboard.js"></script> *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

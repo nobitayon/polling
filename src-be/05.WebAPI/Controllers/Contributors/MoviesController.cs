@@ -14,12 +14,9 @@ namespace Delta.Polling.WebAPI.Controllers.Contributors;
 public class MoviesController : ApiControllerBase
 {
     [HttpGet]
-    public async Task<GetMyMoviesOutput> GetMyMovies(int maxCount = 5)
+    public async Task<GetMyMoviesOutput> GetMyMovies([FromQuery] GetMyMoviesQuery request)
     {
-        return await Sender.Send(new GetMyMoviesQuery
-        {
-            MaxCount = maxCount
-        });
+        return await Sender.Send(request);
     }
 
     [HttpGet("{movieId}")]

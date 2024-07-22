@@ -7,6 +7,7 @@ using Delta.Polling.Both.Common.Statics;
 
 namespace Delta.Polling.FrontEnd.Infrastructure.BackEnd;
 
+// TODO: Jika memungkinkan, buat class ini menjadi Singleton Service
 public static class RestResponseExtensions
 {
     public static ResponseResult<T> ToResponseResult<T>(this RestResponse restResponse)
@@ -55,10 +56,7 @@ public static class RestResponseExtensions
             }
 
             var contentDispositionContentHeader = restResponse.ContentHeaders
-                .FirstOrDefault(x =>
-                {
-                    return x.Name == "Content-Disposition";
-                })
+                .FirstOrDefault(headerParameter => headerParameter.Name == "Content-Disposition")
                 ?? throw new Exception("Content-Disposition Content Header is null");
 
             if (contentDispositionContentHeader.Value is not string contentDispositionValue)
@@ -143,10 +141,8 @@ public static class RestResponseExtensions
         {
             if (restResponse.Headers is not null)
             {
-                var headerIsTokenExpired = restResponse.Headers.FirstOrDefault(x =>
-                {
-                    return x.Name == "IsTokenExpired";
-                });
+                var headerIsTokenExpired = restResponse.Headers
+                    .FirstOrDefault(headerParameter => headerParameter.Name == "IsTokenExpired");
 
                 if (headerIsTokenExpired is not null)
                 {

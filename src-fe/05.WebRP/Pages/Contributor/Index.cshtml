@@ -3,10 +3,22 @@
 
 @{
     ViewData["Title"] = "Dashboard";
+    ViewBag.CurrentMenu = MenuFor.ContributorIndex;
 }
 
-<h1>
-    Contributor Dashboard
-</h1>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Index">
+                Home
+            </a>
+        </li>
+        <li class="breadcrumb-item active"
+            aria-current="page">
+            Contributor
+        </li>
+    </ol>
+</nav>
 
-<a asp-page="Movies/Index">Movies</a>
+<h1>@ViewData["Title"]</h1>

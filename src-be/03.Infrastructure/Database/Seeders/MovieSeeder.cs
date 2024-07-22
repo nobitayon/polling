@@ -13,7 +13,7 @@ public class MovieSeeder(
         new()
         {
             Created = DateTimeOffset.Now,
-            CreatedBy = "user.satu",
+            CreatedBy = "codebase.user.satu",
             Title = "Shawshank Redemption",
             Storyline = "Lorem ipsum",
             Budget = 1_000_000,
@@ -22,7 +22,7 @@ public class MovieSeeder(
         new()
         {
             Created = DateTimeOffset.Now,
-            CreatedBy = "user.satu",
+            CreatedBy = "codebase.user.satu",
             Title = "The Godfather",
             Storyline = "Lorem ipsum",
             Budget = 1_500_000,
@@ -31,7 +31,7 @@ public class MovieSeeder(
         new()
         {
             Created = DateTimeOffset.Now,
-            CreatedBy = "user.satu",
+            CreatedBy = "codebase.user.satu",
             Title = "The Dark Knight",
             Storyline = "Bla bla bla",
             Budget = 1_200_000,
@@ -40,7 +40,7 @@ public class MovieSeeder(
         new()
         {
             Created = DateTimeOffset.Now,
-            CreatedBy = "user.satu",
+            CreatedBy = "codebase.user.satu",
             Title = "The Lord of the Rings: The Return of the King",
             Storyline = "Bla bla bla",
             Budget = 1_300_000,
@@ -49,7 +49,7 @@ public class MovieSeeder(
         new()
         {
             Created = DateTimeOffset.Now,
-            CreatedBy = "user.satu",
+            CreatedBy = "codebase.user.satu",
             Title = "Pulp Fiction",
             Storyline = "Bla bla bla",
             Budget = 1_100_000,
@@ -58,7 +58,7 @@ public class MovieSeeder(
         new()
         {
             Created = DateTimeOffset.Now,
-            CreatedBy = "user.satu",
+            CreatedBy = "codebase.user.satu",
             Title = "Forrest Gump",
             Storyline = "USA",
             Budget = 1_400_000,

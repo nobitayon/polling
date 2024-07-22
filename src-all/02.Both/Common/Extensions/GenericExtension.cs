@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using Delta.Polling.Both.Common.Statics;
 
 namespace Delta.Polling.Both.Common.Extensions;
 

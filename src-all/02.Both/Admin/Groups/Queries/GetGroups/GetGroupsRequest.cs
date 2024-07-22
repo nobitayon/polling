@@ -1,8 +1,6 @@
-﻿using Delta.Polling.Both.Common.Requests;
+﻿namespace Delta.Polling.Both.Admin.Groups.Queries.GetGroups;
 
-namespace Delta.Polling.Both.Admin.Groups.Queries.GetGroups;
-
-public class GetGroupsRequest : PaginatedListRequest
+public record GetGroupsRequest : PaginatedListRequest
 {
 }
 

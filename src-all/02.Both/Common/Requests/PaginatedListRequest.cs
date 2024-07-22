@@ -1,14 +1,13 @@
-﻿using Delta.Polling.Both.Common.Enums;
+﻿namespace Delta.Polling.Both.Common.Requests;
 
-namespace Delta.Polling.Both.Common.Requests;
-
-public class PaginatedListRequest
+public abstract record PaginatedListRequest
 {
-    public int Page { get; set; } = 1;
-    public int PageSize { get; set; } = 10;
-    public string? SearchText { get; set; }
-    public string? SortField { get; set; }
-    public SortOrder? SortOrder { get; set; }
+    public int Page { get; init; }
+    public int PageSize { get; init; }
+    public string? SearchText { get; init; }
+    public string? SearchField { get; init; }
+    public string? SortField { get; init; }
+    public SortOrder? SortOrder { get; init; }
 }
 
 public class PaginatedListRequestValidator : AbstractValidator<PaginatedListRequest>
@@ -19,8 +18,7 @@ public class PaginatedListRequestValidator : AbstractValidator<PaginatedListRequ
             .GreaterThan(0);
 
         _ = RuleFor(v => v.PageSize)
-            .GreaterThan(0)
-            .LessThanOrEqualTo(100);
+            .InclusiveBetween(1, 100);
 
         _ = RuleFor(v => v.SortOrder)
             .IsInEnum();

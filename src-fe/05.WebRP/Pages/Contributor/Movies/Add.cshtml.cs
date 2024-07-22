@@ -11,9 +11,9 @@ public class AddModel : PageModelBase
     {
         Input = new AddMovieCommand
         {
-            Title = "",
-            Storyline = "",
-            Budget = 0M
+            Title = "Movie 01",
+            Storyline = "Storyline Movie 01",
+            Budget = 5_000M
         };
     }
 

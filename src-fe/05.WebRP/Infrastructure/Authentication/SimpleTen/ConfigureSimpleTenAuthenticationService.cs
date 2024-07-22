@@ -1,8 +1,8 @@
 ﻿using Delta.Polling.FrontEnd.Services.CurrentUser.Statics;
 using Delta.Polling.WebRP.Infrastructure.Authentication;
-using IdentityModel;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Polling.WebRP.Infrastructure.Authentication.SimpleTen;
 
@@ -29,7 +29,7 @@ public static class ConfigureSimpleTenAuthenticationService
             options.Authority = simpleTenAuthenticationOptions.Authority;
             options.ClientId = simpleTenAuthenticationOptions.ClientId;
             options.ClientSecret = simpleTenAuthenticationOptions.ClientSecret;
-            options.ResponseType = OidcConstants.ResponseTypes.Code;
+            options.ResponseType = OpenIdConnectResponseType.Code;
             options.EventsType = typeof(CustomOpenIdConnectEvents);
 
             foreach (var scope in simpleTenAuthenticationOptions.Scopes)
@@ -39,7 +39,7 @@ public static class ConfigureSimpleTenAuthenticationService
 
             options.TokenValidationParameters = new()
             {
-                NameClaimType = ClaimTypeFor.Name,
+                NameClaimType = ClaimTypeFor.Name
             };
         })
         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);

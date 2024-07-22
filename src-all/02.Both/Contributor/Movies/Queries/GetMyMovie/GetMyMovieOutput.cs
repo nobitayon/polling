@@ -10,6 +10,7 @@ public record MovieItem
     public required string Title { get; init; }
     public required string Storyline { get; init; }
     public required decimal Budget { get; init; }
+    public string BudgetDisplayText => Budget.ToMoneyDisplayText();
     public required DateTimeOffset Created { get; init; }
     public required MovieStatus Status { get; set; }
     public DateTimeOffset? Approved { get; set; }

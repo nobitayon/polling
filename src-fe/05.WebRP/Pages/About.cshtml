@@ -1,0 +1,24 @@
+﻿@page
+@model AboutModel
+
+@{
+    ViewData["Title"] = "About";
+    ViewBag.CurrentMenu = MenuFor.About;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Index">
+                Home
+            </a>
+        </li>
+        <li class="breadcrumb-item active"
+            aria-current="page">
+            @ViewData["Title"]
+        </li>
+    </ol>
+</nav>
+
+<h1>@ViewData["Title"]</h1>
