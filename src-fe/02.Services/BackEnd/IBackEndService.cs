@@ -24,7 +24,5 @@ public record ErrorResponse
     public required string Title { get; set; }
     public required HttpStatusCode Status { get; set; }
     public required string Detail { get; set; }
-    public IDictionary<string, string[]> Errors { get; set; } = new Dictionary<string, string[]>();
-
     public string StatusDisplayText => $"{(int)Status} {Status}";
 }

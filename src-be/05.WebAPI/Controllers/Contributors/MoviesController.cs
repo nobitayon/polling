@@ -1,12 +1,12 @@
-﻿using Delta.Polling.Logics.Contributor.Movies.Commands.AddMovie;
+﻿using Delta.Polling.Both.Contributor.Movies.Commands.AddMovie;
+using Delta.Polling.Both.Contributor.Movies.Queries.GetMyMovie;
+using Delta.Polling.Both.Contributor.Movies.Queries.GetMyMovies;
+using Delta.Polling.Logics.Contributor.Movies.Commands.AddMovie;
 using Delta.Polling.Logics.Contributor.Movies.Commands.DeleteMovie;
 using Delta.Polling.Logics.Contributor.Movies.Commands.SubmitMovie;
 using Delta.Polling.Logics.Contributor.Movies.Commands.UpdateMovie;
 using Delta.Polling.Logics.Contributor.Movies.Queries.GetMyMovie;
 using Delta.Polling.Logics.Contributor.Movies.Queries.GetMyMovies;
-using Delta.Polling.Both.Contributor.Movies.Commands.AddMovie;
-using Delta.Polling.Both.Contributor.Movies.Queries.GetMyMovie;
-using Delta.Polling.Both.Contributor.Movies.Queries.GetMyMovies;
 
 namespace Delta.Polling.WebAPI.Controllers.Contributors;
 
@@ -16,20 +16,6 @@ public class MoviesController : ApiControllerBase
     [HttpGet]
     public async Task<GetMyMoviesOutput> GetMyMovies([FromQuery] GetMyMoviesQuery request)
     {
-        Console.WriteLine($"{request.Page}");
-
-        var requestTidakValid = new GetMyMoviesQuery
-        {
-            Page = -2,
-            PageSize = -3,
-            SearchField = null,
-            SearchText = null,
-            SortField = null,
-            SortOrder = null
-        };
-
-        Console.WriteLine($"{requestTidakValid.Page}");
-
         return await Sender.Send(request);
     }
 

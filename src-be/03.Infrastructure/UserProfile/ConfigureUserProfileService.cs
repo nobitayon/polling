@@ -1,6 +1,6 @@
-﻿using Delta.Polling.FrontEnd.Infrastructure.UserProfile.SimpleTor;
+﻿using Delta.Polling.Infrastructure.UserProfile.SimpleTor;
 
-namespace Delta.Polling.FrontEnd.Infrastructure.UserProfile;
+namespace Delta.Polling.Infrastructure.UserProfile;
 
 public static class ConfigureUserProfileService
 {

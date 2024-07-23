@@ -65,7 +65,7 @@ public class CustomExceptionFilterAttribute(ILogger<CustomExceptionFilterAttribu
             Detail = context.Exception.Message
         });
 
-		logger.LogInformation("Exception Message: {Message}", context.Exception.Message);
+        logger.LogInformation("Exception Message: {Message}", context.Exception.Message);
         logger.LogError(context.Exception, "Oops.. something went wrong");
 
         context.ExceptionHandled = true;

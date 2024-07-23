@@ -1,6 +1,6 @@
 ﻿using Delta.Polling.FrontEnd.Infrastructure.UserRole.SimpleTor;
 
-namespace Delta.Polling.WebRP.Infrastructure.UserRole;
+namespace Delta.Polling.FrontEnd.Infrastructure.UserRole;
 
 public static class ConfigureUserRoleService
 {
