@@ -4,7 +4,7 @@ using Delta.Polling.Both.Member.Polls.Queries.GetPoll;
 namespace Delta.Polling.Logics.Member.Polls.Queries.GetPoll;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class GetPollQuery : GetPollRequest, IRequest<GetPollOutput>
+public record GetPollQuery : GetPollRequest, IRequest<GetPollOutput>
 {
 
 }
@@ -14,6 +14,19 @@ public class GetPollQueryValidator : AbstractValidator<GetPollQuery>
     public GetPollQueryValidator()
     {
         Include(new GetPollRequestValidator());
+    }
+}
+
+public static class Helper
+{
+    public static bool IsItChosen(Guid choiceId, List<AnswerItem> answerItems)
+    {
+        if (answerItems.Count == 0)
+        {
+            return false;
+        }
+
+        return answerItems.Any(a => a.ChoiceId == choiceId);
     }
 }
 
@@ -35,7 +48,10 @@ public class GetPollQueryHandler(
                             AllowOtherChoice = poll.AllowOtherChoice,
                             MaximumAnswer = poll.MaximumAnswer,
                             Question = poll.Question,
-                            CreatedBy = poll.CreatedBy
+                            Created = poll.Created,
+                            CreatedBy = poll.CreatedBy,
+                            Modified = poll.Modified,
+                            ModifiedBy = poll.ModifiedBy
                         }).SingleOrDefaultAsync(cancellationToken)
                         ?? throw new EntityNotFoundException("Poll", request.PollId);
 
@@ -60,15 +76,6 @@ public class GetPollQueryHandler(
             throw new ForbiddenException($"You can't access this poll, because this poll is not published yet");
         }
 
-        var choiceItems = await databaseService.Choices
-                            .Where(c => c.PollId == request.PollId)
-                            .Select(c => new ChoiceItem
-                            {
-                                Id = c.Id,
-                                Description = c.Description,
-                                IsOther = c.IsOther
-                            }).ToListAsync(cancellationToken);
-
         var voterId = await databaseService.Voters
                         .Where(v => v.PollId == request.PollId && v.Username == currentUserService.Username)
                         .Select(v => v.Id)
@@ -88,6 +95,16 @@ public class GetPollQueryHandler(
                                 }).ToListAsync(cancellationToken);
         }
 
+        var choiceItems = await databaseService.Choices
+                            .Where(c => c.PollId == request.PollId)
+                            .Select(c => new ChoiceItem
+                            {
+                                Id = c.Id,
+                                Description = c.Description,
+                                IsOther = c.IsOther,
+                                IsChosen = Helper.IsItChosen(c.Id, answerItems)
+                            }).ToListAsync(cancellationToken);
+
         var pollItem = new PollItem
         {
             Status = pollDetails.Status,
@@ -95,6 +112,10 @@ public class GetPollQueryHandler(
             Question = pollDetails.Question,
             MaximumAnswer = pollDetails.MaximumAnswer,
             AllowOtherChoice = pollDetails.AllowOtherChoice,
+            Created = pollDetails.Created,
+            CreatedBy = pollDetails.CreatedBy,
+            Modified = pollDetails.Modified,
+            ModifiedBy = pollDetails.ModifiedBy,
             AnswerItems = answerItems,
             ChoiceItems = choiceItems
         };

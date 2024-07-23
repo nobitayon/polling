@@ -13,6 +13,10 @@ public record PollItem
     public required string Question { get; init; }
     public required int MaximumAnswer { get; set; }
     public required bool AllowOtherChoice { get; set; }
+    public required DateTimeOffset Created { get; set; }
+    public required string CreatedBy { get; set; }
+    public DateTimeOffset? Modified { get; set; }
+    public string? ModifiedBy { get; set; }
     public IEnumerable<ChoiceItem> ChoiceItems { get; init; } = [];
     public IEnumerable<AnswerItem> AnswerItems { get; init; } = [];
 }
@@ -22,6 +26,7 @@ public record ChoiceItem
     public required Guid Id { get; init; }
     public required string Description { get; init; }
     public required bool IsOther { get; set; }
+    public required bool IsChosen { get; set; }
 }
 
 // TODO: Apakah menggunakan list Guid saja
