@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using Delta.Polling.FrontEnd.Services.CurrentUser.Statics;
 using Delta.Polling.FrontEnd.Services.UserProfile;
 using Delta.Polling.FrontEnd.Services.UserRole;
 using Microsoft.AspNetCore.Authentication;
@@ -101,19 +100,28 @@ public class CustomOpenIdConnectEvents(
     {
         logger.LogInformation("Entering CustomOpenIdConnectEvents.TokenValidated ...");
 
-        var principal = context.Principal!;
-        var identity = (principal.Identity as ClaimsIdentity)!;
-
-        if (context.TokenEndpointResponse is not null)
+        try
         {
-            var jwt = context.TokenEndpointResponse.AccessToken;
+            var principal = context.Principal!;
+            var identity = (principal.Identity as ClaimsIdentity)!;
 
-            logger.LogInformation("TokenValidated JWT: {Jwt}", jwt);
+            if (context.TokenEndpointResponse is not null)
+            {
+                var jwt = context.TokenEndpointResponse.AccessToken;
 
-            identity.AddClaim(new Claim(ClaimTypeFor.AccessToken, context.TokenEndpointResponse.AccessToken));
+                logger.LogInformation("TokenValidated JWT: {Jwt}", jwt);
 
-            await ProcessUserProfile(identity, jwt);
-            await ProcessUserRoles(identity, jwt);
+                await ProcessUserProfile(identity, jwt);
+                await ProcessUserRoles(identity, jwt);
+
+                identity.AddClaim(new Claim(CustomClaimTypes.AccessToken, context.TokenEndpointResponse.AccessToken));
+            }
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Error in CustomOpenIdConnectEvents.TokenValidated.");
+
+            throw;
         }
     }
 
@@ -121,8 +129,8 @@ public class CustomOpenIdConnectEvents(
     {
         var userProfileItem = await userProfileService.GetMyProfileAsync(jwt);
 
-        identity.AddClaim(new Claim(ClaimTypeFor.Name, userProfileItem.Name));
-        identity.AddClaim(new Claim(ClaimTypeFor.Email, userProfileItem.Email));
+        identity.AddClaim(new Claim(CustomClaimTypes.Name, userProfileItem.Name));
+        identity.AddClaim(new Claim(CustomClaimTypes.Email, userProfileItem.Email));
     }
 
     private async Task ProcessUserRoles(ClaimsIdentity identity, string jwt)

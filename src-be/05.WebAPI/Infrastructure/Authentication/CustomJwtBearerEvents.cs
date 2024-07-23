@@ -1,14 +1,11 @@
 ﻿using System.Security.Claims;
-using Delta.Polling.Services.UserRole;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Delta.Polling.WebAPI.Infrastructure.Authentication;
 
-public class CustomJwtBearerEvents(
-    IUserRoleService userRoleService,
-    ILogger<CustomJwtBearerEvents> logger)
+public class CustomJwtBearerEvents(ILogger<CustomJwtBearerEvents> logger)
     : JwtBearerEvents
 {
     public override Task MessageReceived(MessageReceivedContext context)
@@ -40,13 +37,15 @@ public class CustomJwtBearerEvents(
 
             var principal = context.Principal!;
             var identity = (principal.Identity as ClaimsIdentity)!;
+            identity.AddClaim(new Claim(CustomClaimTypes.AccessToken, jwt.EncodedToken));
+
             var username = principal.FindFirstValue(KnownClaimTypes.PreferredUsername);
 
             logger.LogInformation("The value of Claim {ClaimType} in the JWT: {ClaimValue}.",
                 KnownClaimTypes.PreferredUsername, username);
-
-            await ProcessUserRoles(identity, jwt.EncodedToken);
         }
+
+        await Task.CompletedTask;
     }
 
     public override async Task AuthenticationFailed(AuthenticationFailedContext context)
@@ -59,21 +58,5 @@ public class CustomJwtBearerEvents(
         }
 
         await Task.CompletedTask;
-    }
-
-    private async Task ProcessUserRoles(ClaimsIdentity identity, string jwt)
-    {
-        var roleNames = await userRoleService.GetMyRolesAsync(jwt);
-
-        logger.LogInformation("I have {RolesCount} role(s).",
-            roleNames.Count());
-
-        foreach (var roleName in roleNames)
-        {
-            logger.LogInformation("I have Role {RoleName}.",
-                roleName);
-
-            identity.AddClaim(new Claim(ClaimTypes.Role, roleName));
-        }
     }
 }

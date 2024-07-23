@@ -1,5 +1,4 @@
-﻿using Delta.Polling.FrontEnd.Services.CurrentUser.Statics;
-using Delta.Polling.WebRP.Infrastructure.Authentication;
+﻿using Delta.Polling.WebRP.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -39,7 +38,7 @@ public static class ConfigureSimpleTenAuthenticationService
 
             options.TokenValidationParameters = new()
             {
-                NameClaimType = ClaimTypeFor.Name
+                NameClaimType = CustomClaimTypes.Name
             };
         })
         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
