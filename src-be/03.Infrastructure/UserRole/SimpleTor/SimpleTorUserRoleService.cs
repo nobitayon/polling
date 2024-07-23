@@ -21,6 +21,16 @@ public class SimpleTorUserRoleService : IUserRoleService
 
         var restResponse = await _restClient.ExecuteAsync<IEnumerable<string>>(restRequest, cancellationToken);
 
+        if (!restResponse.IsSuccessful)
+        {
+            if (restResponse.ErrorException is not null)
+            {
+                throw restResponse.ErrorException;
+            }
+
+            throw new HttpRequestException(restResponse.ErrorMessage, restResponse.ErrorException, restResponse.StatusCode);
+        }
+
         if (restResponse.Data is null)
         {
             throw new NullException(nameof(restResponse.Data), typeof(IEnumerable<string>));

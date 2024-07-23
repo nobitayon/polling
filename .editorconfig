@@ -25,9 +25,13 @@ indent_size = 2
 dotnet_analyzer_diagnostic.category-Style.severity = error
 dotnet_analyzer_diagnostic.category-Naming.severity = error
 
+
 # Suppressions
 ## CA1016: Mark assemblies with AssemblyVersionAttribute
 dotnet_diagnostic.CA1016.severity = none
+
+## CA1716 Jangan pakai Shared
+dotnet_diagnostic.CA1716.severity = none
 
 ## CS1591: Missing XML comment for publicly visible type or member 'Type_or_Member'
 dotnet_diagnostic.CS1591.severity = none
@@ -173,7 +177,8 @@ csharp_style_expression_bodied_accessors = when_on_single_line:error
 
 ### IDE0053: Use expression body for lambdas
 csharp_style_expression_bodied_lambdas = when_on_single_line:suggestion
-dotnet_diagnostic.IDE0053.severity = suggestion
+dotnet_diagnostic.IDE0053.severity = suggestion
+
 ### IDE0061: Use expression body for local functions
 csharp_style_expression_bodied_local_functions = false:error
 

@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Delta.Polling.Services.UserRole;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 
@@ -6,21 +7,31 @@ namespace Delta.Polling.Logics.Common.Behaviors;
 
 public class AuthorizationBehavior<TRequest>(
     ICurrentUserService currentUserService,
+    IUserRoleService userRoleService,
     ILogger<TRequest> logger)
     : IRequestPreProcessor<TRequest> where TRequest : notnull
 {
-    public Task Process(TRequest request, CancellationToken cancellationToken)
+    public async Task Process(TRequest request, CancellationToken cancellationToken)
     {
         var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
 
         // Kalau request ini tidak ada attribute Authorize-nya
         if (authorizeAttributes.Count() is 0)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         var requiredRoleNames = new List<string>();
         var isInRole = false;
+
+        var jwt = currentUserService.AccessToken;
+
+        if (string.IsNullOrWhiteSpace(jwt))
+        {
+            throw new ForbiddenException("HTTP Request ini tidak disertai dengan JWT.");
+        }
+
+        var currentUserRoleNames = await userRoleService.GetMyRolesAsync(jwt, cancellationToken);
 
         foreach (var authorizeAttribute in authorizeAttributes)
         {
@@ -38,13 +49,12 @@ public class AuthorizationBehavior<TRequest>(
                     throw new ForbiddenException("User harus sudah login");
                 }
 
-                return Task.CompletedTask;
+                return;
             }
 
             requiredRoleNames.Add(requiredRoleName);
 
-            isInRole |= currentUserService.RoleNames
-                .Any(roleName => roleName == requiredRoleName);
+            isInRole |= currentUserRoleNames.Any(roleName => roleName == requiredRoleName);
         }
 
         if (!isInRole)
@@ -67,6 +77,6 @@ public class AuthorizationBehavior<TRequest>(
             }
         }
 
-        return Task.CompletedTask;
+        return;
     }
 }

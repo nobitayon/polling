@@ -29,6 +29,8 @@
 
 <h1>@ViewData["Title"]</h1>
 
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
+
 @if (TempData["success"] is not null)
 {
     <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
