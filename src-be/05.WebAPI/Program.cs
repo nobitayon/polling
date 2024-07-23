@@ -1,6 +1,7 @@
 using Delta.Polling.Infrastructure.Database;
 using Delta.Polling.Infrastructure.Email;
 using Delta.Polling.Infrastructure.Logging;
+using Delta.Polling.Infrastructure.UserProfile;
 using Delta.Polling.Infrastructure.UserRole;
 using Delta.Polling.Logics;
 using Delta.Polling.WebAPI.Filters;
@@ -15,6 +16,7 @@ builder.Services.AddDatabaseService(builder.Configuration);
 builder.Services.AddCurrentUserService();
 builder.Services.AddDocumentationService(builder.Configuration);
 builder.Services.AddEmailService(builder.Configuration);
+builder.Services.AddUserProfileService(builder.Configuration);
 builder.Services.AddUserRoleService(builder.Configuration);
 builder.Services.AddLogics();
 

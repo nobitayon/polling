@@ -1,4 +1,4 @@
-﻿namespace Delta.Polling.WebRP.Infrastructure.UserRole;
+﻿namespace Delta.Polling.FrontEnd.Infrastructure.UserRole;
 
 public record UserRoleOptions
 {

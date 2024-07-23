@@ -9,5 +9,11 @@ public record SimpleTorUserRoleOptions
     public required string TokenUrl { get; init; }
     public required string ClientId { get; init; }
     public required string ClientSecret { get; init; }
-    public required string[] Scopes { get; init; } = ["SimpleTor.Application.GetRoleUsers", "SimpleTor.Application.GetUserRoles"];
+    public required string[] Scopes { get; init; } =
+    [
+        "SimpleTor.Application.GetRoles",
+        "SimpleTor.Application.GetRoleUsers",
+        "SimpleTor.Application.GetUserRoles",
+        "SimpleTor.Application.GetUsers"
+    ];
 }

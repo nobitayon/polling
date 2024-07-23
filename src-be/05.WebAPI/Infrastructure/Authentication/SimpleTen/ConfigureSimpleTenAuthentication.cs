@@ -21,8 +21,7 @@ public static class ConfigureSimpleTenAuthentication
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ClockSkew = TimeSpan.Zero,
-                    NameClaimType = KnownClaimTypes.PreferredUsername
+                    ClockSkew = TimeSpan.Zero
                 };
 
                 options.EventsType = typeof(CustomJwtBearerEvents);
