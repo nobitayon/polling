@@ -1,4 +1,4 @@
-﻿namespace Delta.Polling.FrontEnd.Infrastructure.UserProfile;
+﻿namespace Delta.Polling.Infrastructure.UserProfile;
 
 public record UserProfileOptions
 {

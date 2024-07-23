@@ -21,6 +21,13 @@ public class AddModel : PageModelBase
     {
         var response = await Sender.Send(Input);
 
+        if (response.Error is not null)
+        {
+            Error = response.Error;
+
+            return Page();
+        }
+
         if (response.Result is not null)
         {
             TempData["success"] = "Movie was added successfully.";
