@@ -16,6 +16,20 @@ public class MoviesController : ApiControllerBase
     [HttpGet]
     public async Task<GetMyMoviesOutput> GetMyMovies([FromQuery] GetMyMoviesQuery request)
     {
+        Console.WriteLine($"{request.Page}");
+
+        var requestTidakValid = new GetMyMoviesQuery
+        {
+            Page = -2,
+            PageSize = -3,
+            SearchField = null,
+            SearchText = null,
+            SortField = null,
+            SortOrder = null
+        };
+
+        Console.WriteLine($"{requestTidakValid.Page}");
+
         return await Sender.Send(request);
     }
 

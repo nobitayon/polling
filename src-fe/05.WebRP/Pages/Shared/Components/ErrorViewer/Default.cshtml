@@ -1,0 +1,13 @@
+﻿@model Delta.Polling.FrontEnd.Services.BackEnd.ErrorResponse?
+
+@if (Model is not null)
+{
+    <div class="alert alert-danger">
+        <h5>
+            @Model.Title
+        </h5>
+        <p class="p-0 m-0" style="white-space: pre-line">
+            @Model.Detail
+        </p>
+    </div>
+}

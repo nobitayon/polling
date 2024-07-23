@@ -1,52 +1,12 @@
-﻿using Delta.Polling.Services.CurrentUser;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using Delta.Polling.Services.CurrentUser;
 
 namespace Delta.Polling.WebAPI.Infrastructure.CurrentUser;
 
-public class CurrentUserService(IHttpContextAccessor httpContextAccessor)
-    : ICurrentUserService
+public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService
 {
-    public string? Username
-    {
-        get
-        {
-            if (httpContextAccessor.HttpContext is null)
-            {
-                throw new Exception("HttpContext is null");
-            }
+    private readonly ClaimsPrincipal _claimsPrincipal = httpContextAccessor.HttpContext!.User;
 
-            var user = httpContextAccessor.HttpContext.User;
-            var identity = user.Identity as ClaimsIdentity
-                ?? throw new Exception("Identity is null");
-
-            return identity.Name;
-        }
-    }
-
-    public IEnumerable<string> RoleNames
-    {
-        get
-        {
-            if (httpContextAccessor.HttpContext is null)
-            {
-                throw new Exception("HttpContext is null");
-            }
-
-            var user = httpContextAccessor.HttpContext.User;
-            var identity = user.Identity as ClaimsIdentity
-                ?? throw new Exception("Identity is null");
-
-            var roleNames = new List<string>();
-
-            foreach (var claim in identity.Claims)
-            {
-                if (claim.Type == ClaimTypes.Role)
-                {
-                    roleNames.Add(claim.Value);
-                }
-            }
-
-            return roleNames;
-        }
-    }
+    public string? Username => _claimsPrincipal.FindFirstValue(KnownClaimTypes.PreferredUsername);
+    public string? AccessToken => _claimsPrincipal.FindFirstValue(CustomClaimTypes.AccessToken);
 }

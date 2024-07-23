@@ -3,6 +3,6 @@
 public interface ICurrentUserService
 {
     string? Username { get; }
-    IEnumerable<string> RoleNames { get; }
     string? AccessToken { get; }
+    IEnumerable<string> RoleNames { get; }
 }

@@ -24,6 +24,13 @@ public class IndexModel(PagerService pagerService) : PageModelBase
 
         var response = await Sender.Send(query);
 
+        if (response.Error is not null)
+        {
+            Error = response.Error;
+
+            return Page();
+        }
+
         if (response.Result is not null)
         {
             Movies = response.Result.Data.Items.Select(movieItem => new MovieItemModel
