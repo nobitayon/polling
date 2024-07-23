@@ -1,4 +1,4 @@
-﻿@page "{PollId}"
+﻿@page "{pollId}"
 @using Delta.Polling.Base.Polls.Enums;
 @model Delta.Polling.WebRP.Pages.Member.Polls.DetailsModel
 
@@ -67,7 +67,7 @@
         <a asp-page="Index" class="btn btn-secondary">Back</a>
     </section>
 
-    
+
     @if (Model.Poll.Status is PollStatus.Ongoing)
     {
         <div class="row">
@@ -80,7 +80,7 @@
                             @foreach (var choice in Model.Poll.ChoiceItems)
                             {
                                 <div class="form-check">
-                                    <input id="@choice.Id" 
+                                    <input id="@choice.Id"
                                            class="form-check-input"
                                            type="checkbox"
                                            name="pollOption"
@@ -102,8 +102,7 @@
                                            type="radio"
                                            name="pollOption"
                                            value="@choice.Id"
-                                           @(choice.IsChosen ? "checked" : "")
-                                    >
+                                    @(choice.IsChosen ? "checked" : "")>
                                     <label class="form-check-label" for="pollOption">
                                         @choice.Description
                                     </label>
@@ -114,15 +113,30 @@
                 </div>
             </div>
         </div>
+        <a class="btn btn-primary" data-poll-id="@Model.PollId" id="add-another-choice">Add Another Choice</a>
+        @if (Model.Poll.AnswerItems.Count() > 0)
+        {
+            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">Change Vote</a>
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">Submit Vote</a>
+        }
+
     }
 }
 
 <script type="text/javascript" language=javascript>
-    function handleFormSubmit(event) {
-        event.preventDefault(); // Prevent the default form submission
-
-   
-
-        return false; // Prevent the default form submission
-    }
+    document.getElementById('add-another-choice').addEventListener('click', (event) => {
+        let pollId = event.target.getAttribute('data-poll-id');
+        fetch(`${pollId}?handler=AddAnotherChoice`)
+            .then((response) => {
+                return response.text();
+            })
+            .then((htmlText) => {
+                $('#form-modal .modal-body').html(htmlText);
+                $('#form-modal .modal-title').html("Add Another Choice");
+                $('#form-modal').modal('show');
+            })
+    });
 </script>

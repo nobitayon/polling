@@ -5,7 +5,7 @@ using Delta.Polling.Domain.Choices.Entities;
 namespace Delta.Polling.Logics.Member.Choices.Commands.AddAnotherChoiceOngoingPoll;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class AddAnotherChoiceOngoingPollCommand : AddAnotherChoiceOngoingPollRequest, IRequest<AddAnotherChoiceOngoingPollOutput>
+public record AddAnotherChoiceOngoingPollCommand : AddAnotherChoiceOngoingPollRequest, IRequest<AddAnotherChoiceOngoingPollOutput>
 {
 }
 
