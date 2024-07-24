@@ -1,6 +1,28 @@
 ﻿@page
 @model Delta.Polling.WebRP.Pages.Member.Polls.IndexModel
 @{
+    ViewData["Title"] = "Maybe some dashboard for Polls";
+    ViewBag.CurrentMenu = MenuFor.MemberPollsIndex;
 }
 
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Index">
+                Home
+            </a>
+        </li>
+
+        <li class="breadcrumb-item active"
+            aria-current="page">
+            @ViewData["Title"]
+        </li>
+    </ol>
+</nav>
+
 <h3>Hello, this is Polls Index</h3>
+
+<a class="btn btn-primary" asp-page="My">Go to My Poll ></a>

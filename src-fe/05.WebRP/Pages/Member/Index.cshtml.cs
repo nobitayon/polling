@@ -28,7 +28,7 @@ public class IndexModel(PagerService pagerService) : PageModelBase
         {
             Polls = response.Result.Data.Items.ToList();
 
-            Paging = pagerService.GetHtml("Home", response.Result.Data.TotalCount, query);
+            Paging = pagerService.GetHtml("", response.Result.Data.TotalCount, query);
         }
 
         return Page();
