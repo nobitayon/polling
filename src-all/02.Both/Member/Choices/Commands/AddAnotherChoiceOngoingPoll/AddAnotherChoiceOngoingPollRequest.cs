@@ -1,9 +1,9 @@
 ﻿namespace Delta.Polling.Both.Member.Choices.Commands.AddAnotherChoiceOngoingPoll;
 
-public class AddAnotherChoiceOngoingPollRequest
+public record AddAnotherChoiceOngoingPollRequest
 {
     public required Guid PollId { get; init; }
-    public required string Description { get; init; }
+    public required string Description { get; set; }
 }
 
 public class AddAnotherChoiceOngoingPollRequestValidator : AbstractValidator<AddAnotherChoiceOngoingPollRequest>

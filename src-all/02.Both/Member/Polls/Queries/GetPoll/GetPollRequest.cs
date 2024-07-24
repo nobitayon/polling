@@ -1,6 +1,6 @@
 ﻿namespace Delta.Polling.Both.Member.Polls.Queries.GetPoll;
 
-public class GetPollRequest
+public record GetPollRequest
 {
     public required Guid PollId { get; set; }
 }

@@ -7,4 +7,7 @@ public static class MenuFor
     public const string AccountMyClaims = "AccountMyClaims";
     public const string ContributorIndex = "ContributorIndex";
     public const string ContributorMoviesIndex = "ContributorMoviesIndex";
+    public const string MemberIndex = "MemberIndex";
+    public const string MemberGroupIndex = "MemberGroupIndex";
+    public const string MemberPollsIndex = "MemberPollsIndex";
 }

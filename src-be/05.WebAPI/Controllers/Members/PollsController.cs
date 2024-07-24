@@ -11,6 +11,8 @@ using Delta.Polling.Logics.Member.Polls.Queries.GetMyPolls;
 using Delta.Polling.Logics.Member.Polls.Queries.GetPoll;
 using Delta.Polling.Logics.Member.Polls.Commands.StartPoll;
 using Delta.Polling.Logics.Member.Polls.Commands.FinishPoll;
+using Delta.Polling.Both.Member.Polls.Queries.GetOngoingPolls;
+using Delta.Polling.Logics.Member.Polls.Queries.GetOngoingPolls;
 
 namespace Delta.Polling.WebAPI.Controllers.Members;
 
@@ -19,6 +21,12 @@ public class PollsController : ApiControllerBase
 {
     [HttpGet]
     public async Task<GetMyPollsOutput> GetMyPolls([FromQuery] GetMyPollsQuery request)
+    {
+        return await Sender.Send(request);
+    }
+
+    [HttpGet("ongoing")]
+    public async Task<GetOngoingPollsOutput> GetOngoingPolls([FromQuery] GetOngoingPollsQuery request)
     {
         return await Sender.Send(request);
     }

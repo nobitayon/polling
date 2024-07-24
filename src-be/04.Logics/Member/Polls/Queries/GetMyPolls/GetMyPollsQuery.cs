@@ -1,6 +1,7 @@
 ﻿using Delta.Polling.Both.Member.Polls.Queries.GetMyPolls;
 
 namespace Delta.Polling.Logics.Member.Polls.Queries.GetMyPolls;
+
 [Authorize(RoleName = RoleNameFor.Member)]
 public record GetMyPollsQuery : GetMyPollsRequest, IRequest<GetMyPollsOutput>
 {
