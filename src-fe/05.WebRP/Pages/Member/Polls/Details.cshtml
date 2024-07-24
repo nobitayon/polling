@@ -1,5 +1,7 @@
 ﻿@page "{pollId}"
 @using Delta.Polling.Base.Polls.Enums;
+@using Delta.Polling.FrontEnd.Services.CurrentUser;
+@inject ICurrentUserService currentUserService;
 @model Delta.Polling.WebRP.Pages.Member.Polls.DetailsModel
 
 @{
@@ -47,10 +49,14 @@
                         <br />
                         @if (Model.Poll.Modified != null)
                         {
-                            <small>Created By : @Model.Poll.CreatedBy</small>
+                            <small>Last Modified : @Model.Poll.Modified</small>
+                            <br />
+                            <small>Modified By : @Model.Poll.Modified</small>
                             <br />
                         }
                         <small>Allow Other Choice : @Model.Poll.AllowOtherChoice</small>
+                        <br />
+                        <small>Maximum Answers : @Model.Poll.MaximumAnswer</small>
                         <br />
                         <p class="card-text">Some dummy text that I wrote</p>
                     </div>
@@ -60,17 +66,17 @@
 
         @if (Model.Poll.Status is PollStatus.Draft)
         {
-            @if (User.Identity!.Name == Model.Poll.CreatedBy)
+            @if (currentUserService.Username == Model.Poll.CreatedBy)
             {
                 <a class="btn btn-primary" asp-page="Start" asp-route-pollId="@Model.PollId">Start Poll</a>
-                <a class="btn btn-danger" asp-page="Update" asp-route-pollId="@Model.PollId">Update Poll</a>
+                <a class="btn btn-danger" asp-page="Edit" asp-route-pollId="@Model.PollId">Update Poll</a>
                 <a class="btn btn-warning" asp-page="Delete" asp-route-pollId="@Model.PollId">Delete Poll</a>
             }
         }
 
         @if (Model.Poll.Status is PollStatus.Ongoing)
         {
-            @if (User.Identity!.Name == Model.Poll.CreatedBy)
+            @if (currentUserService.Username == Model.Poll.CreatedBy)
             {
                 <a class="btn btn-warning" asp-page="Finish" asp-route-pollId="@Model.PollId">Finish Poll</a>
             }
@@ -99,21 +105,18 @@
                                     @choice.Description
 
                                     <div>
-                                    <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
-                                        <i class="bi bi-trash">
-                                        </i>
-                                    </a>
+                                        <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
+                                            <i class="bi bi-trash">
+                                            </i>
+                                        </a>
 
 
-                                    <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
-                                        <i class="fa fa-edit">
-                                        </i>
-                                    </a>
+                                        <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
+                                            <i class="fa fa-edit">
+                                            </i>
+                                        </a>
                                     </div>
                                 </label>
-
-                                
-
                             </div>
                         }
                     }
@@ -162,10 +165,6 @@
             <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">Submit Vote</a>
         }
     }
-
-
-
-
 }
 
 <script type="text/javascript" language=javascript>

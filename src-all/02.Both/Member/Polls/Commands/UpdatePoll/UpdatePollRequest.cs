@@ -1,6 +1,6 @@
 ﻿namespace Delta.Polling.Both.Member.Polls.Commands.UpdatePoll;
 
-public class UpdatePollRequest
+public record UpdatePollRequest
 {
     public required Guid PollId { get; init; }
     public required string Title { get; init; }

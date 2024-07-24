@@ -8,6 +8,7 @@ public record GetPollOutput : Output<PollItem>
 
 public record PollItem
 {
+    public required Guid Id { get; init; }
     public required string Title { get; init; }
     public required PollStatus Status { get; set; }
     public required string Question { get; init; }
