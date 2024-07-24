@@ -8,6 +8,7 @@
     <title>@ViewData["Title"] | Polling</title>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
@@ -108,14 +109,14 @@
                                     <a class="@this.GetNavLinkClass(MenuFor.MemberIndex)"
                                        asp-page="/Member/Index">
                                         <i class="bi bi-file-earmark-text"></i>
-                                        Home
+                                        Feeds
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="@this.GetNavLinkClass(MenuFor.MemberGroupIndex)"
-                                       asp-page="/Member/Groups/Index">
+                                    <a class="@this.GetNavLinkClass(MenuFor.MemberPollsIndex)"
+                                       asp-page="/Member/Polls/Index">
                                         <i class="bi bi-file-earmark-text"></i>
-                                        My Groups
+                                        Polls
                                     </a>
                                 </li>
                             </ul>
@@ -168,7 +169,7 @@
     </div>
     <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validate/jquery.validate.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     @* <script src="~/lib/Chart.js/chart.umd.js"></script> *@
     <script src="~/js/site.js" asp-append-version="true"></script>

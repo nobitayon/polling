@@ -32,8 +32,36 @@ public class DetailsModel : PageModelBase
         var input = new AddAnotherChoiceOngoingPollCommand { PollId = pollId, Description = null! };
         return new PartialViewResult
         {
-            ViewName = "_AddAnotherChoice",
+            ViewName = "~/Pages/Member/Polls/PartialCustom/_AddAnotherChoice.cshtml",
             ViewData = new ViewDataDictionary<AddAnotherChoiceOngoingPollCommand>(ViewData, input)
         };
+    }
+
+    public async Task<IActionResult> OnPostAddAnotherChoice(AddAnotherChoiceOngoingPollCommand input)
+    {
+        Console.WriteLine("input");
+        Console.WriteLine(input.PollId);
+        Console.WriteLine(input.Description);
+        if (ModelState.IsValid)
+        {
+            var response = await Sender.Send(input);
+
+            if (response.Error is not null)
+            {
+                Error = response.Error;
+                return Page();
+            }
+
+            if (response.Result is not null)
+            {
+                Console.WriteLine(response.Result.Data);
+            }
+
+            return new JsonResult(new { isValid = true });
+        }
+        else
+        {
+            return new JsonResult(new { isValid = false });
+        }
     }
 }

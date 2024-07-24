@@ -20,7 +20,8 @@ public class AddAnotherChoiceOngoingPollCommandHandler(IBackEndService backEndSe
 {
     public async Task<ResponseResult<AddAnotherChoiceOngoingPollOutput>> Handle(AddAnotherChoiceOngoingPollCommand request, CancellationToken cancellationToken)
     {
-        var restRequest = new RestRequest("member/Choices", Method.Post);
+        //var restRequest = new RestRequest("member/Choices", Method.Post);
+        var restRequest = new RestRequest("member/choices/another-choice", Method.Post);
         restRequest.AddParameters(request);
 
         return await backEndService.SendRequestAsync<AddAnotherChoiceOngoingPollOutput>(restRequest, cancellationToken);

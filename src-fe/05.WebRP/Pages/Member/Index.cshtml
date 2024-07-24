@@ -2,7 +2,7 @@
 @model Delta.Polling.WebRP.Pages.Member.IndexModel
 
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Feed";
     ViewBag.CurrentMenu = MenuFor.MemberIndex;
 }
 
@@ -12,12 +12,6 @@
             <a class="text-decoration-none"
                asp-page="/Index">
                 Home
-            </a>
-        </li>
-        <li class="breadcrumb-item">
-            <a class="text-decoration-none"
-               asp-page="/Member/Index">
-                Member
             </a>
         </li>
         <li class="breadcrumb-item active"

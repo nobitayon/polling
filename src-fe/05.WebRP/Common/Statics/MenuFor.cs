@@ -9,4 +9,5 @@ public static class MenuFor
     public const string ContributorMoviesIndex = "ContributorMoviesIndex";
     public const string MemberIndex = "MemberIndex";
     public const string MemberGroupIndex = "MemberGroupIndex";
+    public const string MemberPollsIndex = "MemberPollsIndex";
 }

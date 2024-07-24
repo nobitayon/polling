@@ -32,11 +32,11 @@ public class AddAnotherChoiceOngoingPollCommandHandler(
         var poll = await databaseService.Polls
                         .Where(p => p.Id == request.PollId)
                         .SingleOrDefaultAsync(cancellationToken)
-                        ?? throw new Exception($"Poll with Id: {request.PollId} not exist");
+                        ?? throw new EntityNotFoundException("Poll", request.PollId);
 
         if (poll.Status != PollStatus.Ongoing)
         {
-            throw new ForbiddenException($"Can't add another choice to poll with status that is not ongoing");
+            throw new Exception($"Can't add another choice to poll with status that is not ongoing");
         }
 
         var memberGroup = await databaseService.GroupMembers
@@ -52,7 +52,7 @@ public class AddAnotherChoiceOngoingPollCommandHandler(
 
         if (!isInGroup)
         {
-            throw new ForbiddenException($"You can't add another choice to this poll in this group, because you are not member of this group");
+            throw new Exception($"You can't add another choice to this poll in this group, because you are not member of this group");
         }
 
         var choiceAddedByThisUser = await databaseService.Choices
@@ -62,7 +62,7 @@ public class AddAnotherChoiceOngoingPollCommandHandler(
         // TODO: Asumsikan semua orang hanya boleh add choice-nya 1 maks
         if (choiceAddedByThisUser.Count() >= 1)
         {
-            throw new ForbiddenException($"You already add another choice to this ongoing poll");
+            throw new Exception($"You already add another choice to this ongoing poll");
         }
 
         var choice = new Choice

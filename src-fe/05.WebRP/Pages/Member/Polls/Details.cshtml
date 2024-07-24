@@ -3,8 +3,10 @@
 @model Delta.Polling.WebRP.Pages.Member.Polls.DetailsModel
 
 @{
-    ViewBag.CurrentMenu = MenuFor.MemberGroupIndex;
+    ViewBag.CurrentMenu = MenuFor.MemberPollsIndex;
 }
+
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
 
 @if (Model.Poll is not null)
 {
@@ -20,8 +22,8 @@
             </li>
             <li class="breadcrumb-item">
                 <a class="text-decoration-none"
-                   asp-page="/Member/Index">
-                    Member
+                   asp-page="/Member/Polls/Index">
+                    Polls
                 </a>
             </li>
             <li class="breadcrumb-item active"
@@ -37,13 +39,20 @@
                 <div class="card mb-3">
                     <div class="card-body">
                         <h1> @Model.Poll.Title </h1>
-                        <small>Created at : Dummy Created At</small>
+                        <small>Status : @Model.Poll.Status</small>
                         <br />
-                        <small>Something 1 : Something 1</small>
+                        <small>Created : @Model.Poll.Created</small>
                         <br />
-                        <small>Something 2 : Something 2</small>
+                        <small>Created By : @Model.Poll.CreatedBy</small>
                         <br />
-                        <p class="card-text">Some text that I write. Some text that I write. Some text that I write. Some text that I write.  </p>
+                        @if (Model.Poll.Modified != null)
+                        {
+                            <small>Created By : @Model.Poll.CreatedBy</small>
+                            <br />
+                        }
+                        <small>Allow Other Choice : @Model.Poll.AllowOtherChoice</small>
+                        <br />
+                        <p class="card-text">Some dummy text that I wrote</p>
                     </div>
                 </div>
             </div>
@@ -51,9 +60,12 @@
 
         @if (Model.Poll.Status is PollStatus.Draft)
         {
-            <a class="btn btn-primary" asp-page="Start" asp-route-pollId="@Model.PollId">Start Poll</a>
-            <a class="btn btn-warning" asp-page="Finish" asp-route-pollId="@Model.PollId">Finish Poll</a>
-            <a class="btn btn-danger" asp-page="Update" asp-route-pollId="@Model.PollId">Update Poll</a>
+            @if (User.Identity!.Name == Model.Poll.CreatedBy)
+            {
+                <a class="btn btn-primary" asp-page="Start" asp-route-pollId="@Model.PollId">Start Poll</a>
+                <a class="btn btn-danger" asp-page="Update" asp-route-pollId="@Model.PollId">Update Poll</a>
+                <a class="btn btn-warning" asp-page="Delete" asp-route-pollId="@Model.PollId">Delete Poll</a>
+            }
         }
 
         @if (Model.Poll.Status is PollStatus.Ongoing)
@@ -67,53 +79,80 @@
         <a asp-page="Index" class="btn btn-secondary">Back</a>
     </section>
 
+    <div class="row">
+        <div class="col-md-12 justify-content-center mt-3">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h1 class="text-center"> @Model.Poll.Question </h1>
+                    @if (Model.Poll.MaximumAnswer > 1)
+                    {
+                        @foreach (var choice in Model.Poll.ChoiceItems)
+                        {
+                            <div class="form-check">
+                                <input id="@choice.Id"
+                                       class="form-check-input"
+                                       type="checkbox"
+                                       name="pollOption"
+                                       value="@choice.Id"
+                                @(choice.IsChosen ? "checked" : "")>
+                                <label class="form-check-label" for="@choice.Id">
+                                    @choice.Description
 
-    @if (Model.Poll.Status is PollStatus.Ongoing)
-    {
-        <div class="row">
-            <div class="col-md-12 justify-content-center mt-3">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h1 class="text-center"> @Model.Poll.Question </h1>
-                        @if (Model.Poll.MaximumAnswer > 1)
-                        {
-                            @foreach (var choice in Model.Poll.ChoiceItems)
-                            {
-                                <div class="form-check">
-                                    <input id="@choice.Id"
-                                           class="form-check-input"
-                                           type="checkbox"
-                                           name="pollOption"
-                                           value="@choice.Id"
-                                    @(choice.IsChosen ? "checked" : "")>
-                                    <label class="form-check-label" for="@choice.Id">
-                                        @choice.Description
-                                    </label>
-                                </div>
-                            }
+                                    <div>
+                                    <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
+                                        <i class="bi bi-trash">
+                                        </i>
+                                    </a>
+
+
+                                    <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
+                                        <i class="fa fa-edit">
+                                        </i>
+                                    </a>
+                                    </div>
+                                </label>
+
+                                
+
+                            </div>
                         }
-                        else
+                    }
+                    else
+                    {
+                        @foreach (var choice in Model.Poll.ChoiceItems)
                         {
-                            @foreach (var choice in Model.Poll.ChoiceItems)
-                            {
-                                <div class="form-check">
-                                    <input id="@choice.Id"
-                                           class="form-check-input"
-                                           type="radio"
-                                           name="pollOption"
-                                           value="@choice.Id"
-                                    @(choice.IsChosen ? "checked" : "")>
-                                    <label class="form-check-label" for="pollOption">
-                                        @choice.Description
-                                    </label>
-                                </div>
-                            }
+                            <div class="form-check">
+                                <input id="@choice.Id"
+                                       class="form-check-input"
+                                       type="radio"
+                                       name="pollOption"
+                                       value="@choice.Id"
+                                @(choice.IsChosen ? "checked" : "")>
+                                <label class="form-check-label" for="pollOption">
+                                    @choice.Description
+                                </label>
+                            </div>
                         }
-                    </div>
+                    }
                 </div>
             </div>
         </div>
+    </div>
+
+    @if (Model.Poll.Status is PollStatus.Draft)
+    {
+        <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
+            Add Choice (New Page)
+        </a>
+    }
+
+    @if (Model.Poll.Status is PollStatus.Ongoing)
+    {
         <a class="btn btn-primary" data-poll-id="@Model.PollId" id="add-another-choice">Add Another Choice</a>
+        <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
+            Add Another Choice(open new page)
+        </a>
+
         @if (Model.Poll.AnswerItems.Count() > 0)
         {
             <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">Change Vote</a>
@@ -122,8 +161,11 @@
         {
             <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">Submit Vote</a>
         }
-
     }
+
+
+
+
 }
 
 <script type="text/javascript" language=javascript>
