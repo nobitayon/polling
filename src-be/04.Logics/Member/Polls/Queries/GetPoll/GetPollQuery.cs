@@ -42,6 +42,7 @@ public class GetPollQueryHandler(
                         .Where(poll => poll.Id == request.PollId)
                         .Select(poll => new
                         {
+                            Id = poll.Id,
                             GroupId = poll.GroupId,
                             Status = poll.Status,
                             Title = poll.Title,
@@ -107,6 +108,7 @@ public class GetPollQueryHandler(
 
         var pollItem = new PollItem
         {
+            Id = pollDetails.Id,
             Status = pollDetails.Status,
             Title = pollDetails.Title,
             Question = pollDetails.Question,
