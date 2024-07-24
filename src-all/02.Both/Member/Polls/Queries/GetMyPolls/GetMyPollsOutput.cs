@@ -2,7 +2,7 @@
 
 namespace Delta.Polling.Both.Member.Polls.Queries.GetMyPolls;
 
-public record GetMyPollsOutput : Output<IEnumerable<PollItem>>
+public record GetMyPollsOutput : Output<PaginatedListResponse<PollItem>>
 {
 }
 

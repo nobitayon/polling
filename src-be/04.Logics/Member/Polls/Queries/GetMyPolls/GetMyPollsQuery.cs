@@ -24,17 +24,73 @@ public class GetMyPollsQueryHandler(
     public async Task<GetMyPollsOutput> Handle(GetMyPollsQuery request, CancellationToken cancellationToken)
     {
 
-        var polls = await databaseService.Polls
-                        .Where(poll => poll.CreatedBy == currentUserService.Username)
-                        .Select(poll => new PollItem
-                        {
-                            Id = poll.Id,
-                            Status = poll.Status,
-                            Title = poll.Title
-                        }).ToListAsync(cancellationToken);
+        //var polls = await databaseService.Polls
+        //                .Where(poll => poll.CreatedBy == currentUserService.Username)
+        //                .Select(poll => new PollItem
+        //                {
+        //                    Id = poll.Id,
+        //                    Status = poll.Status,
+        //                    Title = poll.Title
+        //                }).ToListAsync(cancellationToken);
 
-        // TODO: Membuat pagination
+        var query = databaseService.Polls
+            .AsNoTracking()
+            .Where(p => p.CreatedBy == currentUserService.Username);
 
-        return new GetMyPollsOutput { Data = polls };
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        if (string.IsNullOrWhiteSpace(request.SortField))
+        {
+            query = query.OrderBy(poll => poll.Title);
+        }
+        else
+        {
+            var sortOrder = request.SortOrder is not null
+                ? request.SortOrder.Value
+                : SortOrder.Asc;
+
+            if (sortOrder is SortOrder.Asc)
+            {
+                if (request.SortField == nameof(PollItem.Title))
+                {
+                    query = query.OrderBy(poll => poll.Title);
+                }
+            }
+            else if (sortOrder is SortOrder.Desc)
+            {
+                if (request.SortField == nameof(PollItem.Title))
+                {
+                    query = query.OrderByDescending(poll => poll.Title);
+                }
+            }
+            else
+            {
+                query = query.OrderBy(poll => poll.Title);
+            }
+        }
+
+        var skippedAmount = PagerHelper.GetSkipAmount(request.Page, request.PageSize);
+
+        var polls = await query
+            .Skip(skippedAmount)
+            .Take(request.PageSize)
+            .Select(poll => new PollItem
+            {
+                Id = poll.Id,
+                Title = poll.Title,
+                Status = poll.Status
+            })
+            .ToListAsync(cancellationToken);
+
+        var output = new GetMyPollsOutput
+        {
+            Data = new PaginatedListResponse<PollItem>
+            {
+                Items = polls,
+                TotalCount = totalCount
+            }
+        };
+
+        return output;
     }
 }
