@@ -3,7 +3,6 @@ using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
 using Delta.Polling.FrontEnd.Services.BackEnd;
-using Delta.Polling.Both.Common.Statics;
 
 namespace Delta.Polling.FrontEnd.Infrastructure.BackEnd;
 

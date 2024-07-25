@@ -14,7 +14,7 @@ public class MovieConfiguration : IEntityTypeConfiguration<Movie>
         _ = builder.ToTable(nameof(IDatabaseService.Movies));
         builder.ConfigureModifiableProperties();
 
-        _ = builder.Property(e => e.ApprovedBy).HasMaxLength(DomainMaxLengthFor.Username);
+        _ = builder.Property(e => e.ApprovedBy).HasMaxLength(BaseMaxLengthFor.Username);
         _ = builder.Property(e => e.Title).HasMaxLength(MoviesMaxLengthFor.Title);
         _ = builder.Property(e => e.Budget).HasColumnType(ColumnTypeFor.Money);
         _ = builder.Property(e => e.Storyline).HasMaxLength(MoviesMaxLengthFor.Storyline);

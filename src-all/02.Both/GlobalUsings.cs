@@ -7,6 +7,7 @@ global using Delta.Polling.Both.Common.Responses;
 global using Delta.Polling.Both.Common.Statics;
 global using FluentValidation;
 global using MoviesMaxLengthFor = Delta.Polling.Base.Movies.Statics.MaxLengthFor;
+global using BaseMaxLengthFor = Delta.Polling.Base.Common.Statics.MaxLengthFor;
 global using GroupsMaxLengthFor = Delta.Polling.Base.Groups.Statics.MaxLengthFor;
 global using ChoicesMaxLengthFor = Delta.Polling.Base.Choices.Statics.MaxLengthFor;
 global using PollsMaxLengthFor = Delta.Polling.Base.Polls.Statics.MaxLengthFor;

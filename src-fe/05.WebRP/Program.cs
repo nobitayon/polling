@@ -1,25 +1,11 @@
-using Delta.Polling.FrontEnd.Infrastructure.BackEnd;
-using Delta.Polling.FrontEnd.Infrastructure.Logging;
-using Delta.Polling.FrontEnd.Infrastructure.UserProfile;
-using Delta.Polling.FrontEnd.Infrastructure.UserRole;
+using Delta.Polling.FrontEnd.Infrastructure;
 using Delta.Polling.FrontEnd.Logics;
-using Delta.Polling.WebRP.Infrastructure.Authentication;
-using Delta.Polling.WebRP.Infrastructure.Authorization;
-using Delta.Polling.WebRP.Infrastructure.CurrentUser;
+using Delta.Polling.WebRP;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddBackEndService(builder.Configuration);
-builder.Host.UseLoggingService();
+builder.Services.AddInfrastructure(builder.Host, builder.Configuration);
 builder.Services.AddLogics();
-builder.Services.AddAuthenticationService(builder.Configuration);
-builder.Services.AddAuthorizationService();
-builder.Services.AddUserProfileService(builder.Configuration);
-builder.Services.AddUserRoleService(builder.Configuration);
-builder.Services.AddCurrentUserService();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddRazorPages();
-builder.Services.AddPager();
+builder.Services.AddWebRP();
 
 var app = builder.Build();
 

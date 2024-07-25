@@ -1,5 +1,4 @@
 ﻿using Delta.Polling.Base.Movies.Enums;
-using Delta.Polling.Domain.Abstracts;
 
 namespace Delta.Polling.Domain.Movies.Entities;
 
@@ -11,4 +10,6 @@ public record Movie : ModifiableEntity
     public required string Storyline { get; set; }
     public required decimal Budget { get; set; }
     public required MovieStatus Status { get; set; }
+
+    public IEnumerable<MoviePoster> Posters { get; set; } = new List<MoviePoster>();
 }

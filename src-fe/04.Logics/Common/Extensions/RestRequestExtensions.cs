@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace Delta.Polling.FrontEnd.Logics.Common.Extensions;
 
@@ -18,9 +19,9 @@ public static class RestRequestExtensions
                 continue;
             }
 
-            if (value is IFile formFile)
+            if (value is IFormFile formFile)
             {
-                _ = restRequest.AddFile(property.Name, formFile.Content, formFile.FileName, contentType: formFile.ContentType);
+                _ = restRequest.AddFile(property.Name, formFile.ToBytes(), formFile.FileName, contentType: formFile.ContentType);
             }
             else
             {

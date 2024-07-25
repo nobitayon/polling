@@ -1,6 +1,6 @@
 ﻿namespace Delta.Polling.Both.Contributor.Movies.Queries.GetMyMovies;
 
-public record GetMyMoviesRequest : PaginatedListRequest
+public abstract record GetMyMoviesRequest : PaginatedListRequest
 {
 }
 

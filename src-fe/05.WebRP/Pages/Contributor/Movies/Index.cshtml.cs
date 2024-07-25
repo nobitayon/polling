@@ -8,7 +8,7 @@ public class IndexModel(PagerService pagerService) : PageModelBase
     public IEnumerable<MovieItemModel> Movies { get; set; } = [];
     public string Paging { get; set; } = string.Empty;
 
-    public async Task<IActionResult> OnGet(int? p, int? ps, string? k)
+    public async Task OnGetAsync(int? p, int? ps, string? k)
     {
         var page = PagerHelper.GetSafePage(p);
         var pageSize = PagerHelper.GetSafePageSize(ps);
@@ -28,7 +28,7 @@ public class IndexModel(PagerService pagerService) : PageModelBase
         {
             Error = response.Error;
 
-            return Page();
+            return;
         }
 
         if (response.Result is not null)
@@ -44,7 +44,7 @@ public class IndexModel(PagerService pagerService) : PageModelBase
             Paging = pagerService.GetHtml("Movies", response.Result.Data.TotalCount, query);
         }
 
-        return Page();
+        return;
     }
 }
 

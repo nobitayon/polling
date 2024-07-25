@@ -1,6 +1,4 @@
-﻿using Delta.Polling.Domain.Interfaces;
-
-namespace Delta.Polling.Domain.Abstracts;
+﻿namespace Delta.Polling.Domain.Abstracts;
 
 public abstract record CreatableEntity : ICreatable
 {

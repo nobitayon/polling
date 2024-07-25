@@ -1,4 +1,5 @@
 ﻿using Delta.Polling.Both.Contributor.Movies.Commands.SubmitMovie;
+using Delta.Polling.Domain.Movies.Entities;
 
 namespace Delta.Polling.Logics.Contributor.Movies.Commands.SubmitMovie;
 
@@ -23,9 +24,9 @@ public class SubmitMovieCommandHandler(
     public async Task Handle(SubmitMovieCommand request, CancellationToken cancellationToken)
     {
         var movie = await databaseService.Movies
-              .Where(movie => movie.Id == request.MovieId)
-              .SingleOrDefaultAsync(cancellationToken)
-              ?? throw new Exception($"Movie dengan ID {request.MovieId} tidak dapat ditemukan.");
+            .Where(movie => movie.Id == request.MovieId)
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new EntityNotFoundException(nameof(Movie), request.MovieId);
 
         if (movie.CreatedBy != currentUserService.Username)
         {

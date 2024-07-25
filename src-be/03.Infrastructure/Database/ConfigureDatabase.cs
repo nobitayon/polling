@@ -2,13 +2,12 @@
 using Delta.Polling.Infrastructure.Database.Seeders;
 using Delta.Polling.Services.Database;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 
 namespace Delta.Polling.Infrastructure.Database;
 
 public static class ConfigureDatabase
 {
-    public static void AddDatabaseService(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         var databaseOptions = configuration.GetSection(DatabaseOptions.SectionKey).Get<DatabaseOptions>()
             ?? throw new ConfigurationBindingFailedException(DatabaseOptions.SectionKey, typeof(DatabaseOptions));
@@ -30,6 +29,8 @@ public static class ConfigureDatabase
         _ = services.AddScoped<GroupSeeder>();
         _ = services.AddScoped<PollSeeder>();
         _ = services.AddScoped<VoterSeeder>();
+
+        return services;
     }
 
     public static async Task InitializeDatabaseAsync(this IHost host)

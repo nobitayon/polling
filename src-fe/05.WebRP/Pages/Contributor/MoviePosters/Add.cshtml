@@ -1,0 +1,85 @@
+﻿@page "{MovieId}"
+@model AddModel
+
+@{
+    ViewData["Title"] = "Add Movie Poster";
+    ViewBag.CurrentMenu = MenuFor.ContributorMoviesIndex;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Index">
+                Home
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Contributor/Index">
+                Contributor
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Contributor/Movies/Index">
+                My Movies
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Contributor/Movies/Details"
+               asp-route-MovieId="@Model.MovieId">
+                @Model.MovieTitle
+            </a>
+        </li>
+        <li class="breadcrumb-item active"
+            aria-current="page">
+            @ViewData["Title"]
+        </li>
+    </ol>
+</nav>
+
+<h1>@ViewData["Title"]</h1>
+
+<vc:error-viewer error=@Model.Error>
+</vc:error-viewer>
+
+<form method="post" enctype="multipart/form-data" class="col-8">
+    <div class="mb-3">
+        <label asp-for="@Model.Input.File" class="form-label"></label>
+        <input asp-for="@Model.Input.File" type="file" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="@Model.Input.Description" class="form-label"></label>
+        <textarea asp-for="@Model.Input.Description" class="form-control" rows="5" cols="50" maxlength="333" required></textarea>
+    </div>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+        Save
+    </button>
+    <a asp-page="Index" class="btn btn-secondary">Back</a>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModalLabel">Add Movie!Poster</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure want to add this movie poster?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <input type="hidden" asp-for="@Model.Input.MovieId" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
