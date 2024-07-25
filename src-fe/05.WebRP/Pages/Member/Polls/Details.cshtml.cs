@@ -1,5 +1,6 @@
 using Delta.Polling.Both.Member.Polls.Queries.GetPoll;
 using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.AddAnotherChoiceOngoingPoll;
+using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.AddChoices;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Queries.GetPoll;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -12,6 +13,9 @@ public class DetailsModel : PageModelBase
 
     [BindProperty]
     public AddAnotherChoiceOngoingPollCommand Input { get; set; } = default!;
+
+    [BindProperty]
+    public AddChoiceCommand InputAddChoiceCommand { get; set; } = default!;
 
     public PollItem Poll { get; set; } = default!;
 
@@ -62,6 +66,32 @@ public class DetailsModel : PageModelBase
         else
         {
             return new JsonResult(new { isValid = false });
+        }
+    }
+
+    public async Task<IActionResult> OnPostAddChoiceAsync()
+    {
+        var response = await Sender.Send(InputAddChoiceCommand);
+
+        if (response.Error is not null)
+        {
+            Error = response.Error;
+
+            return Page();
+        }
+
+        if (response.Result is not null)
+        {
+            TempData["success"] = "Success Add Choice";
+
+            return RedirectToPage("/Member/Polls/Details", new { pollId = PollId });
+        }
+        else
+        {
+
+            TempData["failed"] = "Failed to Add Choice";
+
+            return Page();
         }
     }
 }

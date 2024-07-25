@@ -5,7 +5,7 @@ using Delta.Polling.Domain.Polls.Entities;
 namespace Delta.Polling.Logics.Member.Polls.Commands.AddPoll;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class AddPollCommand : AddPollRequest, IRequest<AddPollOutput>
+public record AddPollCommand : AddPollRequest, IRequest<AddPollOutput>
 {
 }
 

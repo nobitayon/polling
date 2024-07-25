@@ -158,6 +158,21 @@
                                 @(choice.IsChosen ? "checked" : "")>
                                 <label class="form-check-label" for="pollOption">
                                     @choice.Description
+                                    @if (Model.Poll.Status is PollStatus.Draft)
+                                    {
+                                        <div>
+                                            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
+                                                <i class="bi bi-trash">
+                                                </i>
+                                            </a>
+
+
+                                            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
+                                                <i class="fa fa-edit">
+                                                </i>
+                                            </a>
+                                        </div>
+                                    }
                                 </label>
                             </div>
                         }
@@ -167,11 +182,40 @@
         </div>
     </div>
 
-    @if (Model.Poll.Status is PollStatus.Draft)
+    @if (Model.Poll.Status is PollStatus.Draft && currentUserService.Username == Model.Poll.CreatedBy)
     {
-        <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
-            Add Choice (New Page)
-        </a>
+
+        <form asp-page-handler="AddChoice" method="post" class="col-8">
+            <input type="hidden" asp-for="@Model.InputAddChoiceCommand.PollId" value="@Model.PollId" class="form-control" required>
+
+            <!-- Button trigger modal -->
+            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addChoice">
+                Add Choice
+            </a>
+
+            <!-- Modal -->
+            <div class="modal fade" id="addChoice" tabindex="-1" aria-labelledby="addChoice" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addChoiceLabel">Add Choice </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label asp-for="@Model.InputAddChoiceCommand.Description" class="form-label"></label>
+                                <input type="text" asp-for="@Model.InputAddChoiceCommand.Description" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Choice</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     }
 
     @if (Model.Poll.Status is PollStatus.Ongoing)
