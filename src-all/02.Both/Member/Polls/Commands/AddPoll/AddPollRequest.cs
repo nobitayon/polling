@@ -1,6 +1,6 @@
 ﻿namespace Delta.Polling.Both.Member.Polls.Commands.AddPoll;
 
-public class AddPollRequest
+public record AddPollRequest
 {
     public required Guid GroupId { get; init; }
     public required string Title { get; init; }
