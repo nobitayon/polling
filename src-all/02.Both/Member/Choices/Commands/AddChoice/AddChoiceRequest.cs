@@ -1,7 +1,7 @@
 ﻿namespace Delta.Polling.Both.Member.Choices.Commands.AddChoice;
 
 // TODO: Apa sekalian aja taro juga GroupId dalam request untuk kemudahan pengecekan
-public class AddChoiceRequest
+public record AddChoiceRequest
 {
     public required Guid PollId { get; init; }
     public required string Description { get; init; }

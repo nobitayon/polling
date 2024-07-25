@@ -5,7 +5,7 @@ using Delta.Polling.Domain.Choices.Entities;
 namespace Delta.Polling.Logics.Member.Choices.Commands.AddChoice;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class AddChoiceCommand : AddChoiceRequest, IRequest<AddChoiceOutput>
+public record AddChoiceCommand : AddChoiceRequest, IRequest<AddChoiceOutput>
 {
 }
 
