@@ -17,7 +17,7 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -184,6 +184,57 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                     b.ToTable("Movies", (string)null);
                 });
 
+            modelBuilder.Entity("Delta.Polling.Domain.Movies.Entities.MoviePoster", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("Modified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("StoredFileId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MovieId");
+
+                    b.ToTable("MoviePosters", (string)null);
+                });
+
             modelBuilder.Entity("Delta.Polling.Domain.Polls.Entities.Poll", b =>
                 {
                     b.Property<Guid>("Id")
@@ -300,6 +351,17 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                     b.Navigation("Group");
                 });
 
+            modelBuilder.Entity("Delta.Polling.Domain.Movies.Entities.MoviePoster", b =>
+                {
+                    b.HasOne("Delta.Polling.Domain.Movies.Entities.Movie", "Movie")
+                        .WithMany("Posters")
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+                });
+
             modelBuilder.Entity("Delta.Polling.Domain.Polls.Entities.Poll", b =>
                 {
                     b.HasOne("Delta.Polling.Domain.Groups.Entities.Group", "Group")
@@ -332,6 +394,11 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                     b.Navigation("GroupMembers");
 
                     b.Navigation("Polls");
+                });
+
+            modelBuilder.Entity("Delta.Polling.Domain.Movies.Entities.Movie", b =>
+                {
+                    b.Navigation("Posters");
                 });
 
             modelBuilder.Entity("Delta.Polling.Domain.Polls.Entities.Poll", b =>

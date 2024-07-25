@@ -1,9 +1,11 @@
 ﻿global using Delta.Polling.Both.Common.Exceptions;
+global using Delta.Polling.Both.Common.Statics;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
-global using DomainMaxLengthFor = Delta.Polling.Domain.Common.Statics.MaxLengthFor;
+global using BaseMaxLengthFor = Delta.Polling.Base.Common.Statics.MaxLengthFor;
 global using MoviesMaxLengthFor = Delta.Polling.Base.Movies.Statics.MaxLengthFor;
 global using ChoicesMaxLengthFor = Delta.Polling.Base.Choices.Statics.MaxLengthFor;
 global using GroupsMaxLengthFor = Delta.Polling.Base.Groups.Statics.MaxLengthFor;

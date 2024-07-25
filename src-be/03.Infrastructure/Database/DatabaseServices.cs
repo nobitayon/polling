@@ -13,6 +13,7 @@ public class DatabaseService(DbContextOptions<DatabaseService> options)
     : DbContext(options), IDatabaseService
 {
     public DbSet<Movie> Movies => Set<Movie>();
+    public DbSet<MoviePoster> MoviePosters => Set<MoviePoster>();
     public DbSet<Group> Groups => Set<Group>();
     public DbSet<GroupMember> GroupMembers => Set<GroupMember>();
     public DbSet<Poll> Polls => Set<Poll>();

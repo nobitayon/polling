@@ -7,9 +7,9 @@ namespace Delta.Polling.WebRP.Pages.Contributor.Movies;
 public class DeleteModel : PageModelBase
 {
     [BindProperty(SupportsGet = true)]
-    public Guid MovieId { get; init; }
+    public required Guid MovieId { get; init; }
 
-    public MovieItem Movie { get; set; } = default!;
+    public required MovieItem Movie { get; set; } = default!;
 
     public async Task<IActionResult> OnGet()
     {

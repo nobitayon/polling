@@ -67,9 +67,10 @@
 
     @if (Model.Movie.Status is MovieStatus.Draft or MovieStatus.Returned)
     {
-        <a class="btn btn-primary" asp-page="Submit" asp-route-movieId="@Model.MovieId">Submit Movie</a>
-        <a class="btn btn-warning" asp-page="Edit" asp-route-movieId="@Model.MovieId">Edit Movie</a>
-        <a class="btn btn-danger" asp-page="Delete" asp-route-movieId="@Model.MovieId">Delete Movie</a>
+        <a class="btn btn-primary" asp-page="Submit" asp-route-MovieId="@Model.MovieId">Submit Movie</a>
+        <a class="btn btn-warning" asp-page="Edit" asp-route-MovieId="@Model.MovieId">Edit Movie</a>
+        <a class="btn btn-danger" asp-page="Delete" asp-route-MovieId="@Model.MovieId">Delete Movie</a>
+        <a class="btn btn-info" asp-page="/Contributor/MoviePosters/Add" asp-route-MovieId="@Model.MovieId">Add Poster</a>
     }
 
     <a asp-page="Index" class="btn btn-secondary">Back</a>

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
-using Serilog;
+﻿using Serilog;
 using Serilog.Debugging;
 using Serilog.Sinks.SystemConsole.Themes;
 
@@ -7,7 +6,7 @@ namespace Delta.Polling.FrontEnd.Infrastructure.Logging;
 
 public static class ConfigureLogging
 {
-    public static IHostBuilder UseLoggingService(this IHostBuilder hostBuilder)
+    public static IHostBuilder AddLogging(this IHostBuilder hostBuilder)
     {
         _ = hostBuilder.UseSerilog((hostBuilderContext, loggerConfiguration) =>
         {
@@ -23,5 +22,17 @@ public static class ConfigureLogging
         SelfLog.Enable(Console.WriteLine);
 
         return hostBuilder;
+    }
+
+    public static ILoggerFactory CreateLoggerFactory(this IConfiguration configuration)
+    {
+        return LoggerFactory.Create(loggingBuilder =>
+        {
+            var serilog = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
+
+            _ = loggingBuilder.AddSerilog(serilog);
+        });
     }
 }

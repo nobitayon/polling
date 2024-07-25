@@ -1,4 +1,5 @@
 ﻿using Delta.Polling.Both.Contributor.Movies.Queries.GetMyMovie;
+using Delta.Polling.Domain.Movies.Entities;
 
 namespace Delta.Polling.Logics.Contributor.Movies.Queries.GetMyMovie;
 
@@ -23,8 +24,10 @@ public class GetMyMovieQueryHandler(
     public async Task<GetMyMovieOutput> Handle(GetMyMovieQuery request, CancellationToken cancellationToken)
     {
         var movie = await databaseService.Movies
-              .SingleOrDefaultAsync(movie => movie.Id == request.MovieId, cancellationToken)
-              ?? throw new EntityNotFoundException("Movie", request.MovieId);
+            .AsNoTracking()
+            .Where(movie => movie.Id == request.MovieId)
+            .SingleOrDefaultAsync(cancellationToken)
+            ?? throw new EntityNotFoundException(nameof(Movie), request.MovieId);
 
         if (movie.CreatedBy != currentUserService.Username)
         {

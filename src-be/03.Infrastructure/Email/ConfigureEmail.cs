@@ -6,7 +6,7 @@ namespace Delta.Polling.Infrastructure.Email;
 
 public static class ConfigureEmail
 {
-    public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddEmail(this IServiceCollection services, IConfiguration configuration)
     {
         var emailOptions = configuration.GetSection(EmailOptions.SectionKey).Get<EmailOptions>()
             ?? throw new ConfigurationBindingFailedException(EmailOptions.SectionKey, typeof(EmailOptions));

@@ -11,6 +11,7 @@ namespace Delta.Polling.Services.Database;
 public interface IDatabaseService
 {
     DbSet<Movie> Movies { get; }
+    DbSet<MoviePoster> MoviePosters { get; }
     DbSet<Answer> Answers { get; }
     DbSet<Choice> Choices { get; }
     DbSet<Group> Groups { get; }

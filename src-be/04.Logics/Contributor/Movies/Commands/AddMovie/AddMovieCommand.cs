@@ -25,7 +25,7 @@ public class AddMovieCommandHandler(
     {
         if (string.IsNullOrWhiteSpace(currentUserService.Username))
         {
-            throw new Exception("User is not authenticated.");
+            throw new NotAuthenticatedException();
         }
 
         var movie = new Movie

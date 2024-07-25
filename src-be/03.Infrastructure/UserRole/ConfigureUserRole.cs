@@ -4,7 +4,7 @@ namespace Delta.Polling.Infrastructure.UserRole;
 
 public static class ConfigureUserRole
 {
-    public static IServiceCollection AddUserRoleService(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddUserRole(this IServiceCollection services, IConfiguration configuration)
     {
         var userRoleOptions = configuration.GetSection(UserRoleOptions.SectionKey).Get<UserRoleOptions>()
             ?? throw new ConfigurationBindingFailedException(UserRoleOptions.SectionKey, typeof(UserRoleOptions));

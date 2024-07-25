@@ -1,36 +1,17 @@
+using Delta.Polling.Infrastructure;
 using Delta.Polling.Infrastructure.Database;
-using Delta.Polling.Infrastructure.Email;
-using Delta.Polling.Infrastructure.Logging;
-using Delta.Polling.Infrastructure.UserProfile;
-using Delta.Polling.Infrastructure.UserRole;
+using Delta.Polling.Infrastructure.Documentation;
 using Delta.Polling.Logics;
-using Delta.Polling.WebAPI.Filters;
-using Delta.Polling.WebAPI.Infrastructure.Authentication;
-using Delta.Polling.WebAPI.Infrastructure.Authorization;
-using Delta.Polling.WebAPI.Infrastructure.CurrentUser;
-using Delta.Polling.WebAPI.Infrastructure.Documentation;
+using Delta.Polling.WebAPI;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseLoggingService();
-builder.Services.AddDatabaseService(builder.Configuration);
-builder.Services.AddCurrentUserService();
-builder.Services.AddDocumentationService(builder.Configuration);
-builder.Services.AddEmailService(builder.Configuration);
-builder.Services.AddUserProfileService(builder.Configuration);
-builder.Services.AddUserRoleService(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Host, builder.Configuration);
 builder.Services.AddLogics();
-
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddAuthenticationService(builder.Configuration);
-builder.Services.AddAuthorizationService();
-builder.Services.AddControllers(options => _ = options.Filters.Add<CustomExceptionFilterAttribute>());
-
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddWebAPI();
 
 var app = builder.Build();
 await app.InitializeDatabaseAsync();
-
-app.UseDocumentationService();
+app.UseDocumentation();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

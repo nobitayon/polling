@@ -22,10 +22,6 @@ public class GetMyMoviesQueryHandler(
 {
     public async Task<GetMyMoviesOutput> Handle(GetMyMoviesQuery request, CancellationToken cancellationToken)
     {
-		if (request.Page == 1)
-        {
-            throw new Exception("Ceritanya ada sesuatu yang menyebabkan Exception di Logics di Back-End.");
-        }
         var query = databaseService.Movies
             .AsNoTracking()
             .Where(movie => movie.CreatedBy == currentUserService.Username);

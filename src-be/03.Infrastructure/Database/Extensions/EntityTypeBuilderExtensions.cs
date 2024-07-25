@@ -12,7 +12,7 @@ public static class EntityTypeBuilderExtensions
     {
         _ = builder.HasKey(e => e.Id);
         _ = builder.Property(x => x.CreatedBy)
-            .HasColumnType(ColumnTypeFor.NVarchar(DomainMaxLengthFor.Username));
+            .HasColumnType(ColumnTypeFor.NVarchar(BaseMaxLengthFor.Username));
     }
 
     public static void ConfigureModifiableProperties<TEntity>(this EntityTypeBuilder<TEntity> builder)
@@ -21,6 +21,16 @@ public static class EntityTypeBuilderExtensions
         builder.ConfigureCreatableProperties();
 
         _ = builder.Property(x => x.ModifiedBy)
-            .HasColumnType(ColumnTypeFor.NVarchar(DomainMaxLengthFor.Username));
+            .HasColumnType(ColumnTypeFor.NVarchar(BaseMaxLengthFor.Username));
+    }
+
+    public static void ConfigureFileProperties<TEntity>(this EntityTypeBuilder<TEntity> builder)
+        where TEntity : class, IHasFile
+    {
+        builder.ConfigureModifiableProperties();
+
+        _ = builder.Property(x => x.FileName).HasMaxLength(BaseMaxLengthFor.FileName);
+        _ = builder.Property(x => x.FileContentType).HasMaxLength(BaseMaxLengthFor.FileContentType);
+        _ = builder.Property(x => x.StoredFileId).HasMaxLength(BaseMaxLengthFor.StoredFileId);
     }
 }
