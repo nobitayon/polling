@@ -1,0 +1,35 @@
+﻿@page "{GroupId}"
+@model Delta.Polling.WebRP.Pages.Member.Groups.DetailsModel
+@{
+    ViewBag.CurrentMenu = MenuFor.MemberGroupIndex;
+    ViewData["Title"] = "Details";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Index">
+                Home
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Member/Index">
+                Member
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Member/Groups/Index">
+                My Groups
+            </a>
+        </li>
+        <li class="breadcrumb-item active"
+            aria-current="page">
+            @ViewData["Title"]
+        </li>
+    </ol>
+</nav>
+
+<h1>Check this is @Model.GroupId</h1>

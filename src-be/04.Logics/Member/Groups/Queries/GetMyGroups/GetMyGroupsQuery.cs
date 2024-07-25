@@ -1,4 +1,5 @@
 ﻿using Delta.Polling.Both.Member.Groups.Queries.GetMyGroups;
+using Delta.Polling.Both.Member.Polls.Queries.GetMyPolls;
 
 namespace Delta.Polling.Logics.Member.Groups.Queries.GetMyGroups;
 
@@ -23,35 +24,67 @@ public class GetMyGroupsQueryHandler(
 {
     public async Task<GetMyGroupsOutput> Handle(GetMyGroupsQuery request, CancellationToken cancellationToken)
     {
+        var query = databaseService.GroupMembers
+            .AsNoTracking()
+            .Where(gm => gm.Username == currentUserService.Username);
 
-        var groups = databaseService.GroupMembers
-                        .Where(gm => gm.Username == currentUserService.Username);
+        var totalCount = await query.CountAsync(cancellationToken);
 
-        if (request.SortOrder == SortOrder.Desc)
+        if (string.IsNullOrWhiteSpace(request.SortField))
         {
-            groups = groups.Include(gm => gm.Group)
-                .OrderByDescending(gm => gm.Group.Name);
+            query = query.Include(gm => gm.Group)
+                        .OrderBy(gm => gm.Group.Name);
         }
-        else if (request.SortOrder == SortOrder.Asc)
+        else
         {
-            groups = groups.Include(gm => gm.Group)
-                .OrderBy(gm => gm.Group.Name);
+            var sortOrder = request.SortOrder is not null
+                ? request.SortOrder.Value
+                : SortOrder.Asc;
+
+            if (sortOrder is SortOrder.Asc)
+            {
+                if (request.SortField == nameof(GroupItem.Name))
+                {
+                    query = query.Include(gm => gm.Group)
+                        .OrderBy(gm => gm.Group.Name);
+                }
+            }
+            else if (sortOrder is SortOrder.Desc)
+            {
+                if (request.SortField == nameof(PollItem.Title))
+                {
+                    query = query.Include(gm => gm.Group)
+                        .OrderByDescending(gm => gm.Group.Name);
+                }
+            }
+            else
+            {
+                query = query.Include(gm => gm.Group)
+                        .OrderBy(gm => gm.Group.Name);
+            }
         }
 
-        if (request.SearchText != null)
+        var skippedAmount = PagerHelper.GetSkipAmount(request.Page, request.PageSize);
+
+        var groups = await query
+            .Skip(skippedAmount)
+            .Take(request.PageSize)
+            .Select(gm => new GroupItem
+            {
+                Id = gm.GroupId,
+                Name = gm.Group.Name
+            })
+            .ToListAsync(cancellationToken);
+
+        var output = new GetMyGroupsOutput
         {
-            groups = groups.Where(gm => gm.Group.Name.ToLower().Contains(request.SearchText));
-        }
+            Data = new PaginatedListResponse<GroupItem>
+            {
+                Items = groups,
+                TotalCount = totalCount
+            }
+        };
 
-        groups = groups.Skip((request.Page - 1) * request.PageSize)
-            .Take(request.PageSize);
-
-        var groupItems = await groups.Select(group => new GroupItem
-        {
-            Id = group.Group.Id,
-            Name = group.Group.Name,
-        }).ToListAsync(cancellationToken);
-
-        return new GetMyGroupsOutput { Data = groupItems };
+        return output;
     }
 }

@@ -3,4 +3,63 @@
 @{
 }
 
-<h1>This should be pagination of group</h1>
+@{
+    ViewData["Title"] = "My Groups";
+    ViewBag.CurrentMenu = MenuFor.MemberGroupIndex;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Index">
+                Home
+            </a>
+        </li>
+        
+        <li class="breadcrumb-item active"
+            aria-current="page">
+            @ViewData["Title"]
+        </li>
+    </ol>
+</nav>
+
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
+
+@if (TempData["success"] is not null)
+{
+    <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
+        <strong>Success!</strong> @TempData["success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["failed"] is not null)
+{
+    <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
+        <strong>Failed!</strong> @TempData["failed"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    @foreach (var group in Model.Groups)
+    {
+        <div class="col-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <a class="text-decoration-none" asp-page="Details" asp-route-groupId="@group.Id">
+                        <h5 class="card-title">
+                            @group.Name
+                        </h5>
+                    </a>
+                    @* <p class="card-text">
+                Something
+                </p> *@
+                </div>
+            </div>
+        </div>
+    }
+
+    @Html.Raw(Model.Paging)
+</div>
