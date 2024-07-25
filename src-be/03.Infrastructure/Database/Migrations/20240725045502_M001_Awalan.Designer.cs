@@ -337,7 +337,7 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                     b.HasOne("Delta.Polling.Domain.Polls.Entities.Poll", "Poll")
                         .WithMany("Choices")
                         .HasForeignKey("PollId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Poll");

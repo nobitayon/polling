@@ -1,0 +1,102 @@
+﻿@page "{pollId}"
+@model Delta.Polling.WebRP.Pages.Member.Polls.ResultPollModel
+
+@{
+    // TODO: ga bisa pass data dari sini ke js
+
+    ViewData["Title"] = "Detail Answer";
+    ViewBag.CurrentMenu = MenuFor.MemberPollsIndex;
+
+    var labels = Model.Poll.AnswerItems
+        .OrderBy(a => a.Count)
+        .Select(
+            a => a.Description
+    );
+
+    var countLabels = Model.Poll.AnswerItems
+                .OrderBy(a => a.Count)
+                .Select(
+                    a => a.Count
+    );
+}
+
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
+
+@if (Model.Poll is not null)
+{
+    ViewData["Title"] = "Detail Answer";
+
+    @Html.Hidden("AnswerDetail", @Json.Serialize(Model.Poll))
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Index">
+                    Home
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Member/Polls/Index">
+                    Polls
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="Details"
+                   asp-route-pollId="@Model.PollId">
+                    Details
+                </a>
+            </li>
+            <li class="breadcrumb-item active"
+                aria-current="page">
+                @ViewData["Title"]
+            </li>
+        </ol>
+    </nav>
+
+    <div style="width: 504px; height: 252px;">
+        <canvas id="myChart" width="504" height="252"></canvas>
+    </div>
+}
+
+<script type="text/javascript" language=javascript>
+
+    function initChart() {
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labelsJs,
+                datasets: [
+                    {
+                        label: 'Hasil Polling',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        data: labelCountJs
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        let chartContainer = document.getElementById('myChart');
+
+        if (chartContainer) {
+            initChart();
+        }
+    });
+
+</script>
