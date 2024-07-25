@@ -12,7 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Delta.Polling.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(DatabaseService))]
+<<<<<<<< HEAD:src-be/03.Infrastructure/Database/Migrations/20240724222218_M001_Awalan.Designer.cs
+    [Migration("20240724222218_M001_Awalan")]
+========
     [Migration("20240725045502_M001_Awalan")]
+>>>>>>>> main:src-be/03.Infrastructure/Database/Migrations/20240725045502_M001_Awalan.Designer.cs
     partial class M001_Awalan
     {
         /// <inheritdoc />
@@ -337,7 +341,7 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                     b.HasOne("Delta.Polling.Domain.Polls.Entities.Poll", "Poll")
                         .WithMany("Choices")
                         .HasForeignKey("PollId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Poll");

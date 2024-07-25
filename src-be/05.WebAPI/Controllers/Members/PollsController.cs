@@ -13,6 +13,9 @@ using Delta.Polling.Logics.Member.Polls.Commands.StartPoll;
 using Delta.Polling.Logics.Member.Polls.Commands.FinishPoll;
 using Delta.Polling.Both.Member.Polls.Queries.GetOngoingPolls;
 using Delta.Polling.Logics.Member.Polls.Queries.GetOngoingPolls;
+using Delta.Polling.Logics.Member.Polls.Commands.DeletePoll;
+using Delta.Polling.Logics.Member.Polls.Queries.GetPollWithAllAnswer;
+using Delta.Polling.Both.Member.Polls.Queries.GetPollWithAllAnswer;
 
 namespace Delta.Polling.WebAPI.Controllers.Members;
 
@@ -91,5 +94,17 @@ public class PollsController : ApiControllerBase
     public async Task FinishPoll([FromRoute] FinishPollCommand request)
     {
         await Sender.Send(request);
+    }
+
+    [HttpDelete("{pollId:guid}")]
+    public async Task DeletePoll([FromRoute] DeletePollCommand request)
+    {
+        await Sender.Send(request);
+    }
+
+    [HttpGet("{pollId:guid}/answer-detail")]
+    public async Task<GetPollWithAllAnswerOutput> GetAllAnswerPoll([FromRoute] GetPollWithAllAnswerQuery request)
+    {
+        return await Sender.Send(request);
     }
 }

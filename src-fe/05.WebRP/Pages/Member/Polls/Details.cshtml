@@ -101,21 +101,28 @@
                                        name="pollOption"
                                        value="@choice.Id"
                                 @(choice.IsChosen ? "checked" : "")>
+
+                                @{
+                                    //TODO: Ganti label dengan sesuatu
+                                }
                                 <label class="form-check-label" for="@choice.Id">
                                     @choice.Description
 
-                                    <div>
-                                        <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
-                                            <i class="bi bi-trash">
-                                            </i>
-                                        </a>
+                                    @if (Model.Poll.Status is PollStatus.Draft)
+                                    {
+                                        <div>
+                                            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
+                                                <i class="bi bi-trash">
+                                                </i>
+                                            </a>
 
 
-                                        <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
-                                            <i class="fa fa-edit">
-                                            </i>
-                                        </a>
-                                    </div>
+                                            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
+                                                <i class="fa fa-edit">
+                                                </i>
+                                            </a>
+                                        </div>
+                                    }
                                 </label>
                             </div>
                         }
@@ -165,19 +172,75 @@
             <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">Submit Vote</a>
         }
     }
+
+    @if (Model.Poll.Status is PollStatus.Finished)
+    {
+        <a class="btn btn-primary" asp-page="ResultPoll" asp-route-pollId="@Model.PollId">Atau bikin page baru aja</a>
+
+        @* <canvas id="myChart"></canvas> *@
+        <div style="width: 504px; height: 252px;">
+            <canvas id="myChart" width="504" height="252"></canvas>
+        </div>
+
+
+    }
 }
 
 <script type="text/javascript" language=javascript>
-    document.getElementById('add-another-choice').addEventListener('click', (event) => {
-        let pollId = event.target.getAttribute('data-poll-id');
-        fetch(`${pollId}?handler=AddAnotherChoice`)
-            .then((response) => {
-                return response.text();
-            })
-            .then((htmlText) => {
-                $('#form-modal .modal-body').html(htmlText);
-                $('#form-modal .modal-title').html("Add Another Choice");
-                $('#form-modal').modal('show');
-            })
+
+    const addAnotherChoiceButton = document.getElementById('add-another-choice');
+    if (addAnotherChoiceButton) {
+        document.getElementById('add-another-choice').addEventListener('click', (event) => {
+            let pollId = event.target.getAttribute('data-poll-id');
+            fetch(`${pollId}?handler=AddAnotherChoice`)
+                .then((response) => {
+                    return response.text();
+                })
+                .then((htmlText) => {
+                    $('#form-modal .modal-body').html(htmlText);
+                    $('#form-modal .modal-title').html("Add Another Choice");
+                    $('#form-modal').modal('show');
+                })
+        });
+    }
+
+    function initChart() {
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Label 1", "Label 2", "Label 3"],
+                datasets: [
+                    {
+                        label: 'Hasil Polling',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        data: [20, 30, 40],
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        // Cek apakah id myChart ada
+
+        let chartContainer = document.getElementById('myChart');
+
+        if (chartContainer) {
+            initChart();
+        }
+
+        // $('#viewAll').load('?handler=ViewTimeline');
+
     });
 </script>

@@ -17,6 +17,6 @@ public class ChoiceConfiguration : IEntityTypeConfiguration<Choice>
         _ = builder.HasOne(e => e.Poll)
             .WithMany(e => e.Choices)
             .HasForeignKey(e => e.PollId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
