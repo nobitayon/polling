@@ -5,7 +5,7 @@ using Delta.Polling.Domain.Answers.Entities;
 namespace Delta.Polling.Logics.Member.Polls.Commands.UpdateVote;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class UpdateVoteCommand : UpdateVoteRequest, IRequest<UpdateVoteOutput>
+public record UpdateVoteCommand : UpdateVoteRequest, IRequest<UpdateVoteOutput>
 {
 }
 

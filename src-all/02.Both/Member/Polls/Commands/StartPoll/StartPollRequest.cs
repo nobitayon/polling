@@ -1,6 +1,6 @@
 ﻿namespace Delta.Polling.Both.Member.Polls.Commands.StartPoll;
 
-public class StartPollRequest
+public record StartPollRequest
 {
     public required Guid PollId { get; init; }
 }

@@ -84,7 +84,7 @@ public class PollsController : ApiControllerBase
         return await Sender.Send(request);
     }
 
-    [HttpPost("{pollId:guid}/start")]
+    [HttpPatch("{pollId:guid}/start")]
     public async Task StartPoll([FromRoute] StartPollCommand request)
     {
         await Sender.Send(request);

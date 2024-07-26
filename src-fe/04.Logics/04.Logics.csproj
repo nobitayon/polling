@@ -17,4 +17,7 @@
     <ProjectReference Include="..\..\src-all\02.Both\02.Both.csproj" />
     <ProjectReference Include="..\02.Services\02.Services.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Member\Choices\Queries\GetChoiceByPoll\" />
+  </ItemGroup>
 </Project>

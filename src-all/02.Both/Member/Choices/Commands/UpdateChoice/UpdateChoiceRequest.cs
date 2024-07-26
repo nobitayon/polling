@@ -1,10 +1,10 @@
 ﻿namespace Delta.Polling.Both.Member.Choices.Commands.UpdateChoice;
 
-public class UpdateChoiceRequest
+public record UpdateChoiceRequest
 {
     public required Guid PollId { get; init; }
     public required Guid ChoiceId { get; init; }
-    public required string Description { get; init; }
+    public required string Description { get; set; }
 }
 
 public class UpdateChoiceRequestValidator : AbstractValidator<UpdateChoiceRequest>

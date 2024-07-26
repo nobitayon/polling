@@ -8,10 +8,6 @@
     ViewBag.CurrentMenu = MenuFor.MemberPollsIndex;
 }
 
-@await Component.InvokeAsync("ErrorViewer", Model.Error)
-
-
-
 @if (Model.Poll is not null)
 {
     ViewData["Title"] = Model.Poll.Title;
@@ -54,6 +50,7 @@
     }
 
     <section class="mb-4">
+
         <div class="row">
             <div class="col-md-12 justify-content-center mt-3">
                 <div class="card mb-3">
@@ -86,8 +83,8 @@
         {
             @if (currentUserService.Username == Model.Poll.CreatedBy)
             {
-                <a class="btn btn-primary" asp-page="Start" asp-route-pollId="@Model.PollId">Start Poll</a>
-                <a class="btn btn-danger" asp-page="Edit" asp-route-pollId="@Model.PollId">Update Poll</a>
+                <a id="start-poll" data-poll-id="@Model.PollId" class="btn btn-primary">Start Poll</a>
+                <a class="btn btn-primary" asp-page="Edit" asp-route-pollId="@Model.PollId">Update Poll</a>
                 <a class="btn btn-warning" asp-page="Delete" asp-route-pollId="@Model.PollId">Delete Poll</a>
             }
         }
@@ -100,7 +97,6 @@
             }
         }
 
-        <a asp-page="Index" class="btn btn-secondary">Back</a>
     </section>
 
     <div class="row">
@@ -108,72 +104,159 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <h1 class="text-center"> @Model.Poll.Question </h1>
-                    @if (Model.Poll.MaximumAnswer > 1)
+                    @if (Model.Poll.Status is PollStatus.Ongoing)
                     {
-                        @foreach (var choice in Model.Poll.ChoiceItems)
+                        @if (Model.Poll.MaximumAnswer > 1)
                         {
-                            <div class="form-check">
-                                <input id="@choice.Id"
-                                       class="form-check-input"
-                                       type="checkbox"
-                                       name="pollOption"
-                                       value="@choice.Id"
-                                @(choice.IsChosen ? "checked" : "")>
+                            <form id="form-input-update" asp-page-handler="@(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")" method="post" class="col-8">
 
-                                @{
-                                    //TODO: Ganti label dengan sesuatu
+                                @if (Model.Poll.AnswerItems.Count() > 0)
+                                {
+                                    <input type="hidden" asp-for="@Model.InputUpdateVoteCommand.PollId" value="@Model.PollId" class="form-control" required>
                                 }
-                                <label class="form-check-label" for="@choice.Id">
-                                    @choice.Description
+                                else
+                                {
+                                    <input type="hidden" asp-for="@Model.InputAddVoteCommand.PollId" value="@Model.PollId" class="form-control" required>
+                                }
 
-                                    @if (Model.Poll.Status is PollStatus.Draft)
-                                    {
-                                        <div>
-                                            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
-                                                <i class="bi bi-trash">
-                                                </i>
-                                            </a>
+                                <!-- Modal -->
+                                <div class="modal fade" id="checkBoxVote" tabindex="-1" aria-labelledby="checkBoxVote" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="checkBoxVoteLabel">@(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote") </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Anda akan mensubmit pilihan anda ?
+                                            </div>
 
-
-                                            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
-                                                <i class="fa fa-edit">
-                                                </i>
-                                            </a>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">@(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")</button>
+                                            </div>
                                         </div>
-                                    }
-                                </label>
-                            </div>
+                                    </div>
+                                </div>
+
+                                @foreach (var choice in Model.Poll.ChoiceItems)
+                                {
+                                    <div class="form-check">
+                                        <input id="@choice.Id"
+                                               class="form-check-input"
+                                               type="checkbox"
+                                               value="@choice.Id"
+                                               name="listChoices"
+                                        @(choice.IsChosen ? "checked" : "")>
+
+                                        @{
+                                            //TODO: Ganti label dengan sesuatu
+                                        }
+                                        <label class="form-check-label" for="@choice.Id">
+                                            @choice.Description
+                                        </label>
+                                    </div>
+                                }
+                                <!-- Button trigger modal -->
+
+                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#checkBoxVote">
+                                    @(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")
+                                </a>
+                            </form>
+                        }
+                        else
+                        {
+                            <form id="form-input-update" asp-page-handler="@(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")" method="post" class="col-8">
+
+                                @if (Model.Poll.AnswerItems.Count() > 0)
+                                {
+                                    <input type="hidden" asp-for="@Model.InputUpdateVoteCommand.PollId" value="@Model.PollId" class="form-control" required>
+                                }
+                                else
+                                {
+                                    <input type="hidden" asp-for="@Model.InputAddVoteCommand.PollId" value="@Model.PollId" class="form-control" required>
+                                }
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="radioButtonVote" tabindex="-1" aria-labelledby="radioButtonVote" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="radioButtonVoteLabel">@(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote") </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Anda akan mensubmit pilihan anda ?
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">@(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @foreach (var choice in Model.Poll.ChoiceItems)
+                                {
+                                    <div class="form-check">
+                                        <input id="@choice.Id"
+                                               class="form-check-input"
+                                               type="radio"
+                                               value="@choice.Id"
+                                               name="listChoices"
+                                        @(choice.IsChosen ? "checked" : "")>
+                                        <label class="form-check-label" for="pollOption">
+                                            @choice.Description
+                                        </label>
+                                    </div>
+                                }
+
+                                <!-- Button trigger modal -->
+                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#radioButtonVote">
+                                    @(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")
+                                </a>
+
+                            </form>
                         }
                     }
-                    else
+                    else if (Model.Poll.Status is PollStatus.Draft)
+                    {
+                        <div class="container">
+                            <div class="row">
+                                @foreach (var choice in Model.Poll.ChoiceItems)
+                                {
+                                    <div class="col-2 mb-3">
+                                        <div class="card card-selection" data-value="@choice.Description">
+                                            <div class="card-body d-flex justify-content-between align-items-center">
+                                                <h5 class="card-title mb-0">@choice.Description</h5>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-danger btn-sm me-2" onclick="handleDelete()" data-poll-id="@Model.PollId" data-choice-id="@choice.Id">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                    <a class="btn btn-primary btn-sm" onclick="handleEdit()" data-poll-id="@Model.PollId" data-choice-id="@choice.Id">
+                                                        <i class="fa fa-edit"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+
+                    }
+                    else if (Model.Poll.Status is PollStatus.Finished)
                     {
                         @foreach (var choice in Model.Poll.ChoiceItems)
                         {
-                            <div class="form-check">
-                                <input id="@choice.Id"
-                                       class="form-check-input"
-                                       type="radio"
-                                       name="pollOption"
-                                       value="@choice.Id"
-                                @(choice.IsChosen ? "checked" : "")>
-                                <label class="form-check-label" for="pollOption">
-                                    @choice.Description
-                                    @if (Model.Poll.Status is PollStatus.Draft)
-                                    {
-                                        <div>
-                                            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
-                                                <i class="bi bi-trash">
-                                                </i>
-                                            </a>
-
-
-                                            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
-                                                <i class="fa fa-edit">
-                                                </i>
-                                            </a>
-                                        </div>
-                                    }
-                                </label>
+                            <div class="col-md-4 mb-3" style="background-color: @(choice.IsChosen ? "green" : "blue")">
+                                <div class="card card-selection" data-value="@choice.Description">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">@choice.Description</h5>
+                                    </div>
+                                </div>
                             </div>
                         }
                     }
@@ -184,8 +267,7 @@
 
     @if (Model.Poll.Status is PollStatus.Draft && currentUserService.Username == Model.Poll.CreatedBy)
     {
-
-        <form asp-page-handler="AddChoice" method="post" class="col-8">
+        <form id="add-choice" asp-page-handler="AddChoice" method="post" class="col-8">
             <input type="hidden" asp-for="@Model.InputAddChoiceCommand.PollId" value="@Model.PollId" class="form-control" required>
 
             <!-- Button trigger modal -->
@@ -217,22 +299,12 @@
             </div>
         </form>
     }
-
     @if (Model.Poll.Status is PollStatus.Ongoing)
     {
         <a class="btn btn-primary" data-poll-id="@Model.PollId" id="add-another-choice">Add Another Choice</a>
         <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
             Add Another Choice(open new page)
         </a>
-
-        @if (Model.Poll.AnswerItems.Count() > 0)
-        {
-            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">Change Vote</a>
-        }
-        else
-        {
-            <a class="btn btn-primary" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">Submit Vote</a>
-        }
     }
 
     @if (Model.Poll.Status is PollStatus.Finished)
@@ -243,8 +315,6 @@
         <div style="width: 504px; height: 252px;">
             <canvas id="myChart" width="504" height="252"></canvas>
         </div>
-
-
     }
 }
 
@@ -265,6 +335,39 @@
                 })
         });
     }
+
+    const startPollButton = document.getElementById('start-poll');
+    if (startPollButton) {
+        document.getElementById('start-poll').addEventListener('click', (event) => {
+            let pollId = event.target.getAttribute('data-poll-id');
+            fetch(`${pollId}?handler=StartPoll`)
+                .then((response) => {
+                    return response.text();
+                })
+                .then((htmlText) => {
+                    $('#form-modal .modal-body').html(htmlText);
+                    $('#form-modal .modal-title').html("Start Poll");
+                    $('#form-modal').modal('show');
+                })
+        });
+    }
+
+    function handleEdit() {
+        let aElement = event.target.closest('a');
+        let pollId = aElement.getAttribute('data-poll-id');
+        let choiceId = aElement.getAttribute('data-choice-id');
+        fetch(`${pollId}?handler=EditChoice&choiceId=${choiceId}`)
+            .then((response) => {
+                return response.text();
+            })
+            .then((htmlText) => {
+                $('#form-modal .modal-body').html(htmlText);
+                $('#form-modal .modal-title').html("Edit Choice");
+                $('#form-modal').modal('show');
+                $.validator.unobtrusive.parse('#edit-choice');
+            })
+    }
+
 
     function initChart() {
         const ctx = document.getElementById('myChart').getContext('2d');
