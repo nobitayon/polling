@@ -6,7 +6,7 @@ using Delta.Polling.Domain.Voters.Entities;
 namespace Delta.Polling.Logics.Member.Polls.Commands.AddVote;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class AddVoteCommand : AddVoteRequest, IRequest<AddVoteOutput>
+public record AddVoteCommand : AddVoteRequest, IRequest<AddVoteOutput>
 {
 }
 

@@ -6,10 +6,11 @@
       asp-page="member/polls/details"
       asp-page-handler="AddAnotherChoice"
       onsubmit="handleFormSubmit(event);">
-    <div class="mb-1 row">
-        <input type="hidden" asp-for="PollId" name="PollId" />
 
-        <label class="col-md-3 col-form-label">Title</label>
+    <input type="hidden" asp-for="PollId" name="PollId" />
+
+    <div class="mb-1 row">
+        <label class="col-md-3 col-form-label">Description</label>
         <div class="col-md-9">
             <input type="text" autocomplete="off" asp-for="Description" name="Description" class="form-control" />
             <span asp-validation-for="Description" class="text-danger"></span>

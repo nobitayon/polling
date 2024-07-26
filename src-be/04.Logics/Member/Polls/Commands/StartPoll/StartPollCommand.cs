@@ -4,7 +4,7 @@ using Delta.Polling.Both.Member.Polls.Commands.StartPoll;
 namespace Delta.Polling.Logics.Member.Polls.Commands.StartPoll;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class StartPollCommand : StartPollRequest, IRequest
+public record StartPollCommand : StartPollRequest, IRequest
 {
 }
 

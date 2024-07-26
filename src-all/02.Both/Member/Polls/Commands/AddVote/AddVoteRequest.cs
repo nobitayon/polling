@@ -1,8 +1,8 @@
 ﻿namespace Delta.Polling.Both.Member.Polls.Commands.AddVote;
-public class AddVoteRequest
+public record AddVoteRequest
 {
     public required Guid PollId { get; init; }
-    public required IEnumerable<Guid> ListChoice { get; init; }
+    public required IEnumerable<Guid> ListChoice { get; set; }
 }
 
 public class AddVoteRequestValidator : AbstractValidator<AddVoteRequest>

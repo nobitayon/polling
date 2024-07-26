@@ -4,7 +4,7 @@ using Delta.Polling.Both.Member.Choices.Commands.UpdateChoice;
 namespace Delta.Polling.Logics.Member.Choices.Commands.UpdateChoice;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class UpdateChoiceCommand : UpdateChoiceRequest, IRequest
+public record UpdateChoiceCommand : UpdateChoiceRequest, IRequest
 {
 }
 

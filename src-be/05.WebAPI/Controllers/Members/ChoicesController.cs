@@ -1,15 +1,31 @@
 ﻿using Delta.Polling.Both.Member.Choices.Commands.AddAnotherChoiceOngoingPoll;
 using Delta.Polling.Both.Member.Choices.Commands.AddChoice;
+using Delta.Polling.Both.Member.Choices.Queries.GetChoice;
+using Delta.Polling.Both.Member.Choices.Queries.GetChoicesByPoll;
 using Delta.Polling.Logics.Member.Choices.Commands.AddAnotherChoiceOngoingPoll;
 using Delta.Polling.Logics.Member.Choices.Commands.AddChoice;
 using Delta.Polling.Logics.Member.Choices.Commands.DeleteChoice;
 using Delta.Polling.Logics.Member.Choices.Commands.UpdateChoice;
+using Delta.Polling.Logics.Member.Choices.Queries.GetChoice;
+using Delta.Polling.Logics.Member.Choices.Queries.GetChoiceByPoll;
 
 namespace Delta.Polling.WebAPI.Controllers.Members;
 
 [Route("api/Member/[controller]")]
 public class ChoicesController : ApiControllerBase
 {
+    [HttpGet]
+    public async Task<GetChoicesByPollOutput> GetChoicesByPoll([FromRoute] GetChoicesByPollQuery request)
+    {
+        return await Sender.Send(request);
+    }
+
+    [HttpGet("{choiceId:guid}")]
+    public async Task<GetChoiceOutput> GetChoice([FromRoute] GetChoiceQuery request)
+    {
+        return await Sender.Send(request);
+    }
+
     // TODO: Apakah lebih baik dalam PollsController
     [HttpPost]
     public async Task<AddChoiceOutput> AddChoice([FromForm] AddChoiceCommand request)
