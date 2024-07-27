@@ -1,0 +1,62 @@
+﻿@using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.UpdatePoll;
+@model UpdatePollCommand;
+
+<form id="update-poll"
+      method="post"
+      asp-page-handler="UpdatePoll"
+      onsubmit="return jQueryModalPost(this);">
+
+    <div class="mb-1 row">
+        <input type="hidden" asp-for="@Model.PollId" name="PollId" />
+    </div>
+
+    <div class="mb-1 row">
+        <label class="col-md-3 col-form-label">Title</label>
+        <div class="col-md-9">
+            <input type="text" autocomplete="off" asp-for="Title" name="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-1 row">
+        <label class="col-md-3 col-form-label">Question</label>
+        <div class="col-md-9">
+            <input type="text" autocomplete="off" asp-for="Question" name="Question" class="form-control" />
+            <span asp-validation-for="Question" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-1 row">
+        <label class="col-md-3 col-form-label">MaximumAnswer</label>
+        <div class="col-md-9">
+            <input type="number" autocomplete="off" asp-for="MaximumAnswer" name="MaximumAnswer" class="form-control" />
+            <span asp-validation-for="MaximumAnswer" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-1 row">
+        <label asp-for="AllowOtherChoice" class="col-md-3 col-form-label">Allow Other Choice</label>
+        <div class="col-md-9">
+            <select asp-for="AllowOtherChoice" class="form-control" required>
+                <option value="true">True</option>
+                <option value="false">False</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="modal-body">
+        You will update poll
+    </div>
+
+    <div class="mb-1 justify-content-between">
+        <button type="button" class="btn btn-secondary close-button" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary save-button">Save</button>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $.validator.unobtrusive.parse("#update-poll");
+</script>
+
+
+

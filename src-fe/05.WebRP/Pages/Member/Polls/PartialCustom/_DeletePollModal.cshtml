@@ -1,0 +1,66 @@
+﻿@using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.DeletePoll;
+@using Delta.Polling.Both.Member.Polls.Queries.GetPoll;
+
+@{
+    var input = ViewData["Input"] as DeletePollCommand;
+    var additionalData = ViewData["AdditionalData"] as PollItem;
+}
+
+<form id="update-poll"
+      method="post"
+      asp-page-handler="DeletePoll"
+      onsubmit="return jQueryModalPost(this);">
+    <div class="mb-1 row">
+        <input type="hidden" asp-for="@input!.PollId" name="PollId" />
+    </div>
+
+    <div class="mb-1 row">
+        <label class="col-md-3 col-form-label">Title</label>
+        <div class="col-md-9">
+            <input type="text" value="@additionalData!.Title" class="form-control" readonly />
+            <span asp-validation-for="@additionalData.Title" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-1 row">
+        <label class="col-md-3 col-form-label">Question</label>
+        <div class="col-md-9">
+            <input type="text" value="@additionalData!.Question" class="form-control" readonly />
+            <span asp-validation-for="@additionalData.Question" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-1 row">
+        <label class="col-md-3 col-form-label">Maximum Answer</label>
+        <div class="col-md-9">
+            <input type="number" value="@additionalData!.MaximumAnswer" class="form-control" readonly />
+            <span asp-validation-for="@additionalData.MaximumAnswer" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-1 row">
+        <label asp-for="@additionalData!.AllowOtherChoice" class="col-md-3 col-form-label">Allow Other Choice</label>
+        <div class="col-md-9">
+            <select asp-for="@additionalData!.AllowOtherChoice" class="form-control" disabled>
+                <option value="true">True</option>
+                <option value="false">False</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="modal-body">
+        You will delete poll
+    </div>
+
+    <div class="mb-1 justify-content-between">
+        <button type="button" class="btn btn-secondary close-button" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary save-button">Delete</button>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $.validator.unobtrusive.parse("#update-poll");
+</script>
+
+
+
