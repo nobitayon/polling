@@ -1,6 +1,7 @@
 using Delta.Polling.Both.Member.Polls.Queries.GetPoll;
 using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.AddAnotherChoiceOngoingPoll;
 using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.AddChoices;
+using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.DeleteChoice;
 using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.EditChoice;
 using Delta.Polling.FrontEnd.Logics.Member.Choices.Queries.GetChoice;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.AddVote;
@@ -326,6 +327,49 @@ public class DetailsModel : PageModelBase
         else
         {
             TempData["failed"] = "Failed to Edit Choice";
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
+        }
+    }
+
+    public IActionResult OnGetDeleteChoice([FromQuery] Guid choiceId)
+    {
+        var input = new DeleteChoiceCommand { ChoiceId = choiceId };
+
+        return new PartialViewResult
+        {
+            ViewName = "~/Pages/Member/Polls/PartialCustom/_DeleteChoiceModal.cshtml",
+            ViewData = new ViewDataDictionary<DeleteChoiceCommand>(ViewData, input)
+        };
+    }
+
+    public async Task<IActionResult> OnPostDeleteChoiceAsync(DeleteChoiceCommand command)
+    {
+        var response = await Sender.Send(command);
+
+        if (response.Error is not null)
+        {
+            Error = response.Error;
+            TempData["failed"] = Error.Detail;
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = false, redirectUrl = redirectUrl });
+        }
+
+        if (response.Result is not null)
+        {
+            TempData["success"] = "Success Delete Choice";
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
+        }
+        else
+        {
+            TempData["failed"] = "Failed Delete Choice";
 
             var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
 
