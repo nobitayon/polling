@@ -4,7 +4,7 @@ using Delta.Polling.Both.Member.Polls.Commands.FinishPoll;
 namespace Delta.Polling.Logics.Member.Polls.Commands.FinishPoll;
 
 [Authorize(RoleName = RoleNameFor.Member)]
-public class FinishPollCommand : FinishPollRequest, IRequest
+public record FinishPollCommand : FinishPollRequest, IRequest
 {
 }
 

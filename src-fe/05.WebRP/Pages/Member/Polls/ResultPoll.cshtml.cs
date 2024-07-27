@@ -25,4 +25,36 @@ public class ResultPollModel : PageModelBase
 
         return Page();
     }
+
+    public async Task<IActionResult> OnGetDataForChartAsync()
+    {
+        var response = await Sender.Send(new GetPollWithAllAnswerQuery { PollId = PollId });
+
+        if (response.Error is not null)
+        {
+            return new JsonResult(new { success = false });
+        }
+
+        if (response.Result is not null)
+        {
+            Console.WriteLine("Hi");
+
+            var poll = response.Result.Data;
+
+            Console.WriteLine($"poll {poll.Question}");
+            Console.WriteLine($"poll {poll.ChoiceItems.Count()}");
+
+            var labels = poll.ChoiceItems
+                .OrderByDescending(c => c.Count)
+                .Select(c => c.Description);
+
+            var dataLabels = poll.ChoiceItems
+                .OrderByDescending(c => c.Count)
+                .Select(c => c.Count);
+
+            return new JsonResult(new { success = true, data = new { labels = labels, dataLabels = dataLabels } });
+        }
+
+        return new JsonResult(new { success = false });
+    }
 }

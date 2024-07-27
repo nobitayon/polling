@@ -1,0 +1,23 @@
+﻿@using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.FinishPoll;
+@model FinishPollCommand;
+
+<form id="start-poll"
+      method="post"
+      asp-page-handler="FinishPoll"
+      onsubmit="return jQueryModalPost(this);">
+    <div class="mb-1 row">
+        <input type="hidden" asp-for="@Model.PollId" name="PollId" />
+    </div>
+
+    <div class="mb-1 row">
+        <div class="col-md-3">
+            You will finish this poll 
+        </div>
+    </div>
+
+    <div class="mb-1 justify-content-between">
+        <button type="button" class="btn btn-secondary close-button" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary save-button">Finish</button>
+    </div>
+</form>
+

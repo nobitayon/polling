@@ -28,6 +28,7 @@ public record ChoiceItem
     public required string Description { get; init; }
     public required bool IsOther { get; set; }
     public required bool IsChosen { get; set; }
+    public required int NumVote { get; set; }
 }
 
 // TODO: Apakah menggunakan list Guid saja

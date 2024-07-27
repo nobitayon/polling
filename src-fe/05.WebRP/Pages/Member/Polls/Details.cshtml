@@ -93,7 +93,7 @@
         {
             @if (currentUserService.Username == Model.Poll.CreatedBy)
             {
-                <a class="btn btn-warning" asp-page="Finish" asp-route-pollId="@Model.PollId">Finish Poll</a>
+                <a id="finish-poll" data-poll-id="@Model.PollId" class="btn btn-primary">Finish Poll</a>
             }
         }
 
@@ -249,15 +249,18 @@
                     }
                     else if (Model.Poll.Status is PollStatus.Finished)
                     {
-                        @foreach (var choice in Model.Poll.ChoiceItems)
+                        @if(Model.Poll.AnswerItems.Count() > 0)
                         {
-                            <div class="col-md-4 mb-3" style="background-color: @(choice.IsChosen ? "green" : "blue")">
-                                <div class="card card-selection" data-value="@choice.Description">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title">@choice.Description</h5>
+                            @foreach (var choice in Model.Poll.ChoiceItems)
+                            {
+                                <div class="col-md-4 mb-3">
+                                    <div class="card card-selection" data-value="@choice.Description" style="background-color: @(choice.IsChosen ? "#28a745" : "")">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">@choice.Description</h5>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            }
                         }
                     }
                 </div>
@@ -309,6 +312,26 @@
 
     @if (Model.Poll.Status is PollStatus.Finished)
     {
+        
+         // TODO: Apakah perlu tabel untuk store hasil vote
+        
+        <div>
+            <h3>Hasil Vote:</h3>
+            @{
+                int maxNumVote = Model.Poll.ChoiceItems.Max(c => c.NumVote);
+                var choicesWithMaxVotes = Model.Poll.ChoiceItems
+                                .Where(c => c.NumVote == maxNumVote)
+                                .ToList();
+            }
+            <ul class="list-group">
+                @foreach (var choice in choicesWithMaxVotes)
+                {
+                    <li class="list-group-item">@choice.Description</li>
+                }
+            </ul>
+            
+
+        </div>
         <a class="btn btn-primary" asp-page="ResultPoll" asp-route-pollId="@Model.PollId">Atau bikin page baru aja</a>
 
         @* <canvas id="myChart"></canvas> *@
@@ -347,6 +370,22 @@
                 .then((htmlText) => {
                     $('#form-modal .modal-body').html(htmlText);
                     $('#form-modal .modal-title').html("Start Poll");
+                    $('#form-modal').modal('show');
+                })
+        });
+    }
+
+    const finishPollButton = document.getElementById('finish-poll');
+    if (finishPollButton) {
+        document.getElementById('finish-poll').addEventListener('click', (event) => {
+            let pollId = event.target.getAttribute('data-poll-id');
+            fetch(`?handler=FinishPoll`)
+                .then((response) => {
+                    return response.text();
+                })
+                .then((htmlText) => {
+                    $('#form-modal .modal-body').html(htmlText);
+                    $('#form-modal .modal-title').html("Finish Poll");
                     $('#form-modal').modal('show');
                 })
         });

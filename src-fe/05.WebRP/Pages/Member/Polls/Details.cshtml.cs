@@ -5,6 +5,7 @@ using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.DeleteChoice;
 using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.EditChoice;
 using Delta.Polling.FrontEnd.Logics.Member.Choices.Queries.GetChoice;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.AddVote;
+using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.FinishPoll;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.StartPoll;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.UpdateVote;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Queries.GetPoll;
@@ -112,32 +113,6 @@ public class DetailsModel : PageModelBase
             return Page();
         }
     }
-
-    //public async Task<IActionResult> OnPostStartPollAsync()
-    //{
-    //    var response = await Sender.Send(InputStartPollCommand);
-
-    //    if (response.Error is not null)
-    //    {
-    //        Error = response.Error;
-
-    //        return Page();
-    //    }
-
-    //    if (response.Result is not null)
-    //    {
-    //        TempData["success"] = "Success Start Poll";
-
-    //        return RedirectToPage("/Member/Polls/Details", new { pollId = PollId });
-    //    }
-    //    else
-    //    {
-
-    //        TempData["failed"] = "Failed to Start Poll";
-
-    //        return Page();
-    //    }
-    //}
 
     public async Task<IActionResult> OnPostStartPollAsync(StartPollCommand command)
     {
@@ -370,6 +345,50 @@ public class DetailsModel : PageModelBase
         else
         {
             TempData["failed"] = "Failed Delete Choice";
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
+        }
+    }
+
+    public IActionResult OnGetFinishPollAsync()
+    {
+        Console.WriteLine($"finish poll {PollId}");
+        var input = new FinishPollCommand { PollId = PollId };
+
+        return new PartialViewResult
+        {
+            ViewName = "~/Pages/Member/Polls/PartialCustom/_FinishPollModal.cshtml",
+            ViewData = new ViewDataDictionary<FinishPollCommand>(ViewData, input)
+        };
+    }
+
+    public async Task<IActionResult> OnPostFinishPollAsync(FinishPollCommand command)
+    {
+        var response = await Sender.Send(command);
+
+        if (response.Error is not null)
+        {
+            Error = response.Error;
+            TempData["failed"] = Error.Detail;
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = false, redirectUrl = redirectUrl });
+        }
+
+        if (response.Result is not null)
+        {
+            TempData["success"] = "Success Finish Poll";
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
+        }
+        else
+        {
+            TempData["failed"] = "Failed to Start Poll";
 
             var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
 

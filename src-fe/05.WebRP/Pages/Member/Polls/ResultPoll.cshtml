@@ -2,22 +2,8 @@
 @model Delta.Polling.WebRP.Pages.Member.Polls.ResultPollModel
 
 @{
-    // TODO: ga bisa pass data dari sini ke js
-
     ViewData["Title"] = "Detail Answer";
     ViewBag.CurrentMenu = MenuFor.MemberPollsIndex;
-
-    var labels = Model.Poll.AnswerItems
-        .OrderBy(a => a.Count)
-        .Select(
-            a => a.Description
-    );
-
-    var countLabels = Model.Poll.AnswerItems
-                .OrderBy(a => a.Count)
-                .Select(
-                    a => a.Count
-    );
 }
 
 @await Component.InvokeAsync("ErrorViewer", Model.Error)
@@ -25,8 +11,6 @@
 @if (Model.Poll is not null)
 {
     ViewData["Title"] = "Detail Answer";
-
-    @Html.Hidden("AnswerDetail", @Json.Serialize(Model.Poll))
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -56,35 +40,70 @@
         </ol>
     </nav>
 
-    <div style="width: 504px; height: 252px;">
-        <canvas id="myChart" width="504" height="252"></canvas>
+    <div class="container mt-5">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0">Question: @Model.Poll.Question</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Chart Container -->
+                        <div class="text-center">
+                            <div style="position: relative; width: 100%; height: 0; padding-bottom: 50%;">
+                                <canvas id="myChart" data-poll-id="@Model.PollId" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 }
 
 <script type="text/javascript" language=javascript>
 
-    function initChart() {
+    function initChart(labels, data) {
         const ctx = document.getElementById('myChart').getContext('2d');
+        const desiredTicks = 5;
+
+        let maxData = Math.max(...data);
+        let minData = Math.min(...data);
+        let rangeData = maxData - minData;
+        let stepSize;
+        if(rangeData > 0)
+        {
+            stepSize = Math.ceil(rangeData / (desiredTicks - 1));
+        }
+        else 
+        {
+            stepSize = maxData;
+        }
 
         const myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: labelsJs,
+                labels: labels,
                 datasets: [
                     {
-                        label: 'Hasil Polling',
+                        label: "Hasil Polling",
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderColor: 'rgba(255, 99, 132, 1)',
                         borderWidth: 1,
-                        data: labelCountJs
+                        data: data
                     }
                 ]
             },
             options: {
                 responsive: true,
+                barThickness: 55,
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        max: maxData + 2, 
+                        ticks: {
+                            stepSize: stepSize
+                        }
                     }
                 }
             }
@@ -95,7 +114,19 @@
         let chartContainer = document.getElementById('myChart');
 
         if (chartContainer) {
-            initChart();
+
+            fetch(`?handler=DataForChart`)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((respJson) => {
+                    if (respJson.success) {
+                        let data = respJson.data;
+                        let labels = data.labels;
+                        let dataLabels = data.dataLabels;
+                        initChart(labels,dataLabels)
+                    }
+                })
         }
     });
 
