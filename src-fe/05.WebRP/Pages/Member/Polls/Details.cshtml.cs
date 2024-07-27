@@ -5,8 +5,10 @@ using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.DeleteChoice;
 using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.EditChoice;
 using Delta.Polling.FrontEnd.Logics.Member.Choices.Queries.GetChoice;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.AddVote;
+using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.DeletePoll;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.FinishPoll;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.StartPoll;
+using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.UpdatePoll;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.UpdateVote;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Queries.GetPoll;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -389,6 +391,159 @@ public class DetailsModel : PageModelBase
         else
         {
             TempData["failed"] = "Failed to Start Poll";
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
+        }
+    }
+
+    public async Task<IActionResult> OnGetUpdatePollAsync()
+    {
+        var input = new UpdatePollCommand
+        {
+            PollId = PollId,
+            Title = default!,
+            Question = default!,
+            MaximumAnswer = default!,
+            AllowOtherChoice = default!
+        };
+
+        var responseGetPoll = await Sender.Send(new GetPollQuery { PollId = PollId });
+
+        if (responseGetPoll.Error is not null)
+        {
+            Error = responseGetPoll.Error;
+            TempData["failed"] = Error.Detail;
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = false, redirectUrl = redirectUrl });
+        }
+
+        if (responseGetPoll.Result is null)
+        {
+            TempData["failed"] = "Failed to Get Poll";
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
+        }
+
+        var poll = responseGetPoll.Result.Data;
+
+        input.Title = poll.Title;
+        input.Question = poll.Question;
+        input.MaximumAnswer = poll.MaximumAnswer;
+        input.AllowOtherChoice = poll.AllowOtherChoice;
+
+        return new PartialViewResult
+        {
+            ViewName = "~/Pages/Member/Polls/PartialCustom/_UpdatePollModal.cshtml",
+            ViewData = new ViewDataDictionary<UpdatePollCommand>(ViewData, input)
+        };
+    }
+
+    public async Task<IActionResult> OnPostUpdatePollAsync(UpdatePollCommand command)
+    {
+        var response = await Sender.Send(command);
+
+        if (response.Error is not null)
+        {
+            Error = response.Error;
+            TempData["failed"] = Error.Detail;
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = false, redirectUrl = redirectUrl });
+        }
+
+        if (response.Result is not null)
+        {
+            TempData["success"] = "Success Update Poll";
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
+        }
+        else
+        {
+            TempData["failed"] = "Failed to Update Poll";
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
+        }
+    }
+
+    public async Task<IActionResult> OnGetDeletePollAsync()
+    {
+        var input = new DeletePollCommand
+        {
+            PollId = PollId
+        };
+
+        var responseGetPoll = await Sender.Send(new GetPollQuery { PollId = PollId });
+
+        if (responseGetPoll.Error is not null)
+        {
+            Error = responseGetPoll.Error;
+            TempData["failed"] = Error.Detail;
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = false, redirectUrl = redirectUrl });
+        }
+
+        if (responseGetPoll.Result is null)
+        {
+            TempData["failed"] = "Failed to Get Poll";
+
+            var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
+
+            return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
+        }
+
+        var poll = responseGetPoll.Result.Data;
+
+        var viewData = new ViewDataDictionary(ViewData)
+        {
+            ["Input"] = input,
+            ["AdditionalData"] = poll
+        };
+
+        return new PartialViewResult
+        {
+            ViewName = "~/Pages/Member/Polls/PartialCustom/_DeletePollModal.cshtml",
+            ViewData = viewData
+        };
+    }
+
+    public async Task<IActionResult> OnPostDeletePollAsync(DeletePollCommand command)
+    {
+        var response = await Sender.Send(command);
+
+        if (response.Error is not null)
+        {
+            Error = response.Error;
+            TempData["failed"] = Error.Detail;
+
+            var redirectUrl = Url.Page("/Member/Polls/My");
+
+            return new JsonResult(new { isValid = false, redirectUrl = redirectUrl });
+        }
+
+        if (response.Result is not null)
+        {
+            TempData["success"] = "Success Delete Poll";
+
+            var redirectUrl = Url.Page("/Member/Polls/My");
+
+            return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
+        }
+        else
+        {
+            TempData["failed"] = "Failed to Delete Poll";
 
             var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
 

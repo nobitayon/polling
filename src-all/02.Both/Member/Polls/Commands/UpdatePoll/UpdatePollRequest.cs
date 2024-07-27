@@ -3,10 +3,10 @@
 public record UpdatePollRequest
 {
     public required Guid PollId { get; init; }
-    public required string Title { get; init; }
-    public required string Question { get; init; }
-    public required int MaximumAnswer { get; init; }
-    public required bool AllowOtherChoice { get; init; }
+    public required string Title { get; set; }
+    public required string Question { get; set; }
+    public required int MaximumAnswer { get; set; }
+    public required bool AllowOtherChoice { get; set; }
 }
 
 public class UpdatePollRequestValidator : AbstractValidator<UpdatePollRequest>

@@ -84,8 +84,8 @@
             @if (currentUserService.Username == Model.Poll.CreatedBy)
             {
                 <a id="start-poll" data-poll-id="@Model.PollId" class="btn btn-primary">Start Poll</a>
-                <a class="btn btn-primary" asp-page="Edit" asp-route-pollId="@Model.PollId">Update Poll</a>
-                <a class="btn btn-warning" asp-page="Delete" asp-route-pollId="@Model.PollId">Delete Poll</a>
+                <a id="update-poll" data-poll-id="@Model.PollId" class="btn btn-primary">Update Poll</a>
+                <a id="delete-poll" data-poll-id="@Model.PollId" class="btn btn-primary">Delete Poll</a>
             }
         }
 
@@ -387,6 +387,39 @@
                     $('#form-modal .modal-body').html(htmlText);
                     $('#form-modal .modal-title').html("Finish Poll");
                     $('#form-modal').modal('show');
+                })
+        });
+    }
+
+    const deletePollButton = document.getElementById('delete-poll');
+    if (deletePollButton) {
+        document.getElementById('delete-poll').addEventListener('click', (event) => {
+            let pollId = event.target.getAttribute('data-poll-id');
+            fetch(`?handler=DeletePoll`)
+                .then((response) => {
+                    return response.text();
+                })
+                .then((htmlText) => {
+                    $('#form-modal .modal-body').html(htmlText);
+                    $('#form-modal .modal-title').html("Delete Poll");
+                    $('#form-modal').modal('show');
+                })
+        });
+    }
+
+    const updatePollButton = document.getElementById('update-poll');
+    if (updatePollButton) {
+        document.getElementById('update-poll').addEventListener('click', (event) => {
+            let pollId = event.target.getAttribute('data-poll-id');
+            fetch(`?handler=UpdatePoll`)
+                .then((response) => {
+                    return response.text();
+                })
+                .then((htmlText) => {
+                    $('#form-modal .modal-body').html(htmlText);
+                    $('#form-modal .modal-title').html("Update Poll");
+                    $('#form-modal').modal('show');
+                    $.validator.unobtrusive.parse('#update-poll');
                 })
         });
     }
