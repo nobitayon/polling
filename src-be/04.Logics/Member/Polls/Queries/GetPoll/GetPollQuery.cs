@@ -69,12 +69,12 @@ public class GetPollQueryHandler(
 
         if (!isInGroup)
         {
-            throw new ForbiddenException($"You can't access this poll, because you are not member of group");
+            throw new Exception($"You can't access this poll, because you are not member of group");
         }
 
         if (!(pollDetails.CreatedBy == currentUserService.Username || pollDetails.Status is PollStatus.Finished || pollDetails.Status is PollStatus.Ongoing))
         {
-            throw new ForbiddenException($"You can't access this poll, because this poll is not published yet");
+            throw new Exception($"You can't access this poll, because this poll is not published yet");
         }
 
         var voterId = await databaseService.Voters
@@ -97,13 +97,15 @@ public class GetPollQueryHandler(
         }
 
         var choiceItems = await databaseService.Choices
+                            .Include(c => c.Answers)
                             .Where(c => c.PollId == request.PollId)
                             .Select(c => new ChoiceItem
                             {
                                 Id = c.Id,
                                 Description = c.Description,
                                 IsOther = c.IsOther,
-                                IsChosen = Helper.IsItChosen(c.Id, answerItems)
+                                IsChosen = Helper.IsItChosen(c.Id, answerItems),
+                                NumVote = c.Answers.Count
                             }).ToListAsync(cancellationToken);
 
         var pollItem = new PollItem

@@ -1,5 +1,5 @@
 ﻿namespace Delta.Polling.Both.Member.Polls.Commands.FinishPoll;
-public class FinishPollRequest
+public record FinishPollRequest
 {
     public required Guid PollId { get; init; }
 }

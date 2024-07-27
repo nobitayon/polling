@@ -51,12 +51,12 @@ public class GetPollWithAllAnswerQueryHandler(
 
         if (!isInGroup)
         {
-            throw new ForbiddenException($"You can't access this poll, because you are not member of group");
+            throw new Exception($"You can't access this poll, because you are not member of group");
         }
 
         if (!(pollDetails.CreatedBy == currentUserService.Username || pollDetails.Status is PollStatus.Finished || pollDetails.Status is PollStatus.Ongoing))
         {
-            throw new ForbiddenException($"You can't access this poll, because this poll is not published yet");
+            throw new Exception($"You can't access this poll, because this poll is not published yet");
         }
 
         List<AnswerItem> answerItems = [];
@@ -73,12 +73,23 @@ public class GetPollWithAllAnswerQueryHandler(
                             })
                             .ToListAsync(cancellationToken);
 
+        var choiceItems = await databaseService.Choices
+                            .Include(c => c.Answers)
+                            .Where(c => c.PollId == request.PollId)
+                            .Select(c => new ChoiceItem
+                            {
+                                ChoiceId = c.Id,
+                                Description = c.Description,
+                                Count = c.Answers.Count
+                            }).ToListAsync(cancellationToken);
+
         var pollItem = new PollItem
         {
             Id = pollDetails.Id,
             Title = pollDetails.Title,
             Question = pollDetails.Question,
-            AnswerItems = answerItems
+            AnswerItems = answerItems,
+            ChoiceItems = choiceItems
         };
 
         return new GetPollWithAllAnswerOutput { Data = pollItem };

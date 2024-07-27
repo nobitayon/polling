@@ -90,7 +90,7 @@ public class PollsController : ApiControllerBase
         await Sender.Send(request);
     }
 
-    [HttpPost("{pollId:guid}/finish")]
+    [HttpPatch("{pollId:guid}/finish")]
     public async Task FinishPoll([FromRoute] FinishPollCommand request)
     {
         await Sender.Send(request);
