@@ -1,0 +1,27 @@
+﻿@using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.DeleteChoice;
+@model DeleteChoiceCommand;
+
+<form id="delete-choice"
+      method="post"
+      asp-page-handler="DeleteChoice"
+      onsubmit="return jQueryModalPost(this);"
+      class="p-3">
+   
+    <input type="hidden" asp-for="@Model.ChoiceId" name="ChoiceId" />
+
+    <div class="modal-body">
+        <p>You will delete this choice.</p>
+    </div>
+
+    <div class="mb-1 justify-content-between">
+        <button type="button" class="btn btn-secondary close-button" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary save-button">Delete</button>
+    </div>
+</form>
+
+<script type="text/javascript">
+    $.validator.unobtrusive.parse("#delete-choice");
+</script>
+
+
+

@@ -39,14 +39,14 @@ public class ChoicesController : ApiControllerBase
         await Sender.Send(request);
     }
 
-    [HttpDelete]
-    public async Task DeleteChoice([FromForm] DeleteChoiceCommand request)
+    [HttpDelete("{choiceId:guid}")]
+    public async Task DeleteChoice([FromRoute] DeleteChoiceCommand request)
     {
         await Sender.Send(request);
     }
 
     [HttpPost("another-choice")]
-    public async Task<AddAnotherChoiceOngoingPollOutput> AddChoice([FromForm] AddAnotherChoiceOngoingPollCommand request)
+    public async Task<AddAnotherChoiceOngoingPollOutput> AddAnotherChoice([FromForm] AddAnotherChoiceOngoingPollCommand request)
     {
         return await Sender.Send(request);
     }
