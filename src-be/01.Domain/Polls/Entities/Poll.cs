@@ -1,5 +1,4 @@
 ﻿using Delta.Polling.Base.Polls.Enums;
-using Delta.Polling.Domain.Abstracts;
 using Delta.Polling.Domain.Choices.Entities;
 using Delta.Polling.Domain.Groups.Entities;
 using Delta.Polling.Domain.Voters.Entities;
