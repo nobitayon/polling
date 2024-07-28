@@ -16,6 +16,8 @@ using Delta.Polling.Logics.Member.Polls.Queries.GetOngoingPolls;
 using Delta.Polling.Logics.Member.Polls.Commands.DeletePoll;
 using Delta.Polling.Logics.Member.Polls.Queries.GetPollWithAllAnswer;
 using Delta.Polling.Both.Member.Polls.Queries.GetPollWithAllAnswer;
+using Delta.Polling.Both.Member.Polls.Queries.GetRecentParticipatedPoll;
+using Delta.Polling.Logics.Member.Polls.Queries.GetRecentParticipatedPoll;
 
 namespace Delta.Polling.WebAPI.Controllers.Members;
 
@@ -106,5 +108,11 @@ public class PollsController : ApiControllerBase
     public async Task<GetPollWithAllAnswerOutput> GetAllAnswerPoll([FromRoute] GetPollWithAllAnswerQuery request)
     {
         return await Sender.Send(request);
+    }
+
+    [HttpGet("recent-poll")]
+    public async Task<GetRecentParticipatedPollOutput> GetRecentParticipatedPoll()
+    {
+        return await Sender.Send(new GetRecentParticipatedPollQuery { });
     }
 }
