@@ -1,4 +1,89 @@
 ﻿@page "{GroupId}"
 @model Delta.Polling.WebRP.Pages.Admin.Groups.DetailsModel
 
-Hello @Model.GroupId
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Index">
+                Home
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Admin/Groups/Index">
+                Groups
+            </a>
+        </li>
+        <li class="breadcrumb-item active"
+            aria-current="page">
+            @TempData["Title"]
+        </li>
+    </ol>
+</nav>
+
+@if (TempData["success"] is not null)
+{
+    <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
+        <strong>Success!</strong> @TempData["success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["failed"] is not null)
+{
+    <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
+        <strong>Failed!</strong> @TempData["failed"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<div id="table-pagination" class="card-body table-responsive">
+    <div class="d-flex flex-column justify-content-around" style="height:500px">
+        <table height="80%" class="table table-bordered" id="table-member-pagination">
+            <thead>
+                <tr>
+                    <th>
+                        Username
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < 3; i++)
+                {
+                    <tr>
+                        <td>
+                            <p class="card-text placeholder-glow">
+                                <span class="placeholder" style="width: 100%;"></span>
+                            </p>
+                        </td>
+                        <td>
+                            <p class="card-text placeholder-glow">
+                                <span class="placeholder" style="width: 100%;"></span>
+                            </p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#table-member-pagination').load('?handler=MemberDataTable');
+    });
+
+    function handleToPage(page, pageSize) {
+        $('#table-member-pagination').load(`?handler=MemberDataTable&p=${page}&ps={pageSize}`);
+    }
+</script>
+
+
+

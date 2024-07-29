@@ -1,6 +1,6 @@
 ﻿namespace Delta.Polling.Both.Admin.Groups.Queries.GetGroup;
 
-public class GetGroupRequest
+public record GetGroupRequest : PaginatedListRequest
 {
     public required Guid GroupId { get; init; }
 }
@@ -11,5 +11,7 @@ public class GetGroupRequestValidator : AbstractValidator<GetGroupRequest>
     {
         _ = RuleFor(x => x.GroupId)
             .NotEmpty();
+
+        Include(new PaginatedListRequestValidator());
     }
 }

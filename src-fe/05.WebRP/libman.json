@@ -37,6 +37,23 @@
     {
       "library": "jquery-validate@1.21.0",
       "destination": "wwwroot/lib/jquery-validate/"
+    },
+    {
+      "library": "datatables@1.10.21",
+      "destination": "wwwroot/datatables/",
+      "files": [
+        "js/jquery.dataTables.min.js"
+      ]
     }
+  ,
+{
+  "provider": "cdnjs",
+  "library": "datatables@1.10.21",
+  "destination": "wwwroot/datatables/",
+  "files": [
+    "js/jquery.dataTables.min.js",
+    "js/dataTables.dataTables.min.js"
   ]
+}
+]
 }

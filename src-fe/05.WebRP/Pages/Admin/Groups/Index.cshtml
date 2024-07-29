@@ -1,6 +1,25 @@
 ﻿@page
 @model Delta.Polling.WebRP.Pages.Admin.Groups.IndexModel
 
+@{
+    ViewData["Title"] = "Groups";
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Index">
+                Home
+            </a>
+        </li>
+        <li class="breadcrumb-item active"
+            aria-current="page">
+            @ViewData["Title"]
+        </li>
+    </ol>
+</nav>
+
 @if (TempData["success"] is not null)
 {
     <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
@@ -19,7 +38,7 @@
 
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
-        <a href="#">
+        <a class="btn btn-primary" onclick="handleCreateGroup()">
             Create
         </a>
     </div>
@@ -37,7 +56,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(int i=0;i<3;i++)
+                    @for (int i = 0; i < 3; i++)
                     {
                         <tr>
                             <td>
@@ -54,19 +73,19 @@
                     }
                     @*  @if (data.Count() > 0)
                     {
-                        @foreach (var group in data)
-                        {
-                            <tr>
-                                <td>
-                                    @group.Name
-                                </td>
-                                <td class="text-right">
-                                    <a asp-page="Details" asp-route-groupId="@group.Id" class="btn btn-info text-white">
-                                        Details
-                                    </a>
-                                </td>
-                            </tr>
-                        }
+                    @foreach (var group in data)
+                    {
+                    <tr>
+                    <td>
+                    @group.Name
+                    </td>
+                    <td class="text-right">
+                    <a asp-page="Details" asp-route-groupId="@group.Id" class="btn btn-info text-white">
+                    Details
+                    </a>
+                    </td>
+                    </tr>
+                    }
                     } *@
                 </tbody>
             </table>
@@ -81,6 +100,19 @@
 
     function handleToPage(page, pageSize) {
         $('#table-pagination').load(`?handler=DataTable&p=${page}&ps={pageSize}`);
+    }
+
+    function handleCreateGroup() {
+        fetch(`Groups?handler=CreateGroup`)
+            .then((response) => {
+                return response.text();
+            })
+            .then((htmlText) => {
+                $('#form-modal .modal-body').html(htmlText);
+                $('#form-modal .modal-title').html("Create Group");
+                $('#form-modal').modal('show');
+                $.validator.unobtrusive.parse('#create-group');
+            })
     }
 
 </script>

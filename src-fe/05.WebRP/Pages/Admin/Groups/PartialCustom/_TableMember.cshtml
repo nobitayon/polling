@@ -1,0 +1,118 @@
+﻿@using Delta.Polling.Both.Admin.Groups.Queries.GetGroup;
+
+@{
+    var data = ViewData["Data"] as GetGroupResult;
+    var pageSize = ViewData["PageSize"] as int?;
+    var error = ViewData["Error"] as string;
+}
+
+@if (error != null)
+{
+    <div>Error: @error</div>
+}
+
+@if(data!=null)
+{
+    var groupItem = data.GroupItem;
+    var memberItems = data.MemberItems.Items;
+    var count = data.MemberItems.TotalCount;
+
+    <div class="d-flex flex-column justify-content-around" style="height:500px">
+        <table height="80%" class="table table-bordered" id="membersTable">
+            <thead>
+                <tr>
+                    <th>
+                        Username
+                    </th>
+                    <th>
+                        Actions
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (count > 0)
+                {
+                    @foreach (var member in memberItems)
+                    {
+                        <tr>
+                            <td>
+                                @member.Username
+                            </td>
+                            <td class="text-right">
+                                <form asp-page-handler="RemoveMember" method="post" class="col-8">
+                                    <input type="hidden" name="GroupId" value="@groupItem.Id" class="form-control" required>
+                                    <input type="hidden" name="Username" value="@member.Username" class="form-control" required>
+
+                                    <!-- Button trigger modal -->
+                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#removeMember">
+                                        Remove
+                                    </a>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="removeMember" tabindex="-1" aria-labelledby="removeMember" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="removeMemberLabel">Remove member </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Confirm</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+        @if (pageSize != null)
+        {
+            <nav aria-label="Table Pagination">
+                <ul class="pagination">
+                    @if (count > 0  && pageSize != null)
+                    {
+                        int convPs = pageSize ?? 0;
+                        var totalPages = (int)Math.Ceiling(count / (double)convPs);
+
+                        for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == count ? "active" : "")">
+                                @if (count == i)
+                                {
+                                <li class="page-item active">
+                                    <a class="page-link" href="#"> @i <span class="sr-only">(current)</span></a>
+                                </li>
+                                }
+                                else
+                                {
+                                <a class="page-link" onclick="handleToPage(@i,@pageSize)">
+                                        @i
+                                </a>
+                                }
+                            </li>
+                        }
+                    }
+                </ul>
+            </nav>
+        }
+
+    </div>
+
+}
+
+<script>
+    $(document).ready(function () {
+        $("#membersTable").DataTable({
+            paging: false,         
+            info: false,      
+            lengthChange: false
+        });
+    });
+</script>

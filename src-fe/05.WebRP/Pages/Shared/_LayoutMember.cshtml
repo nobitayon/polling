@@ -16,6 +16,7 @@
     <script src="~/lib/jquery-validate/jquery.validate.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/datatables/js/jquery.dataTables.js"></script>
 
     <!-- Custom CSS -->
     <style>
@@ -98,7 +99,7 @@
                 <ul class="navbar-nav ms-auto">
                     @if (User.Identity!.IsAuthenticated)
                     {
-                        <li>
+                        <li class="nav-link d-flex align-items-center gap-2">
                             Hello, @User.Identity.Name
                         </li>
                         <li class="nav-item">
@@ -120,8 +121,7 @@
                     {
                         <li class="nav-item">
                             <a class="@CssClassFor.NavLink"
-                               asp-page="/Account/Login"
-                            >
+                               asp-page="/Account/Login">
                                 <i class="bi bi-box-arrow-in-right"></i>
                                 Login
                             </a>
@@ -202,8 +202,8 @@
         border: 0;
     }
 
-    .custom-button:hover {
-        color: #000;
-        background-color: #eaeaea;
-    }
+        .custom-button:hover {
+            color: #000;
+            background-color: #eaeaea;
+        }
 </style>

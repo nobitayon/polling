@@ -82,6 +82,10 @@
 
 <script>
     $(document).ready(function () {
-        $("#groupsTable").DataTable();
+        $("#groupsTable").DataTable({
+            paging: false,
+            info: false,
+            lengthChange: false
+        });
     });
 </script>

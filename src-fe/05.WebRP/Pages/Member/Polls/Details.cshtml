@@ -8,6 +8,8 @@
     ViewBag.CurrentMenu = MenuFor.MemberPollsIndex;
 }
 
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
+
 @if (Model.Poll is not null)
 {
     ViewData["Title"] = Model.Poll.Title;
