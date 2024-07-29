@@ -1,3 +1,4 @@
+using Delta.Polling.FrontEnd.Logics.Admin.Groups.Commands.AddGroup;
 using Delta.Polling.FrontEnd.Logics.Admin.Groups.Queries.GetGroups;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -77,5 +78,43 @@ public class IndexModel : PageModelBase
             ViewName = "~/Pages/Admin/Groups/PartialCustom/_TableGroup.cshtml",
             ViewData = viewData
         };
+    }
+
+    public IActionResult OnGetCreateGroup()
+    {
+        return new PartialViewResult
+        {
+            ViewName = "~/Pages/Admin/Groups/PartialCustom/_CreateGroupModal.cshtml"
+        };
+    }
+
+    public async Task<IActionResult> OnPostCreateGroup(AddGroupCommand command)
+    {
+        var response = await Sender.Send(command);
+
+        if (response.Error is not null)
+        {
+            Error = response.Error;
+            TempData["failed"] = Error.Detail;
+
+            var redirectUrlLocal = Url.Page("/Admin/Groups");
+
+            return new JsonResult(new { isValid = false, redirectUrl = redirectUrlLocal });
+        }
+
+        if (response.Result is null)
+        {
+            TempData["failed"] = "Failed to create group";
+
+            var redirectUrlLocal = Url.Page("/Admin/Groups");
+
+            return new JsonResult(new { isValid = true, redirectUrl = redirectUrlLocal });
+        }
+
+        TempData["success"] = "Success create group";
+
+        var redirectUrl = Url.Page("/Admin/Groups/Details", new { groupId = response.Result.Data.GroupId });
+
+        return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
     }
 }

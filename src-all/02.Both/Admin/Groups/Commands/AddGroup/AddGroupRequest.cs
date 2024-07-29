@@ -1,6 +1,6 @@
 ﻿namespace Delta.Polling.Both.Admin.Groups.Commands.AddGroup;
 
-public class AddGroupRequest
+public record AddGroupRequest
 {
     public required string Name { get; init; }
 }

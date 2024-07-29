@@ -4,7 +4,7 @@ using Delta.Polling.Domain.Groups.Entities;
 namespace Delta.Polling.Logics.Admin.Groups.Commands.AddGroup;
 
 [Authorize(RoleName = RoleNameFor.Administrator)]
-public class AddGroupCommand : AddGroupRequest, IRequest<AddGroupOutput>
+public record AddGroupCommand : AddGroupRequest, IRequest<AddGroupOutput>
 {
 }
 

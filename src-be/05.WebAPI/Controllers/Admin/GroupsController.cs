@@ -2,6 +2,7 @@
 using Delta.Polling.Both.Admin.Groups.Commands.AddMember;
 using Delta.Polling.Both.Admin.Groups.Queries.GetGroup;
 using Delta.Polling.Both.Admin.Groups.Queries.GetGroups;
+using Delta.Polling.Both.Common.Enums;
 using Delta.Polling.Logics.Admin.Groups.Commands.AddGroup;
 using Delta.Polling.Logics.Admin.Groups.Commands.AddMember;
 using Delta.Polling.Logics.Admin.Groups.Commands.RemoveMember;
@@ -48,8 +49,25 @@ public class GroupsController : ApiControllerBase
     }
 
     [HttpGet("{groupId:guid}")]
-    public async Task<GetGroupOutput> GetGroupDetails([FromRoute] GetGroupQuery request)
+    public async Task<GetGroupOutput> GetGroupDetails(
+        [FromRoute] Guid groupId,
+        [FromQuery] int page,
+        [FromQuery] int pageSize,
+        [FromQuery] string? searchText,
+        [FromQuery] string? searchField,
+        [FromQuery] string? sortField,
+        [FromQuery] SortOrder? sortOrder
+        )
     {
-        return await Sender.Send(request);
+        return await Sender.Send(new GetGroupQuery
+        {
+            GroupId = groupId,
+            Page = page,
+            PageSize = pageSize,
+            SearchField = searchField,
+            SearchText = searchText,
+            SortField = sortField,
+            SortOrder = sortOrder
+        });
     }
 }

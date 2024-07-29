@@ -3,7 +3,7 @@
 namespace Delta.Polling.Logics.Admin.Groups.Commands.RemoveMember;
 
 [Authorize(RoleName = RoleNameFor.Administrator)]
-public class RemoveMemberCommand : RemoveMemberRequest, IRequest
+public record RemoveMemberCommand : RemoveMemberRequest, IRequest
 {
 }
 
@@ -27,15 +27,12 @@ public class RemoveMemberCommandHandler(
             throw new Exception("User is not authenticated.");
         }
 
-        foreach (var username in request.ListMemberUsername)
-        {
-            var groupMember = await databaseService.GroupMembers
-                                .Where(gm => gm.Username == username && gm.GroupId == request.GroupId)
+        var groupMember = await databaseService.GroupMembers
+                                .Where(gm => gm.Username == request.Username && gm.GroupId == request.GroupId)
                                 .SingleOrDefaultAsync()
-                                ?? throw new Exception($"{username} is not member of group");
+                                ?? throw new Exception($"{request.Username} is not member of group");
 
-            _ = databaseService.GroupMembers.Remove(groupMember);
-        }
+        _ = databaseService.GroupMembers.Remove(groupMember);
 
         _ = await databaseService.SaveAsync(cancellationToken);
     }

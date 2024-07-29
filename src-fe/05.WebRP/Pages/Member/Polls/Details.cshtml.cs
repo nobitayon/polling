@@ -40,6 +40,19 @@ public class DetailsModel : PageModelBase
     public async Task<IActionResult> OnGet()
     {
         var response = await Sender.Send(new GetPollQuery { PollId = PollId });
+
+        if (response.Error is not null)
+        {
+            Error = response.Error;
+
+            return Page();
+        }
+
+        if (response.Result is null)
+        {
+            TempData["failed"] = "failed get poll";
+        }
+
         if (response.Result is not null)
         {
             Poll = response.Result.Data;
