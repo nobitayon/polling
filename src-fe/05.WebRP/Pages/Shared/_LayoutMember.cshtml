@@ -121,7 +121,7 @@
                         <li class="nav-item">
                             <a class="@CssClassFor.NavLink"
                                asp-page="/Account/Login"
-                               asp-route-returnUrl="/Member/Index">
+                            >
                                 <i class="bi bi-box-arrow-in-right"></i>
                                 Login
                             </a>
@@ -162,6 +162,16 @@
                         Polls
                     </a>
                     <a asp-page="/Member/Groups/Index" class="@this.GetNavLinkClass(MenuFor.MemberGroupIndex) custom-button">
+                        Groups
+                    </a>
+                }
+
+                @if (User.IsInRole(RoleNameFor.Administrator))
+                {
+                    <a asp-page="/Admin/Index" class="@this.GetNavLinkClass(MenuFor.AdminIndex) custom-button">
+                        Home
+                    </a>
+                    <a asp-page="/Admin/Groups/Index" class="@this.GetNavLinkClass(MenuFor.AdminGroupIndex) custom-button">
                         Groups
                     </a>
                 }

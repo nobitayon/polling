@@ -1,0 +1,87 @@
+﻿@using Delta.Polling.Both.Admin.Groups.Queries.GetGroups;
+
+@{
+    var data = ViewData["Data"] as IEnumerable<GroupItem>;
+    var count = ViewData["Count"] as int?;
+    var pageSize = ViewData["PageSize"] as int?;
+    var error = ViewData["Error"] as string;
+}
+
+@if (error != null)
+{
+    <div>Error: @error</div>
+}
+
+<div class="d-flex flex-column justify-content-around" style="height:500px">
+    <table height="80%" class="table table-bordered" id="groupsTable">
+        <thead>
+            <tr>
+                <th>
+                    Group Name
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (data.Count() > 0)
+            {
+                @foreach (var group in data)
+                {
+                    <tr>
+                        <td>
+                            @group.Name
+                        </td>
+                        <td class="text-right">
+                            <a asp-page="Details" asp-route-groupId="@group.Id" class="btn btn-info text-white">
+                                Details
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    @if (count != null && pageSize != null)
+    {
+        <nav aria-label="Table Pagination">
+            <ul class="pagination">
+                @if (count > 0 && count != null && pageSize != null)
+                {
+                    int convCount = count ?? 0;
+                    int convPs= pageSize ?? 0;
+                    var totalPages = (int)Math.Ceiling(convCount / (double)convPs);
+
+                    for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == count ? "active" : "")">
+                            @if (count == i)
+                            {
+                            <li class="page-item active">
+                                <a class="page-link" href="#"> @i <span class="sr-only">(current)</span></a>
+                            </li>
+                            }
+                            else
+                            {
+                            <a class="page-link" onclick="handleToPage(@i,@pageSize)">
+                                    @i
+                            </a>
+                            }
+                        </li>
+                    }
+                }
+            </ul>
+        </nav>
+    }
+
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#groupsTable").DataTable();
+    });
+</script>

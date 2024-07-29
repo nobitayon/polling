@@ -1,6 +1,6 @@
 ﻿namespace Delta.Polling.Both.Admin.Groups.Queries.GetGroups;
 
-public record GetGroupsOutput : Output<IEnumerable<GroupItem>>
+public record GetGroupsOutput : Output<PaginatedListResponse<GroupItem>>
 {
 }
 
