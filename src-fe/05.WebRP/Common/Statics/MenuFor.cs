@@ -8,6 +8,8 @@ public static class MenuFor
     public const string ContributorIndex = "ContributorIndex";
     public const string ContributorMoviesIndex = "ContributorMoviesIndex";
     public const string MemberIndex = "MemberIndex";
+    public const string AdminIndex = "AdminIndex";
     public const string MemberGroupIndex = "MemberGroupIndex";
     public const string MemberPollsIndex = "MemberPollsIndex";
+    public const string AdminGroupIndex = "AdminGroupIndex";
 }

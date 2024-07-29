@@ -6,9 +6,15 @@ public class IndexModel : PageModelBase
     {
         if (HttpContext.User.Identity is not null && HttpContext.User.Identity.IsAuthenticated)
         {
-            return LocalRedirect("/Member/Index");
+            if (HttpContext.User.IsInRole(RoleNameFor.Member))
+            {
+                return LocalRedirect("/Member/Index");
+            }
+            else if (HttpContext.User.IsInRole(RoleNameFor.Administrator))
+            {
+                return LocalRedirect("/Admin/Index");
+            }
         }
-
         return Page();
     }
 }

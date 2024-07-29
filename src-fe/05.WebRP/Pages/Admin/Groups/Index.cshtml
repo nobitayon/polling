@@ -1,0 +1,86 @@
+﻿@page
+@model Delta.Polling.WebRP.Pages.Admin.Groups.IndexModel
+
+@if (TempData["success"] is not null)
+{
+    <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
+        <strong>Success!</strong> @TempData["success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["failed"] is not null)
+{
+    <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
+        <strong>Failed!</strong> @TempData["failed"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="col-sm-12" style="padding:20px">
+        <a href="#">
+            Create
+        </a>
+    </div>
+    <div id="table-pagination" class="card-body table-responsive">
+        <div class="d-flex flex-column justify-content-around" style="height:500px">
+            <table height="80%" class="table table-bordered" id="groupsTable">
+                <thead>
+                    <tr>
+                        <th>
+                            Group Name
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(int i=0;i<3;i++)
+                    {
+                        <tr>
+                            <td>
+                                <p class="card-text placeholder-glow">
+                                    <span class="placeholder" style="width: 100%;"></span>
+                                </p>
+                            </td>
+                            <td>
+                                <p class="card-text placeholder-glow">
+                                    <span class="placeholder" style="width: 100%;"></span>
+                                </p>
+                            </td>
+                        </tr>
+                    }
+                    @*  @if (data.Count() > 0)
+                    {
+                        @foreach (var group in data)
+                        {
+                            <tr>
+                                <td>
+                                    @group.Name
+                                </td>
+                                <td class="text-right">
+                                    <a asp-page="Details" asp-route-groupId="@group.Id" class="btn btn-info text-white">
+                                        Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    } *@
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#table-pagination').load('?handler=DataTable');
+    });
+
+    function handleToPage(page, pageSize) {
+        $('#table-pagination').load(`?handler=DataTable&p=${page}&ps={pageSize}`);
+    }
+
+</script>

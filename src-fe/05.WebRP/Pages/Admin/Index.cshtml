@@ -1,0 +1,90 @@
+﻿@page
+@model Delta.Polling.WebRP.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewBag.CurrentMenu = MenuFor.MemberIndex;
+}
+
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
+
+<nav aria-label="breadcrumb" class="fixed-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none" asp-page="/Index">
+                Home
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            @ViewData["Title"]
+        </li>
+    </ol>
+</nav>
+
+<div class="content">
+    @if (TempData["success"] is not null)
+    {
+        <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
+            <strong>Success!</strong> @TempData["success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["failed"] is not null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
+            <strong>Failed!</strong> @TempData["failed"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="container mt-4">
+        
+    </div>
+</div>
+
+<style>
+    .fixed-breadcrumb {
+        position: fixed;
+        top: 10%;
+        width: 100%;
+        z-index: 1000; /* Adjust as needed */
+        background-color: white; /* Adjust as needed */
+        border-bottom: 1px solid #ddd; /* Optional, for visual separation */
+        padding: 10px 20px; /* Adjust padding as needed */
+    }
+
+    .welcome-message {
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-card {
+        margin-bottom: 1.5rem;
+    }
+
+    .list-group-item {
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function adjustMargin() {
+            const breadcrumb = document.querySelector('.fixed-breadcrumb');
+            const breadcrumbHeight = breadcrumb.offsetHeight;
+            const navbar = document.querySelector('.navbar');
+            const navbarHeight = navbar.offsetHeight;
+            const breadcrumbTopPercentage = 10;
+            const viewportHeight = window.innerHeight;
+            const marginTop = (breadcrumbTopPercentage / 100) * viewportHeight + breadcrumbHeight - navbarHeight;
+
+            document.querySelector('.content').style.marginTop = marginTop + 'px';
+        }
+
+        adjustMargin();
+        window.addEventListener('resize', adjustMargin); // Adjust on resize
+    });
+
+    $(document).ready(function () {
+        $('#container-recent-activity').load('?handler=RecentPoll');
+    });
+</script>
