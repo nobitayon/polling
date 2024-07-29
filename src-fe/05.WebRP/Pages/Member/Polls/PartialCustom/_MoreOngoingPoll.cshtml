@@ -1,0 +1,48 @@
+﻿@using Delta.Polling.WebRP.Pages.Member.Polls;
+@using Delta.Polling.Base.Polls.Enums;
+
+@{
+    var data = ViewData["Data"] as IEnumerable<OngoingPollItemModel>;
+    var error = ViewData["Error"] as string;
+}
+
+@if (error != null)
+{
+    <div class="list-group-item list-group-item-action">
+        <h5 class="mb-1">Error Get data: @error</h5>
+    </div>
+}
+else
+{
+    @if (data != null)
+    {
+        if (data.Count() == 0)
+        {
+            <div>
+                <h5 class="mb-1">No more ongoing poll</h5>
+            </div>
+        }
+        else
+        {
+            @foreach (var poll in data)
+            {
+                <div class="poll-card">
+                    <div class="poll-card-header">
+                        <h5 class="mb-0">@poll.Title</h5>
+                        <p class="text-muted mb-0">Posted by @poll.CreatedBy on @poll.Created.ToString("MMM dd, yyyy HH:mm")</p>
+                        <p class="text-muted mb-0"><small>Group: @poll.GroupName</small></p>
+                    </div>
+                    <div class="poll-card-body">
+                        <a asp-page="/Member/Polls/Details" asp-route-pollId="@poll.Id" class="btn btn-primary btn-view">View Poll</a>
+                    </div>
+                </div>
+            }
+        }
+    }
+    else
+    {
+        <div>
+            <h5 class="mb-1">Error get more ongoing poll</h5>
+        </div>
+    }
+}
