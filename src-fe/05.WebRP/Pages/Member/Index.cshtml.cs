@@ -1,3 +1,4 @@
+using System.Text;
 using Delta.Polling.Both.Member.Polls.Queries.GetOngoingPolls;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Queries.GetRecentParticipatedPoll;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -11,6 +12,14 @@ public class IndexModel() : PageModelBase
 
     public async Task<IActionResult> OnGetRecentPollAsync()
     {
+        StringBuilder sb = new StringBuilder();
+
+        // Multiline string using verbatim string literal
+        string multilineText = @"
+line1
+line2
+line3";
+
         var response = await Sender.Send(new GetRecentParticipatedPollQuery { });
 
         if (response.Error != null)

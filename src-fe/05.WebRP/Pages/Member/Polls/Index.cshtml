@@ -24,57 +24,31 @@
 </nav>
 
 <div class="mb-4">
-    <h2 class="mb-4">Ongoing Polls</h2>
+    <h2 id="title" class="mb-4">Ongoing Polls</h2>
+    <a asp-page="/Member/Polls/My" class="btn btn-primary">Explore poll you created &nbsp;&gt;</a>
 </div>
 
-<!-- Poll Card -->
-<div class="poll-card">
-    <div class="poll-card-header">
-        <h5 class="mb-0">Poll Title 1</h5>
-        <p class="text-muted mb-0">Posted by User123 on July 27, 2024</p>
-        <p class="text-muted mb-0"><small>Group: Group 1</small></p>
-    </div>
-    <div class="poll-card-body">
-        <p>What is your favorite programming language?</p>
-        <a href="poll-details.html" class="btn btn-primary btn-view">View Poll</a>
-    </div>
+<div id="list-poll-container">
+    @foreach (var poll in Model.Polls)
+    {
+        <div class="poll-card">
+            <div class="poll-card-header">
+                <h5 class="mb-0">@poll.Title</h5>
+                <p class="text-muted mb-0">Posted by @poll.CreatedBy on @poll.Created.ToString("MMM dd, yyyy HH:mm")</p>
+                <p class="text-muted mb-0"><small>Group: @poll.GroupName</small></p>
+            </div>
+            <div class="poll-card-body">
+                <a asp-page="/Member/Polls/Details" asp-route-pollId="@poll.Id" class="btn btn-primary btn-view">View Poll</a>
+            </div>
+        </div>
+    }
+    <button id="load-more-button" data-current-page="1" onclick="handleClickMore()">Load More</button>
 </div>
 
-<div class="poll-card">
-    <div class="poll-card-header">
-        <h5 class="mb-0">Poll Title 1</h5>
-        <p class="text-muted mb-0">Posted by User123 on July 27, 2024</p>
-        <p class="text-muted mb-0"><small>Group: Group 1</small></p>
-    </div>
-    <div class="poll-card-body">
-        <p>What is your favorite programming language?</p>
-        <a href="poll-details.html" class="btn btn-primary btn-view">View Poll</a>
-    </div>
-</div>
+<button id="backToTop" class="btn btn-primary" aria-label="Back to top">
+    <i class="bi bi-arrow-up"></i>
+</button>
 
-<div class="poll-card">
-    <div class="poll-card-header">
-        <h5 class="mb-0">Poll Title 1</h5>
-        <p class="text-muted mb-0">Posted by User123 on July 27, 2024</p>
-        <p class="text-muted mb-0"><small>Group: Group 1</small></p>
-    </div>
-    <div class="poll-card-body">
-        <p>What is your favorite programming language?</p>
-        <a href="poll-details.html" class="btn btn-primary btn-view">View Poll</a>
-    </div>
-</div>
-
-<div class="poll-card">
-    <div class="poll-card-header">
-        <h5 class="mb-0">Poll Title 1</h5>
-        <p class="text-muted mb-0">Posted by User123 on July 27, 2024</p>
-        <p class="text-muted mb-0"><small>Group: Group 1</small></p>
-    </div>
-    <div class="poll-card-body">
-        <p>What is your favorite programming language?</p>
-        <a href="poll-details.html" class="btn btn-primary btn-view">View Poll</a>
-    </div>
-</div>
 
 <style>
     .poll-card {
@@ -100,4 +74,53 @@
     .btn-view {
         margin-top: 0.5rem;
     }
+
+    #backToTop {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: opacity 0.3s ease;
+    }
+
+        #backToTop:hover {
+            background-color: #0056b3;
+        }
 </style>
+
+<script>
+    function handleClickMore() {
+        let currentPageString = event.target.getAttribute('data-current-page');
+        let currentPage = parseInt(currentPageString);
+        $('#load-more-button').remove();
+        fetch(`?handler=LoadMoreOngoingPoll&p=${currentPage + 1}&ps=5`)
+            .then((response) => {
+                return response.json();
+            })
+            .then((dataJson) => {
+                $('#list-poll-container').append(dataJson.html);
+                $('#load-more-button').on('click', handleClickMore);
+            })
+    }
+
+    $(document).ready(function () {
+        const backToTopButton = document.getElementById('backToTop')
+
+        backToTopButton.addEventListener('click', function () {
+            console.log("Nice");
+            // window.scrollTo({ top: 0, behavior: 'smooth' });
+            // document.getElementById('title').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+</script>

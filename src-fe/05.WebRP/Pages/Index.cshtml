@@ -6,6 +6,8 @@
     ViewBag.CurrentMenu = MenuFor.Index;
 }
 
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
+
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container">

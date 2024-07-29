@@ -6,6 +6,8 @@
     ViewBag.CurrentMenu = MenuFor.MemberIndex;
 }
 
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
+
 <nav aria-label="breadcrumb" class="fixed-breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">

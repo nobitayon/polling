@@ -75,7 +75,10 @@ public class GetOngoingPollsQueryHandler(
             {
                 Id = poll.Id,
                 Title = poll.Title,
-                Status = poll.Status
+                Status = poll.Status,
+                Created = poll.Created,
+                CreatedBy = poll.CreatedBy,
+                GroupName = poll.Group.Name
             })
             .ToListAsync(cancellationToken);
 
