@@ -7,10 +7,22 @@
     <RootNamespace>Delta.Polling.WebRP</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Pages\Admin\Groups\AddMember.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\03.Infrastructure\03.Infrastructure.csproj" />
     <ProjectReference Include="..\04.Logics\04.Logics.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Admin\Groups\AddMember.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Admin\Groups\AddMember.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pages\Admin\Groups\AddMember.cshtml" />
   </ItemGroup>
 </Project>
