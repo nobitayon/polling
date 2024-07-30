@@ -6,5 +6,5 @@ public record AddMemberOutput : Output<AddMemberResult>
 
 public record AddMemberResult
 {
-    public required List<Guid> ListGroupMemberId { get; init; }
+    public required Guid GroupMemberId { get; init; }
 }
