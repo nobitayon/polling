@@ -8,9 +8,8 @@ public class IndexModel : PageModelBase
 {
     public void OnGet()
     {
-    }
 
-    public string Paging { get; set; } = string.Empty;
+    }
 
     public async Task<IActionResult> OnGetDataTable(int? p, int ps = 5)
     {

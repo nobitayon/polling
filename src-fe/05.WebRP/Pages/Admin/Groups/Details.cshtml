@@ -3,86 +3,135 @@
 
 @await Component.InvokeAsync("ErrorViewer", Model.Error)
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a class="text-decoration-none"
-               asp-page="/Index">
-                Home
-            </a>
-        </li>
-        <li class="breadcrumb-item">
-            <a class="text-decoration-none"
-               asp-page="/Admin/Groups/Index">
-                Groups
-            </a>
-        </li>
-        <li class="breadcrumb-item active"
-            aria-current="page">
-            @TempData["Title"]
-        </li>
-    </ol>
-</nav>
-
-@if (TempData["success"] is not null)
+@if (Model.Error is null)
 {
-    <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
-        <strong>Success!</strong> @TempData["success"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    ViewData["Title"] = Model.GroupItem.Name;
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Index">
+                    Home
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Admin/Groups/Index">
+                    Groups
+                </a>
+            </li>
+            <li class="breadcrumb-item active"
+                aria-current="page">
+                @ViewData["Title"]
+            </li>
+        </ol>
+    </nav>
+
+    @if (TempData["success"] is not null)
+    {
+        <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
+            <strong>Success!</strong> @TempData["success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["failed"] is not null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
+            <strong>Failed!</strong> @TempData["failed"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <h1 class="h3 mb-2 text-gray-800">Daftar Grup</h1>
+    <p class="mb-4">
+        DataTables is a third party plugin that is used to generate the demo table below.
+        For more information about DataTables, please visit the <a target="_blank"
+                                                                   href="https://datatables.net">official DataTables documentation</a>.
+    </p>
+
+    <div class="card">
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="table-member" class="table table-bordered" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Member Username</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var memberItem in Model.MemberItems)
+                            {
+                                <tr>
+                                    <td>
+                                        @memberItem.Username
+                                    </td>
+                                    <td>
+                                        <form asp-page-handler="RemoveMember" method="post" class="col-8">
+                                            <input type="hidden" name="GroupId" value="@Model.GroupItem.Id" class="form-control" required>
+                                            <input type="hidden" name="Username" value="@memberItem.Username" class="form-control" required>
+
+                                            <!-- Button trigger modal -->
+                                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#removeMember">
+                                                Remove
+                                            </a>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="removeMember" tabindex="-1" aria-labelledby="removeMember" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="removeMemberLabel">Remove member </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Confirm</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    @Html.Raw(Model.Paging)
+                </div>
+            </div>
+        </div>
+
     </div>
 }
 
-@if (TempData["failed"] is not null)
-{
-    <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
-        <strong>Failed!</strong> @TempData["failed"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 
-
-<div id="table-pagination" class="card-body table-responsive">
-    <div class="d-flex flex-column justify-content-around" style="height:500px">
-        <table height="80%" class="table table-bordered" id="table-member-pagination">
-            <thead>
-                <tr>
-                    <th>
-                        Username
-                    </th>
-                    <th>
-                        Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int i = 0; i < 3; i++)
-                {
-                    <tr>
-                        <td>
-                            <p class="card-text placeholder-glow">
-                                <span class="placeholder" style="width: 100%;"></span>
-                            </p>
-                        </td>
-                        <td>
-                            <p class="card-text placeholder-glow">
-                                <span class="placeholder" style="width: 100%;"></span>
-                            </p>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
 
 <script>
+
     $(document).ready(function () {
-        $('#table-member-pagination').load('?handler=MemberDataTable');
+        $("#table-member").DataTable({
+            paging: false,
+            info: false,
+            lengthChange: false
+        });
     });
 
-    function handleToPage(page, pageSize) {
-        $('#table-member-pagination').load(`?handler=MemberDataTable&p=${page}&ps={pageSize}`);
-    }
+    // $(document).ready(function () {
+    //     $('#table-member-pagination').load('?handler=MemberDataTable');
+    // });
+
+    // function handleToPage(page, pageSize) {
+    //     $('#table-member-pagination').load(`?handler=MemberDataTable&p=${page}&ps={pageSize}`);
+    // }
 </script>
 
 

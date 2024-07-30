@@ -36,61 +36,63 @@
     </div>
 }
 
+<h1 class="h3 mb-2 text-gray-800">Daftar Grup</h1>
+<p class="mb-4">
+    DataTables is a third party plugin that is used to generate the demo table below.
+    For more information about DataTables, please visit the <a target="_blank"
+                                                               href="https://datatables.net">official DataTables documentation</a>.
+</p>
+
 <div class="card">
     <div class="col-sm-12" style="padding:20px">
         <a class="btn btn-primary" onclick="handleCreateGroup()">
             Create
         </a>
     </div>
-    <div id="table-pagination" class="card-body table-responsive">
-        <div class="d-flex flex-column justify-content-around" style="height:500px">
-            <table height="80%" class="table table-bordered" id="groupsTable">
-                <thead>
-                    <tr>
-                        <th>
-                            Group Name
-                        </th>
-                        <th>
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (int i = 0; i < 3; i++)
-                    {
+    
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+        </div>
+        <div class="card-body">
+            <div id="table-pagination" class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
                         <tr>
-                            <td>
-                                <p class="card-text placeholder-glow">
-                                    <span class="placeholder" style="width: 100%;"></span>
-                                </p>
-                            </td>
-                            <td>
-                                <p class="card-text placeholder-glow">
-                                    <span class="placeholder" style="width: 100%;"></span>
-                                </p>
-                            </td>
+                            <th>Group Name</th>
+                            <th>Actions</th>
                         </tr>
-                    }
-                    @*  @if (data.Count() > 0)
-                    {
-                    @foreach (var group in data)
-                    {
-                    <tr>
-                    <td>
-                    @group.Name
-                    </td>
-                    <td class="text-right">
-                    <a asp-page="Details" asp-route-groupId="@group.Id" class="btn btn-info text-white">
-                    Details
-                    </a>
-                    </td>
-                    </tr>
-                    }
-                    } *@
-                </tbody>
-            </table>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Group Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @for (int i = 0; i < 3; i++)
+                        {
+                            <tr>
+                                <td>
+                                    <p class="card-text placeholder-glow">
+                                        <span class="placeholder" style="width: 100%;"></span>
+                                    </p>
+                                </td>
+                                <td>
+                                    <p class="card-text placeholder-glow">
+                                        <span class="placeholder" style="width: 100%;"></span>
+                                    </p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+    
 </div>
 
 <script>
@@ -103,7 +105,7 @@
     }
 
     function handleCreateGroup() {
-        fetch(`Groups?handler=CreateGroup`)
+        fetch(`?handler=CreateGroup`)
             .then((response) => {
                 return response.text();
             })
