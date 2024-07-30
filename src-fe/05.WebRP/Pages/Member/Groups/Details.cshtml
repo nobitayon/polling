@@ -1,5 +1,6 @@
 ﻿@page "{GroupId}"
 @model Delta.Polling.WebRP.Pages.Member.Groups.DetailsModel
+
 @{
     ViewBag.CurrentMenu = MenuFor.MemberGroupIndex;
     ViewData["Title"] = "Details";
@@ -7,94 +8,243 @@
 
 @await Component.InvokeAsync("ErrorViewer", Model.Error)
 
-@if (TempData["success"] is not null)
+@if (Model.Error == null)
 {
-    <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
-        <strong>Success!</strong> @TempData["success"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    if (TempData["success"] is not null)
+    {
+        <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
+            <strong>Success!</strong> @TempData["success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    if (TempData["failed"] is not null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
+            <strong>Failed!</strong> @TempData["failed"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Index">
+                    Home
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Member/Index">
+                    Member
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Member/Groups/Index">
+                    My Groups
+                </a>
+            </li>
+            <li class="breadcrumb-item active"
+                aria-current="page">
+                @ViewData["Title"]
+            </li>
+        </ol>
+    </nav>
+
+
+    <div class="container mt-4">
+        <!-- Group Header -->
+        <div class="group-header">
+            <h1>@Model.GroupItem.Name</h1>
+            <p class="lead">Welcome to the group! Here's an overview of the group details.</p>
+        </div>
+
+        <!-- List of Members with Pop-Up -->
+        <div class="mb-4">
+            <h2 class="mb-3">Members</h2>
+            <p class="mb-2">Click the button below to view all members.</p>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#memberModal">
+                View All Members
+            </button>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- List of Polls -->
+        <div>
+            <h2 class="mb-3">Polls</h2>
+            <form asp-page-handler="AddPoll" method="post" class="col-8">
+                <input type="hidden" asp-for="@Model.Input.GroupId" value="@Model.GroupId" class="form-control" required>
+
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPoll">
+                    Create Poll inside this group
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="addPoll" tabindex="-1" aria-labelledby="addPoll" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addPollLabel">Create Poll </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label asp-for="@Model.Input.Title" class="form-label"></label>
+                                    <input type="text" asp-for="@Model.Input.Title" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="@Model.Input.Question" class="form-label"></label>
+                                    <input type="text" asp-for="@Model.Input.Question" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="@Model.Input.MaximumAnswer" class="form-label"></label>
+                                    <input type="number" asp-for="@Model.Input.MaximumAnswer" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label asp-for="@Model.Input.AllowOtherChoice" class="form-label text-warning"></label>
+                                    <select asp-for="@Model.Input.AllowOtherChoice" class="form-control" required>
+                                        <option value="true">True</option>
+                                        <option value="false">False</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="list-group mb-4">
+                @foreach (var poll in Model.GroupItem.PollItems)
+                {
+                    <div class="list-group-item">
+                        <h5>@poll.Title</h5>
+                        <p class="text-muted">
+                            Created on: @poll.Created.ToString("MMM dd, yyyy HH:mm")
+                        </p>
+                    </div>
+                }
+            </div>
+            <!-- Pagination controls for polls (if needed) -->
+        </div>
     </div>
-}
 
-@if (TempData["failed"] is not null)
-{
-    <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
-        <strong>Failed!</strong> @TempData["failed"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a class="text-decoration-none"
-               asp-page="/Index">
-                Home
-            </a>
-        </li>
-        <li class="breadcrumb-item">
-            <a class="text-decoration-none"
-               asp-page="/Member/Index">
-                Member
-            </a>
-        </li>
-        <li class="breadcrumb-item">
-            <a class="text-decoration-none"
-               asp-page="/Member/Groups/Index">
-                My Groups
-            </a>
-        </li>
-        <li class="breadcrumb-item active"
-            aria-current="page">
-            @ViewData["Title"]
-        </li>
-    </ol>
-</nav>
-
-<h1>Check this is @Model.GroupId</h1>
-
-<form asp-page-handler="AddPoll" method="post" class="col-8">
-    <input type="hidden" asp-for="@Model.Input.GroupId" value="@Model.GroupId" class="form-control" required>
-
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPoll">
-        Create Poll inside this group
-    </button>
-
-    <!-- Modal -->
-    <div class="modal fade" id="addPoll" tabindex="-1" aria-labelledby="addPoll" aria-hidden="true">
-        <div class="modal-dialog">
+    <!-- Modal for Member List -->
+    <div class="modal fade" id="memberModal" tabindex="-1" aria-labelledby="memberModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addPollLabel">Create Poll </h5>
+                    <h5 class="modal-title" id="memberModalLabel">Members</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <!-- Filter or search box -->
                     <div class="mb-3">
-                        <label asp-for="@Model.Input.Title" class="form-label"></label>
-                        <input type="text" asp-for="@Model.Input.Title" class="form-control" required>
+                        <input id="form-search-member" type="text" class="form-control" id="memberSearch" placeholder="Search members...">
                     </div>
-                    <div class="mb-3">
-                        <label asp-for="@Model.Input.Question" class="form-label"></label>
-                        <input type="text" asp-for="@Model.Input.Question" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="@Model.Input.MaximumAnswer" class="form-label"></label>
-                        <input type="number" asp-for="@Model.Input.MaximumAnswer" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="@Model.Input.AllowOtherChoice" class="form-label text-warning"></label>
-                        <select asp-for="@Model.Input.AllowOtherChoice" class="form-control" required>
-                            <option value="true">True</option>
-                            <option value="false">False</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Create</button>
+
+                    <!-- List of Members in Modal -->
+                    <ul id="list-member" class="list-group">
+                        @foreach (var memberItem in Model.GroupItem.MemberItems)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>@memberItem</span>
+                            </li>
+                        }
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
-</form>
+    <button id="backToTop" class="btn btn-primary" aria-label="Back to top">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+}
+
+<script>
+    $(document).ready(function () {
+        console.log("Hello");
+        $('#form-search-member').on('input', function () {
+            // Code to execute on input event
+            var filter = $(this).val().toLowerCase();
+            $('#list-member .list-group-item').each(function () {
+                var text = $(this).text().toLowerCase();
+                console.log(text);
+                $(this).toggle(text.indexOf(filter) > -1);
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        const backToTopButton = document.getElementById('backToTop')
+
+        backToTopButton.addEventListener('click', function () {
+
+            document.getElementById('main-content').scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    });
+
+
+</script>
+
+<style>
+    .group-header {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+        .group-header h1 {
+            margin: 0;
+        }
+
+    .section-divider {
+        margin: 30px 0;
+        border-top: 2px solid #e9ecef;
+    }
+
+    .list-group-item {
+        border-radius: 8px;
+    }
+
+    .modal-content {
+        border-radius: 8px;
+    }
+
+    .pagination {
+        margin: 20px 0;
+    }
+
+    #backToTop {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: opacity 0.3s ease;
+    }
+
+        #backToTop:hover {
+            background-color: #0056b3;
+        }
+</style>
+
+
