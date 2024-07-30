@@ -5,13 +5,55 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Delta.Polling.WebRP.Pages.Admin.Groups;
 
-public class DetailsModel : PageModelBase
+public class DetailsModel(PagerService pagerService) : PageModelBase
 {
     [BindProperty(SupportsGet = true)]
     public Guid GroupId { get; init; }
 
     [BindProperty]
-    public GroupItem? GroupItem { get; set; }
+    public IEnumerable<MemberItem> MemberItems { get; set; } = default!;
+
+    [BindProperty]
+    public GroupItem GroupItem { get; set; } = default!;
+
+    public string Paging { get; set; } = string.Empty;
+
+    public async Task<IActionResult> OnGetAsync(int? p, int ps = 5)
+    {
+        var page = PagerHelper.GetSafePage(p);
+        var pageSize = PagerHelper.GetSafePageSize(ps);
+
+        var query = new GetGroupQuery
+        {
+            GroupId = GroupId,
+            Page = page,
+            PageSize = pageSize,
+            SearchText = null,
+            SortField = null,
+            SortOrder = null
+        };
+
+        var response = await Sender.Send(query);
+
+        if (response.Error != null)
+        {
+            Error = response.Error;
+            return Page();
+        }
+
+        if (response.Result == null)
+        {
+            TempData["failed"] = "Error get group";
+            return Page();
+        }
+
+        MemberItems = response.Result.Data.MemberItems.Items;
+        GroupItem = response.Result.Data.GroupItem;
+
+        Paging = pagerService.GetHtml("Groups/Details", response.Result.Data.MemberItems.TotalCount, query);
+
+        return Page();
+    }
 
 
     public async Task<IActionResult> OnGetMemberDataTable(int? p, int ps = 5)

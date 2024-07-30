@@ -1,0 +1,198 @@
+﻿@using Delta.Polling.WebRP.Common.Extensions
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Dashboard</title>
+
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/datatables/js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <!-- Custom fonts for this template-->
+    <link href="~/lib/dashboard/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+          rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="~/lib/dashboard/css/sb-admin-2.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a class="@this.GetNavLinkClass(MenuFor.AccountMyClaims)"
+                   asp-page="/Admin/Groups/Index">
+                    Groups
+                </a>
+            </li>
+        </ul>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            @if (User.Identity!.IsAuthenticated)
+                            {
+                            <li class="nav-link d-flex align-items-center gap-2">
+                                Hello, @User.Identity.Name
+                            </li>
+                            <li class="nav-item">
+                                <a class="@this.GetNavLinkClass(MenuFor.AccountMyClaims)"
+                                   asp-page="/Account/MyClaims">
+                                    <i class="bi bi-box-arrow-in-left"></i>
+                                    My Claims
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                @* <a class="@CssClassFor.NavLink"
+                                   asp-page="/Account/Logout">
+                                    <i class="bi bi-box-arrow-in-left"></i>
+                                    Logout
+                                </a> *@
+                                <form asp-page="/Account/Logout" method="post" class="@CssClassFor.NavLink col-8">
+                                    
+                                    <!-- Button trigger modal -->
+                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Logout">
+                                        Logout
+                                    </a>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="Logout" tabindex="-1" aria-labelledby="Logout" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="LogoutLabel">Logout </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Confirm</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </li>
+                            }
+                            else
+                            {
+                            <li class="nav-item">
+                                <a class="@CssClassFor.NavLink"
+                                   asp-page="/Account/Login">
+                                    <i class="bi bi-box-arrow-in-right"></i>
+                                    Login
+                                </a>
+                            </li>
+                            }
+                            
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2021</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    @* Coba taro modal di sini *@
+    <div class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" id="form-modal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="~/lib/dashboard/vendor/jquery-easing/jquery.easing.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="~/lib/dashboard/js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    @* <script src="~/lib/dashboard/vendor/chart.js/Chart.min.js"></script> *@
+
+    <!-- Page level custom scripts -->
+    @* <script src="~/lib/dashboard/js/demo/chart-area-demo.js"></script>
+    <script src="~/lib/dashboard/js/demo/chart-pie-demo.js"></script> *@
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>
