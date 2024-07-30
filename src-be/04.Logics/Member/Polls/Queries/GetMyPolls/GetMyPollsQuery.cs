@@ -33,9 +33,15 @@ public class GetMyPollsQueryHandler(
         //                    Title = poll.Title
         //                }).ToListAsync(cancellationToken);
 
+        var myGroup = await databaseService.GroupMembers
+                        .Include(gm => gm.Group)
+                        .Where(gm => gm.Username == currentUserService.Username)
+                        .Select(gm => gm.Group.Id)
+                        .ToListAsync(cancellationToken);
+
         var query = databaseService.Polls
             .AsNoTracking()
-            .Where(p => p.CreatedBy == currentUserService.Username);
+            .Where(p => p.CreatedBy == currentUserService.Username && myGroup.Contains(p.GroupId));
 
         var totalCount = await query.CountAsync(cancellationToken);
 

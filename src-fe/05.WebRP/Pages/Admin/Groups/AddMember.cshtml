@@ -24,8 +24,7 @@
             <li class="breadcrumb-item">
                 <a class="text-decoration-none"
                    asp-page="/Admin/Groups/Details"
-                   asp-route-groupId="@Model.GroupId"
-                >
+                   asp-route-groupId="@Model.GroupId">
                     Details
                 </a>
             </li>
@@ -75,8 +74,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var memberItem in Model.MemberItems)
+                            @{
+                                var listMember = Model.MemberItems.ToList();
+                            }
+                            @for (int i = 0; i < Model.MemberItems.Count(); i++)
                             {
+                                var memberItem = listMember[i];
                                 <tr>
                                     <td>
                                         @memberItem.Username
@@ -87,16 +90,16 @@
                                             <input type="hidden" name="Username" value="@memberItem.Username" class="form-control" required>
 
                                             <!-- Button trigger modal -->
-                                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMember">
+                                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMember_@i">
                                                 Add
                                             </a>
 
                                             <!-- Modal -->
-                                            <div class="modal fade" id="addMember" tabindex="-1" aria-labelledby="addMember" aria-hidden="true">
+                                            <div class="modal fade" id="addMember_@i" tabindex="-1" aria-labelledby="addMember_@i" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="addMemberLabel">Add member </h5>
+                                                            <h5 class="modal-title" id="addMemberLabel_@i">Add member </h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
 
