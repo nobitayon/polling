@@ -46,12 +46,16 @@ public class GetMyGroupQueryHandler(
 
         // TODO: Belum ada pagination untuk yang ini. Mungkin nunggu kak fu hari senin
         var listPolling = await databaseService.Polls
+                            .Include(p => p.Group)
                             .Where(poll => poll.GroupId == request.GroupId)
                             .Select(poll => new PollItem
                             {
                                 Id = poll.Id,
                                 Title = poll.Title,
-                                Status = poll.Status
+                                Status = poll.Status,
+                                Created = poll.Created,
+                                CreatedBy = poll.CreatedBy,
+                                GroupName = poll.Group.Name
                             }).ToListAsync(cancellationToken);
 
         var result = new GroupItem
