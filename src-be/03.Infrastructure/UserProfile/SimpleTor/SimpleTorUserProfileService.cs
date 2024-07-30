@@ -80,4 +80,44 @@ public class SimpleTorUserProfileService : IUserProfileService
 
         return restResponse.Data;
     }
+
+    public async Task<IEnumerable<FullUserProfileItem>> GetUsersAsync(CancellationToken cancellationToken = default)
+    {
+        var getAccessTokenInput = new GetAccessTokenInput
+        {
+            TokenUrl = _simpleTorUserProfileOptions.TokenUrl,
+            ClientId = _simpleTorUserProfileOptions.ClientId,
+            ClientSecret = _simpleTorUserProfileOptions.ClientSecret,
+            Scopes = _simpleTorUserProfileOptions.Scopes
+        };
+
+        var accessToken = await AccessTokenHelper.GetAccessToken(getAccessTokenInput, cancellationToken);
+
+        var restRequest = new RestRequest($"Applications/{_simpleTorUserProfileOptions.ApplicationId}/Roles/Member/Users");
+        _ = restRequest.AddHeader(KnownHeaders.Authorization, $"Bearer {accessToken}");
+
+        var restResponse = await _restClient.ExecuteAsync<IEnumerable<FullUserProfileItem>>(restRequest, cancellationToken);
+
+        if (!restResponse.IsSuccessful)
+        {
+            if (restResponse.StatusCode is HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+
+            if (restResponse.ErrorException is not null)
+            {
+                throw restResponse.ErrorException;
+            }
+
+            throw new HttpRequestException(restResponse.ErrorMessage, restResponse.ErrorException, restResponse.StatusCode);
+        }
+
+        if (restResponse.Data is null)
+        {
+            throw new NullException(nameof(restResponse.Data), typeof(UserProfileItem));
+        }
+
+        return restResponse.Data;
+    }
 }

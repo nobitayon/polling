@@ -11,6 +11,9 @@ public record SimpleTorUserProfileOptions
     public required string[] Scopes { get; init; } =
     [
         "SimpleTor.User.GetUser",
-        "SimpleTor.User.GetUsers"
+        "SimpleTor.User.GetUsers",
+        "SimpleTor.Application.GetUsers",
+        "SimpleTor.Application.GetRoleUsers"
     ];
+    public required string ApplicationId { get; init; }
 }

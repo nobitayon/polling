@@ -1,4 +1,135 @@
-﻿@page
+﻿@page "{GroupId}"
 @model Delta.Polling.WebRP.Pages.Admin.Groups.AddMemberModel
-@{
+
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
+
+@if (Model.Error is null)
+{
+    ViewData["Title"] = "Add Member";
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Index">
+                    Home
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Admin/Groups/Index">
+                    Groups
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Admin/Groups/Details"
+                   asp-route-groupId="@Model.GroupId"
+                >
+                    Details
+                </a>
+            </li>
+            <li class="breadcrumb-item active"
+                aria-current="page">
+                @ViewData["Title"]
+            </li>
+        </ol>
+    </nav>
+
+    @if (TempData["success"] is not null)
+    {
+        <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
+            <strong>Success!</strong> @TempData["success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["failed"] is not null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
+            <strong>Failed!</strong> @TempData["failed"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <h1 class="h3 mb-2 text-gray-800">Daftar username yang tidak berada di grup</h1>
+    <p class="mb-4">
+        DataTables is a third party plugin that is used to generate the demo table below.
+        For more information about DataTables, please visit the <a target="_blank"
+                                                                   href="https://datatables.net">official DataTables documentation</a>.
+    </p>
+
+    <div class="card">
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="table-member-not-in-group" class="table table-bordered" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Member Username</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var memberItem in Model.MemberItems)
+                            {
+                                <tr>
+                                    <td>
+                                        @memberItem.Username
+                                    </td>
+                                    <td>
+                                        <form asp-page-handler="AddMember" method="post" class="col-8">
+                                            <input type="hidden" name="GroupId" value="@Model.GroupId" class="form-control" required>
+                                            <input type="hidden" name="Username" value="@memberItem.Username" class="form-control" required>
+
+                                            <!-- Button trigger modal -->
+                                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMember">
+                                                Add
+                                            </a>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="addMember" tabindex="-1" aria-labelledby="addMember" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="addMemberLabel">Add member </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Confirm</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    @Html.Raw(Model.Paging)
+                </div>
+            </div>
+        </div>
+
+    </div>
 }
+
+
+
+<script>
+
+    $(document).ready(function () {
+        $("#table-member-not-in-group").DataTable({
+            paging: false,
+            info: false,
+            lengthChange: false
+        });
+    });
+</script>

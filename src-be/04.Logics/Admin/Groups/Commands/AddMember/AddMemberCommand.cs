@@ -4,7 +4,7 @@ using Delta.Polling.Domain.Groups.Entities;
 namespace Delta.Polling.Logics.Admin.Groups.Commands.AddMember;
 
 [Authorize(RoleName = RoleNameFor.Administrator)]
-public class AddMemberCommand : AddMemberRequest, IRequest<AddMemberOutput>
+public record AddMemberCommand : AddMemberRequest, IRequest<AddMemberOutput>
 {
 }
 
@@ -28,21 +28,40 @@ public class AddMemberCommandHandler(
             throw new Exception("User is not authenticated.");
         }
 
-        var listGroupMember = new List<Guid>();
-        foreach (var username in request.ListMemberUsername)
+        //var listGroupMember = new List<Guid>();
+        //foreach (var username in request.ListMemberUsername)
+        //{
+        //    var groupMember = new GroupMember
+        //    {
+        //        GroupId = request.GroupId,
+        //        Username = username,
+        //        Created = DateTimeOffset.Now,
+        //        CreatedBy = currentUserService.Username
+        //    };
+
+        //    _ = await databaseService.GroupMembers.AddAsync(groupMember, cancellationToken);
+
+        //    listGroupMember.Add(groupMember.Id);
+        //}
+
+        var member = await databaseService.GroupMembers
+                            .Where(gm => gm.GroupId == request.GroupId && gm.Username == request.Username)
+                            .SingleOrDefaultAsync(cancellationToken);
+
+        if (member != null)
         {
-            var groupMember = new GroupMember
-            {
-                GroupId = request.GroupId,
-                Username = username,
-                Created = DateTimeOffset.Now,
-                CreatedBy = currentUserService.Username
-            };
-
-            _ = await databaseService.GroupMembers.AddAsync(groupMember, cancellationToken);
-
-            listGroupMember.Add(groupMember.Id);
+            throw new Exception($"{request.Username} already in group");
         }
+
+        var groupMember = new GroupMember
+        {
+            GroupId = request.GroupId,
+            Username = request.Username,
+            Created = DateTimeOffset.Now,
+            CreatedBy = currentUserService.Username
+        };
+
+        _ = await databaseService.GroupMembers.AddAsync(groupMember, cancellationToken);
 
         _ = await databaseService.SaveAsync(cancellationToken);
 
@@ -50,7 +69,7 @@ public class AddMemberCommandHandler(
         {
             Data = new AddMemberResult
             {
-                ListGroupMemberId = listGroupMember
+                GroupMemberId = groupMember.Id
             }
         };
     }

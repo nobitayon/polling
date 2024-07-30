@@ -1,4 +1,5 @@
 ﻿using Delta.Polling.Both.Admin.Groups.Queries.GetUsersNotMemberFromGroup;
+using Delta.Polling.Services.UserProfile;
 
 namespace Delta.Polling.Logics.Admin.Groups.Queries.GetUsersNotMemberFromGroup;
 
@@ -17,20 +18,46 @@ public class GetUsersNotMemberFromGroupQueryValidator : AbstractValidator<GetUse
 }
 
 public class GetUsersNotMemberFromGroupQueryHandler(
-    IDatabaseService databaseService)
+    IDatabaseService databaseService,
+    IUserProfileService userProfileService)
     : IRequestHandler<GetUsersNotMemberFromGroupQuery, GetUsersNotMemberFromGroupOutput>
 {
     public async Task<GetUsersNotMemberFromGroupOutput> Handle(GetUsersNotMemberFromGroupQuery request, CancellationToken cancellationToken)
     {
-        var query = databaseService.GroupMembers
-            .Where(gm => gm.GroupId == request.GroupId)
-            .AsNoTracking();
+        List<string> listMember = [];
+        var response = userProfileService.GetUsersAsync(cancellationToken);
 
-        var totalCount = await query.CountAsync(cancellationToken);
+        if (response != null)
+        {
+            foreach (var check in response.Result)
+            {
+                listMember.Add(check.Username);
+            }
+        }
+        else
+        {
+            throw new Exception("Error getting users from simpletor");
+        }
+
+        List<string> notAMember = [];
+
+        foreach (var username in listMember)
+        {
+            var groupMember = await databaseService.GroupMembers
+                                .Where(gm => gm.Username == username && gm.GroupId == request.GroupId)
+                                .SingleOrDefaultAsync(cancellationToken);
+
+            if (groupMember is null)
+            {
+                notAMember.Add(username);
+            }
+        }
+
+        var totalCount = notAMember.Count;
 
         if (string.IsNullOrWhiteSpace(request.SortField))
         {
-            query = query.OrderBy(gm => gm.Username);
+            notAMember = [.. notAMember.OrderBy(s => s)];
         }
         else
         {
@@ -42,32 +69,29 @@ public class GetUsersNotMemberFromGroupQueryHandler(
             {
                 if (request.SortField == nameof(MemberItem.Username))
                 {
-                    query = query.OrderBy(gm => gm.Username);
+                    notAMember = [.. notAMember.OrderBy(s => s)];
                 }
             }
             else if (sortOrder is SortOrder.Desc)
             {
                 if (request.SortField == nameof(MemberItem.Username))
                 {
-                    query = query.OrderByDescending(gm => gm.Username);
+                    notAMember = [.. notAMember.OrderByDescending(s => s)];
                 }
             }
             else
             {
-                query = query.OrderBy(gm => gm.Username);
+                notAMember = [.. notAMember.OrderBy(s => s)];
             }
         }
 
         var skippedAmount = PagerHelper.GetSkipAmount(request.Page, request.PageSize);
 
-        var members = await query
+        var members = notAMember
             .Skip(skippedAmount)
             .Take(request.PageSize)
-            .Select(gm => new MemberItem
-            {
-                Username = gm.Username
-            })
-            .ToListAsync(cancellationToken);
+            .Select(member => new MemberItem { Username = member })
+            .ToList();
 
         var output = new GetUsersNotMemberFromGroupOutput
         {
