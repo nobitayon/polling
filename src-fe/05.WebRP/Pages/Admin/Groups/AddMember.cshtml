@@ -1,9 +1,9 @@
 ﻿@page "{GroupId}"
 @model Delta.Polling.WebRP.Pages.Admin.Groups.AddMemberModel
 
-@await Component.InvokeAsync("ErrorViewer", Model.Error)
+@await Component.InvokeAsync("ErrorViewer", Model.Problem)
 
-@if (Model.Error is null)
+@if (Model.Problem is null)
 {
     ViewData["Title"] = "Add Member";
 

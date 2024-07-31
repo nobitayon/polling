@@ -2,9 +2,9 @@
 
 namespace Delta.Polling.Infrastructure.UserRole.SimpleTor;
 
-public static class ConfigureSimpleTorUserRoleService
+public static class ConfigureSimpleTorUserRole
 {
-    public static IServiceCollection AddSimpleTorUserRoleService(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddSimpleTorUserRole(this IServiceCollection services, IConfiguration configuration)
     {
         _ = services.Configure<SimpleTorUserRoleOptions>(configuration.GetSection(SimpleTorUserRoleOptions.SectionKey));
         _ = services.AddScoped<IUserRoleService, SimpleTorUserRoleService>();

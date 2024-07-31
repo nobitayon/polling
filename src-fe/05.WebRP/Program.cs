@@ -5,7 +5,7 @@ using Delta.Polling.WebRP;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddInfrastructure(builder.Host, builder.Configuration);
 builder.Services.AddLogics();
-builder.Services.AddWebRP();
+builder.Services.AddWebRP(builder.Environment, builder.Configuration);
 
 var app = builder.Build();
 

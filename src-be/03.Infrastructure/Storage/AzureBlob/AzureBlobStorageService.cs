@@ -1,132 +1,138 @@
-﻿//using Azure.Storage.Blobs;
-//using Microsoft.Extensions.Logging;
-//using Microsoft.Extensions.Options;
-//using Zeta.Polling.Application.Services.Storage;
+﻿using Azure.Storage.Blobs;
+using Delta.Polling.Services.Storage;
 
-//namespace Zeta.Polling.Infrastructure.Storage.AzureBlob;
+namespace Delta.Polling.Infrastructure.Storage.AzureBlob;
 
-//public class AzureBlobStorageService : IStorageService
-//{
-//    private readonly BlobContainerClient _container;
-//    private readonly ILogger<AzureBlobStorageService> _logger;
+public class AzureBlobStorageService(
+    IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
+    ILogger<AzureBlobStorageService> logger)
+    : IStorageService
+{
+    private readonly string _accountName = azureBlobStorageOptions.Value.AccountName;
+    private readonly string _containerName = azureBlobStorageOptions.Value.ContainerName;
+    private readonly BlobContainerClient _blobContainerClient = new(azureBlobStorageOptions.Value.ConnectionString, azureBlobStorageOptions.Value.ContainerName);
 
-//    public string Provider => StorageProvider.AzureBlob;
+    public async Task<string> CreateAsync(byte[] content)
+    {
+        var storedFileId = $"{Guid.NewGuid()}{Guid.NewGuid()}";
 
-//    public AzureBlobStorageService(IOptions<AzureBlobStorageOptions> azureBlobStorageOptions, ILogger<AzureBlobStorageService> logger)
-//    {
-//        var azureConnectionString = azureBlobStorageOptions.Value.ConnectionString;
-//        var azureContainerName = azureBlobStorageOptions.Value.ContainerName;
+        try
+        {
+            var isContainerExist = await _blobContainerClient.ExistsAsync();
 
-//        _container = new BlobContainerClient(azureConnectionString, azureContainerName);
-//        _logger = logger;
-//    }
+            if (!isContainerExist)
+            {
+                _ = await _blobContainerClient.CreateIfNotExistsAsync();
+            }
 
-//    public async Task<string> CreateAsync(byte[] data)
-//    {
-//        var storageFileId = $"{Guid.NewGuid()}{Guid.NewGuid()}";
+            var blobClient = _blobContainerClient.GetBlobClient(storedFileId);
 
-//        return await CreateAsync(data, storageFileId);
-//    }
+            using var dataStream = new MemoryStream(content)
+            {
+                Position = 0
+            };
 
-//    private async Task<string> CreateAsync(byte[] data, string storageFileId)
-//    {
-//        try
-//        {
-//            var isContainerExist = await _container.ExistsAsync();
+            _ = await blobClient.UploadAsync(dataStream);
 
-//            if (!isContainerExist)
-//            {
-//                await _container.CreateIfNotExistsAsync();
-//            }
+            return storedFileId;
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to upload content {StoredFileId} to container {ContainerName} in Azure Blob Storage",
+                storedFileId, _containerName);
 
-//            var blobClient = _container.GetBlobClient(storageFileId);
+            throw;
+        }
+    }
 
-//            using var dataStream = new MemoryStream(data)
-//            {
-//                Position = 0
-//            };
+    public async Task<string> CreateAsync(byte[] content, string folderName, string fileName)
+    {
+        try
+        {
+            var isContainerExist = await _blobContainerClient.ExistsAsync();
 
-//            await blobClient.UploadAsync(dataStream);
+            if (!isContainerExist)
+            {
+                _ = await _blobContainerClient.CreateIfNotExistsAsync();
+            }
 
-//            return storageFileId;
-//        }
-//        catch (Exception exception)
-//        {
-//            _logger.LogError(exception, "Error in executing method {MethodName} with Storage File Id {StorageFileId}", nameof(CreateAsync), storageFileId);
+            var storedFileId = $"{folderName}/{fileName}";
+            var blobClient = _blobContainerClient.GetBlobClient(storedFileId);
 
-//            throw;
-//        }
-//    }
+            using var dataStream = new MemoryStream(content)
+            {
+                Position = 0
+            };
 
-//    public async Task<byte[]> ReadAsync(string storageFileId)
-//    {
-//        try
-//        {
-//            var blobClient = _container.GetBlobClient(storageFileId);
-//            var stream = await blobClient.OpenReadAsync();
+            _ = await blobClient.UploadAsync(dataStream);
 
-//            using var memoryStream = new MemoryStream();
-//            stream.CopyTo(memoryStream);
+            return storedFileId;
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to upload content to container {ContainerName} in Azure Blob Storage",
+                _containerName);
 
-//            return memoryStream.ToArray();
-//        }
-//        catch (Exception exception)
-//        {
-//            _logger.LogError(exception, "Error in executing method {MethodName} with Storage File Id {StorageFileId}", nameof(ReadAsync), storageFileId);
+            throw;
+        }
+    }
 
-//            throw;
-//        }
-//    }
+    public async Task DeleteAsync(string storedFileId)
+    {
+        try
+        {
+            var blobClient = _blobContainerClient.GetBlobClient(storedFileId);
 
-//    public async Task<string> ReadAsBase64Async(string storageFileId)
-//    {
-//        var fileBytes = await ReadAsync(storageFileId);
-//        var result = Convert.ToBase64String(fileBytes);
-//        return result;
-//    }
+            _ = await blobClient.DeleteAsync();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to delete content {StoredFileId} in container {ContainerName} in Azure Blob Storage",
+                storedFileId, _containerName);
+            throw;
+        }
+    }
 
-//    public async Task<bool> DeleteAsync(string storageFileId)
-//    {
-//        try
-//        {
-//            var blobClient = _container.GetBlobClient(storageFileId);
+    public string GetUrl(string storedFileId)
+    {
+        return $"https://{_accountName}.blob.core.windows.net/{_containerName}/{storedFileId}";
+    }
 
-//            await blobClient.DeleteAsync();
+    public async Task<byte[]> ReadAsync(string storedFileId)
+    {
+        try
+        {
+            var blobClient = _blobContainerClient.GetBlobClient(storedFileId);
+            var stream = await blobClient.OpenReadAsync();
 
-//            return true;
-//        }
-//        catch (Exception exception)
-//        {
-//            _logger.LogError(exception, "Error in executing method {MethodName} with Storage File Id {StorageFileId}", nameof(DeleteAsync), storageFileId);
+            using var memoryStream = new MemoryStream();
+            stream.CopyTo(memoryStream);
 
-//            throw;
-//        }
-//    }
+            return memoryStream.ToArray();
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to read content {StoredFileId} from container {ContainerName} in Azure Blob Storage",
+                storedFileId, _containerName);
 
-//    public async Task<string> UpdateAsync(string storageFileId, byte[] newData)
-//    {
-//        try
-//        {
-//            if (await DeleteAsync(storageFileId))
-//            {
-//                var result = await CreateAsync(newData);
+            throw;
+        }
+    }
 
-//                return result;
-//            }
-//            else
-//            {
-//                var exception = new Exception($"Unable to delete file {storageFileId}");
+    public async Task<string> UpdateAsync(string storedFileId, byte[] newContent)
+    {
+        try
+        {
+            await DeleteAsync(storedFileId);
 
-//                _logger.LogError(exception, "Error in executing method {MethodName} with Storage File Id {StorageFileId}", nameof(UpdateAsync), storageFileId);
+            return await CreateAsync(newContent);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Failed to update content {StoredFileId} in container {ContainerName} in Azure Blob Storage",
+                storedFileId, _containerName);
 
-//                return string.Empty;
-//            }
-//        }
-//        catch (Exception exception)
-//        {
-//            _logger.LogError(exception, "Error in executing method {MethodName} with Storage File Id {StorageFileId}", nameof(UpdateAsync), storageFileId);
-
-//            throw;
-//        }
-//    }
-//}
+            throw;
+        }
+    }
+}

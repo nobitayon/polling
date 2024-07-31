@@ -1,13 +1,34 @@
-﻿@model Delta.Polling.FrontEnd.Services.BackEnd.ErrorResponse?
+﻿@model ProblemDetails?
 
 @if (Model is not null)
 {
-    <div class="alert alert-danger">
-        <h5>
+    <div class="alert alert-danger" role="alert">
+        <h5 class="alert-heading mb-4">
             @Model.Title
         </h5>
-        <p class="p-0 m-0" style="white-space: pre-line">
-            @Model.Detail
-        </p>
+        <div class="accordion"
+             id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne"
+                            aria-expanded="true"
+                            aria-controls="collapseOne">
+                        Error Details
+                    </button>
+                </h2>
+                <div id="collapseOne"
+                     class="accordion-collapse collapse"
+                     data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <p class="p-0 m-0" style="white-space: pre-line">
+                            @Model.Detail
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 }

@@ -11,9 +11,16 @@ public static class ConfigureUserProfile
 
         _ = userProfileOptions.Provider switch
         {
-            UserProfileProvider.SimpleTor => services.AddSimpleTorUserProfileService(configuration),
+            UserProfileProvider.SimpleTor => services.AddSimpleTorUserProfile(configuration),
             _ => throw new UnsupportedServiceProviderException(nameof(UserProfile), userProfileOptions.Provider),
         };
+
+        var logger = ConfigureLogging
+            .CreateLoggerFactory()
+            .CreateLogger(nameof(ConfigureUserProfile));
+
+        logger.LogInformation("The provider for {ServiceName} service is {Provider}.",
+            nameof(UserProfile), userProfileOptions.Provider);
 
         return services;
     }

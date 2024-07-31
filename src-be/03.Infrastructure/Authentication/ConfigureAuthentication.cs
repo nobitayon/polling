@@ -14,6 +14,13 @@ public static class ConfigureAuthentication
             AuthenticationProvider.SimpleTen => services.AddSimpleTenAuthentication(configuration),
             _ => throw new UnsupportedServiceProviderException(nameof(Authentication), authenticationOptions.Provider),
         };
+        
+		var logger = ConfigureLogging
+			.CreateLoggerFactory()
+            .CreateLogger(nameof(ConfigureAuthentication));
+
+        logger.LogInformation("The provider for {ServiceName} service is {Provider}.",
+            nameof(Authentication), authenticationOptions.Provider);
 
         return services;
     }

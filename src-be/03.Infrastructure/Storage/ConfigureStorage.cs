@@ -1,4 +1,4 @@
-﻿using Delta.Polling.Infrastructure.Logging;
+﻿using Delta.Polling.Infrastructure.Storage.AzureBlob;
 using Delta.Polling.Infrastructure.Storage.LocalFolder;
 using Delta.Polling.Infrastructure.Storage.None;
 
@@ -13,17 +13,18 @@ public static class ConfigureStorage
 
         _ = storageOptions.Provider switch
         {
-            StorageProvider.None => services.AddNoneStorageService(),
-            StorageProvider.LocalFolder => services.AddLocalFolderStorageService(configuration),
+            StorageProvider.None => services.AddNoneStorage(),
+            StorageProvider.AzureBlob => services.AddAzureBlobStorage(configuration),
+            StorageProvider.LocalFolder => services.AddLocalFolderStorage(configuration),
             _ => throw new UnsupportedServiceProviderException(nameof(Storage), storageOptions.Provider),
         };
 
-        var logger = configuration
+        var logger = ConfigureLogging
             .CreateLoggerFactory()
             .CreateLogger(nameof(ConfigureStorage));
 
-        logger.LogInformation("Using {Provider} for {ServiceName} service.",
-            storageOptions.Provider, nameof(Storage));
+        logger.LogInformation("The provider for {ServiceName} service is {Provider}.",
+            nameof(Storage), storageOptions.Provider);
 
         return services;
     }

@@ -21,25 +21,20 @@ public class AddModel : PageModelBase
     {
         var response = await Sender.Send(Input);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
+            Problem = response.Problem;
 
             return Page();
         }
 
         if (response.Result is not null)
         {
-            TempData["success"] = "Movie was added successfully.";
+            Notifier.Success($"Movie {Input.Title} has been added successfully.");
 
-            return RedirectToPage("Index");
+            return RedirectToPage("Details", new { response.Result.Data.MovieId });
         }
-        else
-        {
 
-            TempData["failed"] = "Movie was failed to add.";
-
-            return Page();
-        }
+        return Page();
     }
 }

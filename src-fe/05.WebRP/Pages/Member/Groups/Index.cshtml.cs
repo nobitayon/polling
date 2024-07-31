@@ -24,9 +24,9 @@ public class IndexModel(PagerService pagerService) : PageModelBase
 
         var response = await Sender.Send(query);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
+            Problem = response.Problem;
 
             return Page();
         }

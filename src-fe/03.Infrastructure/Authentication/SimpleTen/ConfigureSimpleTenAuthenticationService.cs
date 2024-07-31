@@ -1,5 +1,4 @@
-﻿using Delta.Polling.FrontEnd.Infrastructure.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
@@ -42,6 +41,8 @@ public static class ConfigureSimpleTenAuthenticationService
             };
         })
         .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        _ = services.AddScoped<CustomOpenIdConnectEvents>();
 
         return services;
     }

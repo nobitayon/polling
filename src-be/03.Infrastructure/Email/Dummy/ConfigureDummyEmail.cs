@@ -4,7 +4,7 @@ namespace Delta.Polling.Infrastructure.Email.Dummy;
 
 public static class ConfigureDummyEmail
 {
-    public static IServiceCollection AddDummyEmailService(this IServiceCollection services)
+    public static IServiceCollection AddDummyEmail(this IServiceCollection services)
     {
         _ = services.AddTransient<IEmailService, DummyEmailService>();
 

@@ -30,7 +30,7 @@ public class ResultPollModel : PageModelBase
     {
         var response = await Sender.Send(new GetPollWithAllAnswerQuery { PollId = PollId });
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
             return new JsonResult(new { success = false });
         }

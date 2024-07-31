@@ -1,8 +1,18 @@
-﻿namespace Delta.Polling.Both.Common.Responses;
+﻿using Microsoft.AspNetCore.Mvc;
 
-public class FileResponse
+namespace Delta.Polling.Both.Common.Responses;
+
+public abstract record FileResponse
 {
-    public string FileName { get; set; } = default!;
-    public string ContentType { get; set; } = default!;
-    public byte[] Content { get; set; } = [];
+    public required string FileName { get; init; }
+    public required string ContentType { get; init; }
+    public required byte[] Content { get; init; }
+
+    public FileContentResult ToFileContentResult()
+    {
+        return new FileContentResult(Content, ContentType)
+        {
+            FileDownloadName = FileName
+        };
+    }
 }

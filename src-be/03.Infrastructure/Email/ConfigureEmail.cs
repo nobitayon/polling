@@ -1,6 +1,5 @@
 ﻿using Delta.Polling.Infrastructure.Email.Dummy;
-using Delta.Polling.Infrastructure.Email.Google;
-using Delta.Polling.Infrastructure.Email.Microsoft;
+using Delta.Polling.Infrastructure.Email.Ethereal;
 
 namespace Delta.Polling.Infrastructure.Email;
 
@@ -8,15 +7,24 @@ public static class ConfigureEmail
 {
     public static IServiceCollection AddEmail(this IServiceCollection services, IConfiguration configuration)
     {
-        var emailOptions = configuration.GetSection(EmailOptions.SectionKey).Get<EmailOptions>()
+        var emailOptionsSection = configuration.GetSection(EmailOptions.SectionKey);
+        _ = services.Configure<EmailOptions>(emailOptionsSection);
+
+        var emailOptions = emailOptionsSection.Get<EmailOptions>()
             ?? throw new ConfigurationBindingFailedException(EmailOptions.SectionKey, typeof(EmailOptions));
 
         _ = emailOptions.Provider switch
         {
-            EmailProvider.Google => services.AddGoogleEmailService(configuration),
-            EmailProvider.Microsoft => services.AddMicrosoftEmailService(configuration),
-            _ => services.AddDummyEmailService()
+            EmailProvider.Ethereal => services.AddEtherealEmail(configuration),
+            _ => services.AddDummyEmail()
         };
+
+        var logger = ConfigureLogging
+            .CreateLoggerFactory()
+            .CreateLogger(nameof(ConfigureEmail));
+
+        logger.LogInformation("The provider for {ServiceName} service is {Provider}.",
+            nameof(Email), emailOptions.Provider);
 
         return services;
     }

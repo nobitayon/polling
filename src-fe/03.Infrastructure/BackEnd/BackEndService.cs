@@ -1,6 +1,5 @@
 ﻿using Delta.Polling.FrontEnd.Services.BackEnd;
 using Delta.Polling.FrontEnd.Services.CurrentUser;
-using Microsoft.Extensions.Logging;
 
 namespace Delta.Polling.FrontEnd.Infrastructure.BackEnd;
 

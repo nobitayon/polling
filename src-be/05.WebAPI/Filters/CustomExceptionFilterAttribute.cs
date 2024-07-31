@@ -8,6 +8,7 @@ public class CustomExceptionFilterAttribute(ILogger<CustomExceptionFilterAttribu
     public override void OnException(ExceptionContext context)
     {
         var exception = context.Exception;
+        var path = context.HttpContext.Request.Path;
 
         if (exception is ForbiddenException)
         {
@@ -16,7 +17,8 @@ public class CustomExceptionFilterAttribute(ILogger<CustomExceptionFilterAttribu
                 Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.3",
                 Title = "You don't have the correct role",
                 Status = StatusCodes.Status403Forbidden,
-                Detail = exception.Message
+                Detail = exception.Message,
+                Instance = path
             };
 
             context.Result = new ObjectResult(details);
@@ -32,7 +34,8 @@ public class CustomExceptionFilterAttribute(ILogger<CustomExceptionFilterAttribu
                 Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.4",
                 Title = "Entity could not be found",
                 Status = StatusCodes.Status404NotFound,
-                Detail = exception.Message
+                Detail = exception.Message,
+                Instance = path
             };
 
             context.Result = new ObjectResult(details);
@@ -48,7 +51,8 @@ public class CustomExceptionFilterAttribute(ILogger<CustomExceptionFilterAttribu
                 Type = "https://datatracker.ietf.org/doc/html/rfc4918#section-11.2",
                 Title = "There is one or more validation error",
                 Status = StatusCodes.Status422UnprocessableEntity,
-                Detail = mve.Summary
+                Detail = mve.Summary,
+                Instance = path
             };
 
             context.Result = new ObjectResult(details);
@@ -62,11 +66,11 @@ public class CustomExceptionFilterAttribute(ILogger<CustomExceptionFilterAttribu
             Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
             Title = "Oops.. something went wrong",
             Status = StatusCodes.Status500InternalServerError,
-            Detail = context.Exception.Message
+            Detail = context.Exception.Message,
+            Instance = path
         });
 
-        logger.LogInformation("Exception Message: {Message}", context.Exception.Message);
-        logger.LogError(context.Exception, "Oops.. something went wrong");
+        logger.LogError(context.Exception, "Exception Message: {ExceptionMessage}", context.Exception.Message);
 
         context.ExceptionHandled = true;
     }

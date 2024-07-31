@@ -35,9 +35,9 @@ public class DetailsModel(PagerService pagerService) : PageModelBase
 
         var response = await Sender.Send(query);
 
-        if (response.Error != null)
+        if (response.Problem != null)
         {
-            Error = response.Error;
+            Problem = response.Problem;
             return Page();
         }
 
@@ -73,13 +73,13 @@ public class DetailsModel(PagerService pagerService) : PageModelBase
 
         var response = await Sender.Send(query);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
             var viewDataLocal = new ViewDataDictionary(ViewData)
             {
                 ["Data"] = null,
                 ["PageSize"] = ps,
-                ["Error"] = response.Error.Detail
+                ["Error"] = response.Problem.Detail
             };
 
             return new PartialViewResult
@@ -129,10 +129,9 @@ public class DetailsModel(PagerService pagerService) : PageModelBase
     {
         var response = await Sender.Send(command);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
-            Console.WriteLine("Error");
+            Problem = response.Problem;
             return Page();
         }
 

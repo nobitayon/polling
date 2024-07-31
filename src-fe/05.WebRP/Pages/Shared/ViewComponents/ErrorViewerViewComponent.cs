@@ -2,10 +2,10 @@
 
 public class ErrorViewerViewComponent : ViewComponent
 {
-    public async Task<IViewComponentResult> InvokeAsync(ErrorResponse error)
+    public async Task<IViewComponentResult> InvokeAsync(ProblemDetails problem)
     {
         await Task.CompletedTask;
 
-        return View(error);
+        return View(problem);
     }
 }

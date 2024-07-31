@@ -6,18 +6,24 @@ public static class ConfigureAuthentication
 {
     public static IServiceCollection AddAuthenticationService(this IServiceCollection services, IConfiguration configuration)
     {
-        var authenticationSection = configuration.GetSection(AuthenticationOptions.SectionKey);
-        var authenticationOptions = authenticationSection.Get<AuthenticationOptions>()
-            ?? throw new ConfigurationBindingFailedException(AuthenticationOptions.SectionKey, typeof(AuthenticationOptions));
+        var authenticationOptionsSection = configuration.GetSection(AuthenticationOptions.SectionKey);
+        _ = services.Configure<AuthenticationOptions>(authenticationOptionsSection);
 
-        _ = services.Configure<AuthenticationOptions>(authenticationSection);
-        _ = services.AddScoped<CustomOpenIdConnectEvents>();
+        var authenticationOptions = authenticationOptionsSection.Get<AuthenticationOptions>()
+            ?? throw new ConfigurationBindingFailedException(AuthenticationOptions.SectionKey, typeof(AuthenticationOptions));
 
         _ = authenticationOptions.Provider switch
         {
             AuthenticationProvider.SimpleTen => services.AddSimpleTenAuthenticationService(configuration),
             _ => throw new UnsupportedServiceProviderException(nameof(Authentication), authenticationOptions.Provider),
         };
+
+        var logger = ConfigureLogging
+            .CreateLoggerFactory()
+            .CreateLogger(nameof(ConfigureAuthentication));
+
+        logger.LogInformation("The provider for {ServiceName} service is {Provider}.",
+            nameof(Authentication), authenticationOptions.Provider);
 
         return services;
     }

@@ -7,7 +7,14 @@ public interface IEmailService
 
 public record SendEmailInput
 {
-    public required string To { get; init; }
+    public required IEnumerable<MailBoxModel> Tos { get; init; }
+    public required IEnumerable<MailBoxModel> Ccs { get; init; }
     public required string Subject { get; init; }
     public required string Body { get; init; }
+}
+
+public record MailBoxModel
+{
+    public required string Name { get; init; }
+    public required string Address { get; init; }
 }

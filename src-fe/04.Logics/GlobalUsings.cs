@@ -1,5 +1,6 @@
 ﻿global using Delta.Polling.Both.Common.Exceptions;
 global using Delta.Polling.Both.Common.Extensions;
+global using Delta.Polling.Both.Common.Responses;
 global using Delta.Polling.Both.Common.Statics;
 global using Delta.Polling.Both.Configurables;
 global using Delta.Polling.FrontEnd.Logics.Common.Attributes;

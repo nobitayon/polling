@@ -4,5 +4,6 @@ public record LocalFolderStorageOptions
 {
     public const string SectionKey = $"{nameof(Storage)}:{nameof(LocalFolder)}";
 
-    public string FolderPath { get; set; } = default!;
+    public required string FolderPath { get; init; }
+    public required string RequestPath { get; init; }
 }

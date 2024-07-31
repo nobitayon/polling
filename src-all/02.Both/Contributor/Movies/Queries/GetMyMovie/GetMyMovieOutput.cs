@@ -12,7 +12,17 @@ public record MovieItem
     public required decimal Budget { get; init; }
     public string BudgetDisplayText => Budget.ToMoneyDisplayText();
     public required DateTimeOffset Created { get; init; }
-    public required MovieStatus Status { get; set; }
-    public DateTimeOffset? Approved { get; set; }
-    public string? ApprovedBy { get; set; }
+    public required string CreatedBy { get; init; }
+    public required MovieStatus Status { get; init; }
+    public required DateTimeOffset? Approved { get; init; }
+    public required string? ApprovedBy { get; init; }
+
+    public required List<MoviePosterItem> Posters { get; init; } = [];
+}
+
+public record MoviePosterItem
+{
+    public required Guid Id { get; init; }
+    public required string Url { get; init; }
+    public required string Description { get; init; }
 }

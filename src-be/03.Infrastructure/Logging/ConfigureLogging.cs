@@ -8,28 +8,25 @@ public static class ConfigureLogging
 {
     public static IHostBuilder AddLogging(this IHostBuilder hostBuilder)
     {
-        _ = hostBuilder.UseSerilog((hostBuilderContext, loggerConfiguration) =>
-        {
-            _ = loggerConfiguration.ReadFrom.Configuration(hostBuilderContext.Configuration)
-                .WriteTo.Console
-                (
-                    theme: AnsiConsoleTheme.Code,
-                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
-                )
-                .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Hour);
-        });
+        _ = hostBuilder.UseSerilog((hostBuilderContext, loggerConfiguration) => loggerConfiguration
+            .ReadFrom.Configuration(hostBuilderContext.Configuration));
 
         SelfLog.Enable(Console.WriteLine);
 
         return hostBuilder;
     }
 
-    public static ILoggerFactory CreateLoggerFactory(this IConfiguration configuration)
+    public static ILoggerFactory CreateLoggerFactory()
     {
         return LoggerFactory.Create(loggingBuilder =>
         {
             var serilog = new LoggerConfiguration()
-                .ReadFrom.Configuration(configuration)
+                .MinimumLevel.Information()
+                .WriteTo.Console
+                (
+                    theme: AnsiConsoleTheme.Code,
+                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"
+                )
                 .CreateLogger();
 
             _ = loggingBuilder.AddSerilog(serilog);
