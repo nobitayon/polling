@@ -6,7 +6,7 @@
     ViewBag.CurrentMenu = MenuFor.MemberPollsIndex;
 }
 
-@await Component.InvokeAsync("ErrorViewer", Model.Error)
+@await Component.InvokeAsync("ErrorViewer", Model.Problem)
 
 @if (Model.Poll is not null)
 {

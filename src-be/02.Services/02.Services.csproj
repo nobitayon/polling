@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
   </ItemGroup>
   <ItemGroup>
+	<ProjectReference Include="..\..\src-all\02.Both\02.Both.csproj" />
     <ProjectReference Include="..\01.Domain\01.Domain.csproj" />
   </ItemGroup>
 </Project>

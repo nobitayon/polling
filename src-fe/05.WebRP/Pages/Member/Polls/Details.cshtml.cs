@@ -41,9 +41,9 @@ public class DetailsModel : PageModelBase
     {
         var response = await Sender.Send(new GetPollQuery { PollId = PollId });
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
+            Problem = response.Problem;
 
             return Page();
         }
@@ -78,9 +78,9 @@ public class DetailsModel : PageModelBase
         {
             var response = await Sender.Send(input);
 
-            if (response.Error is not null)
+            if (response.Problem is not null)
             {
-                Error = response.Error;
+                Problem = response.Problem;
                 return Page();
             }
 
@@ -111,9 +111,9 @@ public class DetailsModel : PageModelBase
     {
         var response = await Sender.Send(InputAddChoiceCommand);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
+            Problem = response.Problem;
             return Page();
         }
 
@@ -133,10 +133,10 @@ public class DetailsModel : PageModelBase
     {
         var response = await Sender.Send(command);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = response.Problem;
+            TempData["failed"] = Problem.Detail;
 
             var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
 
@@ -173,10 +173,10 @@ public class DetailsModel : PageModelBase
 
         var response = await Sender.Send(InputAddVoteCommand);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = response.Problem;
+            TempData["failed"] = Problem.Detail;
 
             return Page();
         }
@@ -208,10 +208,10 @@ public class DetailsModel : PageModelBase
         InputUpdateVoteCommand.ListChoice = convertedList;
         var response = await Sender.Send(InputUpdateVoteCommand);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = response.Problem;
+            TempData["failed"] = Problem.Detail;
 
             return Page();
         }
@@ -236,10 +236,10 @@ public class DetailsModel : PageModelBase
 
         var responseGetChoice = await Sender.Send(new GetChoiceQuery { ChoiceId = choiceId });
 
-        if (responseGetChoice.Error is not null)
+        if (responseGetChoice.Problem is not null)
         {
-            Error = responseGetChoice.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = responseGetChoice.Problem;
+            TempData["failed"] = Problem.Detail;
 
             var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
 
@@ -296,10 +296,10 @@ public class DetailsModel : PageModelBase
 
         var response = await Sender.Send(command);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = response.Problem;
+            TempData["failed"] = Problem.Detail;
 
             var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
 
@@ -339,10 +339,10 @@ public class DetailsModel : PageModelBase
     {
         var response = await Sender.Send(command);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = response.Problem;
+            TempData["failed"] = Problem.Detail;
 
             var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
 
@@ -383,10 +383,10 @@ public class DetailsModel : PageModelBase
     {
         var response = await Sender.Send(command);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = response.Problem;
+            TempData["failed"] = Problem.Detail;
 
             var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
 
@@ -424,10 +424,10 @@ public class DetailsModel : PageModelBase
 
         var responseGetPoll = await Sender.Send(new GetPollQuery { PollId = PollId });
 
-        if (responseGetPoll.Error is not null)
+        if (responseGetPoll.Problem is not null)
         {
-            Error = responseGetPoll.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = responseGetPoll.Problem;
+            TempData["failed"] = Problem.Detail;
 
             var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
 
@@ -461,10 +461,10 @@ public class DetailsModel : PageModelBase
     {
         var response = await Sender.Send(command);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = response.Problem;
+            TempData["failed"] = Problem.Detail;
 
             var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
 
@@ -498,10 +498,10 @@ public class DetailsModel : PageModelBase
 
         var responseGetPoll = await Sender.Send(new GetPollQuery { PollId = PollId });
 
-        if (responseGetPoll.Error is not null)
+        if (responseGetPoll.Problem is not null)
         {
-            Error = responseGetPoll.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = responseGetPoll.Problem;
+            TempData["failed"] = Problem.Detail;
 
             var redirectUrl = Url.Page("/Member/Polls/Details", new { pollId = PollId });
 
@@ -536,10 +536,10 @@ public class DetailsModel : PageModelBase
     {
         var response = await Sender.Send(command);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = response.Problem;
+            TempData["failed"] = Problem.Detail;
 
             var redirectUrl = Url.Page("/Member/Polls/My");
 

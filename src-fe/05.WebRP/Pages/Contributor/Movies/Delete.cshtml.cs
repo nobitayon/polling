@@ -1,6 +1,6 @@
-using Delta.Polling.Both.Contributor.Movies.Queries.GetMyMovie;
 using Delta.Polling.FrontEnd.Logics.Contributor.Movies.Commands.DeleteMovie;
 using Delta.Polling.FrontEnd.Logics.Contributor.Movies.Queries.GetMyMovie;
+using Delta.Polling.Both.Contributor.Movies.Queries.GetMyMovie;
 
 namespace Delta.Polling.WebRP.Pages.Contributor.Movies;
 
@@ -14,13 +14,6 @@ public class DeleteModel : PageModelBase
     public async Task<IActionResult> OnGet()
     {
         var response = await Sender.Send(new GetMyMovieQuery { MovieId = MovieId });
-
-        if (response.Error is not null)
-        {
-            Error = response.Error;
-
-            return Page();
-        }
 
         if (response.Result is not null)
         {

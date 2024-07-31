@@ -2,45 +2,48 @@
 @model DetailsModel
 
 @{
+    ViewData["Title"] = Model.PageTitle;
     ViewBag.CurrentMenu = MenuFor.ContributorMoviesIndex;
 }
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Index">
+                Home
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Contributor/Index">
+                Contributor
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a class="text-decoration-none"
+               asp-page="/Contributor/Movies/Index">
+                My Movies
+            </a>
+        </li>
+        <li class="breadcrumb-item active"
+            aria-current="page">
+            @ViewData["Title"]
+        </li>
+    </ol>
+</nav>
+
+<h1>@Model.PageTitle</h1>
+
+<vc:error-viewer problem="@Model.Problem">
+</vc:error-viewer>
+
 @if (Model.Movie is not null)
 {
-    ViewData["Title"] = Model.Movie.Title;
-
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a class="text-decoration-none"
-                   asp-page="/Index">
-                    Home
-                </a>
-            </li>
-            <li class="breadcrumb-item">
-                <a class="text-decoration-none"
-                   asp-page="/Contributor/Index">
-                    Contributor
-                </a>
-            </li>
-            <li class="breadcrumb-item">
-                <a class="text-decoration-none"
-                   asp-page="/Contributor/Movies/Index">
-                    My Movies
-                </a>
-            </li>
-            <li class="breadcrumb-item active"
-                aria-current="page">
-                @ViewData["Title"]
-            </li>
-        </ol>
-    </nav>
-
     <div class="row">
         <div class="col-md-12 justify-content-center mt-3">
             <div class="card mb-3">
                 <div class="card-body">
-                    <h1> @Model.Movie.Title </h1>
                     <small>Created at : @Model.Movie.Created</small>
                     <br />
                     <small>Budget : @Model.Movie.BudgetDisplayText</small>
@@ -65,14 +68,68 @@
         </div>
     </div>
 
-    @if (Model.Movie.Status is MovieStatus.Draft or MovieStatus.Returned)
+    @if (Model.Movie.Posters.Any())
     {
-        <a class="btn btn-primary" asp-page="Submit" asp-route-MovieId="@Model.MovieId">Submit Movie</a>
-        <a class="btn btn-warning" asp-page="Edit" asp-route-MovieId="@Model.MovieId">Edit Movie</a>
-        <a class="btn btn-danger" asp-page="Delete" asp-route-MovieId="@Model.MovieId">Delete Movie</a>
-        <a class="btn btn-info" asp-page="/Contributor/MoviePosters/Add" asp-route-MovieId="@Model.MovieId">Add Poster</a>
+        <div class="d-flex justify-content-end mb-3">
+            <a class="btn btn-primary"
+               asp-page="/Contributor/MoviePosters/Index"
+               asp-route-MovieId="@Model.MovieId">
+                View Posters
+            </a>
+        </div>
+        <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
+            @foreach (var poster in Model.Movie.Posters)
+            {
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="p-3">
+                            <img src="@poster.Url" class="card-img-top" alt="@poster.Description">
+                        </div>
+                        <div class="card-body">
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between d-flex align-items-baseline d-flex mb-2">
+                                <small class="text-body-secondary me-3">
+                                    @poster.Description
+                                </small>
+                                <form asp-page-handler="Download" method="post">
+                                    <button class="btn btn-sm btn-primary">Download</button>
+                                    <input type="hidden" name="moviePosterId" value="@poster.Id" />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     }
 
-    <a asp-page="Index" class="btn btn-secondary">Back</a>
-}
+    @if (Model.Movie.Status is MovieStatus.Draft or MovieStatus.Returned)
+    {
+        <a class="btn btn-primary"
+           asp-page="/Contributor/Movies/Submit"
+           asp-route-MovieId="@Model.MovieId">
+            Submit Movie
+        </a>
+        <a class="btn btn-warning"
+           asp-page="/Contributor/Movies/Edit"
+           asp-route-MovieId="@Model.MovieId">
+            Edit Movie
+        </a>
+        <a class="btn btn-danger"
+           asp-page="/Contributor/Movies/Delete"
+           asp-route-MovieId="@Model.MovieId">
+            Delete Movie
+        </a>
+        <a class="btn btn-info"
+           asp-page="/Contributor/MoviePosters/Add"
+           asp-route-MovieId="@Model.MovieId">
+            Add Poster
+        </a>
+    }
 
+    <a class="btn btn-secondary"
+       asp-page="/Contributor/Movies/Index">
+        Back
+    </a>
+}

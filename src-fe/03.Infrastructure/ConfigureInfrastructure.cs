@@ -2,7 +2,6 @@
 using Delta.Polling.FrontEnd.Infrastructure.Authorization;
 using Delta.Polling.FrontEnd.Infrastructure.BackEnd;
 using Delta.Polling.FrontEnd.Infrastructure.CurrentUser;
-using Delta.Polling.FrontEnd.Infrastructure.Logging;
 using Delta.Polling.FrontEnd.Infrastructure.UserProfile;
 using Delta.Polling.FrontEnd.Infrastructure.UserRole;
 

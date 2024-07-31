@@ -2,12 +2,12 @@
 
 namespace Delta.Polling.Infrastructure.UserProfile.SimpleTor;
 
-public static class ConfigureSimpleTorUserProfileService
+public static class ConfigureSimpleTorUserProfile
 {
-    public static IServiceCollection AddSimpleTorUserProfileService(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddSimpleTorUserProfile(this IServiceCollection services, IConfiguration configuration)
     {
         _ = services.Configure<SimpleTorUserProfileOptions>(configuration.GetSection(SimpleTorUserProfileOptions.SectionKey));
-        _ = services.AddTransient<IUserProfileService, SimpleTorUserProfileService>();
+        _ = services.AddScoped<IUserProfileService, SimpleTorUserProfileService>();
 
         return services;
     }

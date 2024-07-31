@@ -27,14 +27,14 @@ public class IndexModel : PageModelBase
 
         var response = await Sender.Send(query);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
             var viewDataLocal = new ViewDataDictionary(ViewData)
             {
                 ["Data"] = null,
                 ["Count"] = 0,
                 ["PageSize"] = ps,
-                ["Error"] = response.Error.Detail
+                ["Error"] = response.Problem.Detail
             };
 
             return new PartialViewResult
@@ -91,10 +91,10 @@ public class IndexModel : PageModelBase
     {
         var response = await Sender.Send(command);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
-            TempData["failed"] = Error.Detail;
+            Problem = response.Problem;
+            TempData["failed"] = Problem.Detail;
 
             var redirectUrlLocal = Url.Page("/Admin/Groups");
 

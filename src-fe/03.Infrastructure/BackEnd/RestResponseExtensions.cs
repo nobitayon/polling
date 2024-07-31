@@ -1,8 +1,7 @@
-﻿using System.Net;
-using System.Net.Mime;
+﻿using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
-using Delta.Polling.FrontEnd.Services.BackEnd;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Delta.Polling.FrontEnd.Infrastructure.BackEnd;
 
@@ -21,7 +20,7 @@ public static class RestResponseExtensions
             }
             else
             {
-                responseResult.Error = CreateErrorResponse(restResponse);
+                responseResult.Problem = CreateErrorResponse(restResponse);
             }
         }
         catch (Exception exception)
@@ -33,11 +32,11 @@ public static class RestResponseExtensions
             _ = detail.AppendLine($"Exception message: {exception.Message}.");
             _ = detail.AppendLine($"Exception stack trace: {exception.StackTrace}.");
 
-            responseResult.Error = new ErrorResponse
+            responseResult.Problem = new ProblemDetails
             {
                 Type = "Unhandled Exception",
                 Title = exception.Message,
-                Status = restResponse.StatusCode,
+                Status = (int)restResponse.StatusCode,
                 Detail = detail.ToString(),
             };
         }
@@ -51,21 +50,23 @@ public static class RestResponseExtensions
         {
             if (restResponse.ContentHeaders is null)
             {
-                throw new Exception("Response headers is null");
+                throw new NullException(nameof(restResponse.ContentHeaders), typeof(IReadOnlyCollection<HeaderParameter>));
             }
 
             var contentDispositionContentHeader = restResponse.ContentHeaders
-                .FirstOrDefault(headerParameter => headerParameter.Name == "Content-Disposition")
-                ?? throw new Exception("Content-Disposition Content Header is null");
+                .FirstOrDefault(headerParameter => headerParameter.Name == "Content-Disposition");
 
-            if (contentDispositionContentHeader.Value is not string contentDispositionValue)
+            if (contentDispositionContentHeader is null)
             {
-                throw new Exception("Content-Disposition Value is null");
+                throw new NullException(nameof(contentDispositionContentHeader), typeof(HeaderParameter));
             }
 
-            var contentDisposition = new ContentDisposition(contentDispositionValue);
-            var fileName = contentDisposition.FileName
-                ?? throw new NullException(nameof(contentDisposition.FileName), typeof(string));
+            var contentDisposition = new ContentDisposition(contentDispositionContentHeader.Value);
+
+            if (string.IsNullOrWhiteSpace(contentDisposition.FileName))
+            {
+                throw new NullException(nameof(contentDisposition.FileName), typeof(string));
+            }
 
             if (restResponse.RawBytes is null)
             {
@@ -77,9 +78,9 @@ public static class RestResponseExtensions
                 throw new NullException(nameof(restResponse.ContentType), typeof(string));
             }
 
-            var response = new FileResponse
+            var response = new
             {
-                FileName = fileName,
+                FileName = contentDisposition.FileName,
                 Content = restResponse.RawBytes,
                 ContentType = restResponse.ContentType
             };
@@ -108,16 +109,8 @@ public static class RestResponseExtensions
         }
     }
 
-    private static ErrorResponse CreateErrorResponse(RestResponse restResponse)
+    private static ProblemDetails CreateErrorResponse(RestResponse restResponse)
     {
-        var errorResponse = new ErrorResponse
-        {
-            Title = "Something Went Wrong",
-            Type = "about:blank",
-            Status = restResponse.StatusCode,
-            Detail = restResponse.ErrorException is not null ? restResponse.ErrorException.Message : "Unknown error detail."
-        };
-
         Console.WriteLine($"restResponse.StatusCode: {restResponse.StatusCode}");
         Console.WriteLine($"restResponse.ErrorException: {restResponse.ErrorException}");
         Console.WriteLine($"restResponse.ErrorMessage: {restResponse.ErrorMessage}");
@@ -125,39 +118,24 @@ public static class RestResponseExtensions
 
         if (!string.IsNullOrWhiteSpace(restResponse.Content))
         {
-            var deserializedErrorResponse = JsonSerializer.Deserialize<ErrorResponse>(restResponse.Content, JsonSerializerOptionsFor.Deserialize);
+            var deserializedErrorResponse = JsonSerializer.Deserialize<ProblemDetails>(restResponse.Content, JsonSerializerOptionsFor.Deserialize)
+                 ?? throw new JsonDeserializationFailedException(restResponse.Content, typeof(ProblemDetails));
 
-            if (deserializedErrorResponse is not null)
-            {
-                return deserializedErrorResponse;
-            }
+            Console.WriteLine($"ProblemDetails.Title: {deserializedErrorResponse.Title}");
+            Console.WriteLine($"ProblemDetails.Type: {deserializedErrorResponse.Type}");
+            Console.WriteLine($"ProblemDetails.Status: {deserializedErrorResponse.Status}");
+            Console.WriteLine($"ProblemDetails.Detail: {deserializedErrorResponse.Detail}");
+            Console.WriteLine($"ProblemDetails.Instance: {deserializedErrorResponse.Instance}");
 
-            errorResponse.Title = "Failed to deserialize JSON content.";
-            errorResponse.Detail = $"Unable to deserialize {restResponse.Content} into {nameof(ErrorResponse)} object.";
+            return deserializedErrorResponse;
         }
 
-        if (restResponse.StatusCode == HttpStatusCode.Unauthorized)
+        return new ProblemDetails
         {
-            if (restResponse.Headers is not null)
-            {
-                var headerIsTokenExpired = restResponse.Headers
-                    .FirstOrDefault(headerParameter => headerParameter.Name == "IsTokenExpired");
-
-                if (headerIsTokenExpired is not null)
-                {
-                    if (headerIsTokenExpired.Value is not null)
-                    {
-                        if (headerIsTokenExpired.Value.ToString() == true.ToString())
-                        {
-                            errorResponse.Title = "Expired Access Token.";
-                            errorResponse.Type = "https://tools.ietf.org/html/rfc7235#section-3.1";
-                            errorResponse.Detail = "The Access Token is expired.";
-                        }
-                    }
-                }
-            }
-        }
-
-        return errorResponse;
+            Title = "Something Went Wrong",
+            Type = "about:blank",
+            Status = (int)restResponse.StatusCode,
+            Detail = restResponse.ErrorException is not null ? restResponse.ErrorException.Message : "Unknown error detail."
+        };
     }
 }

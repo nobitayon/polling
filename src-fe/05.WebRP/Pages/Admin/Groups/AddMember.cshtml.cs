@@ -66,9 +66,9 @@ public class AddMemberModel(PagerService pagerService) : PageModelBase
 
         var response = await Sender.Send(query);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
+            Problem = response.Problem;
             return;
         }
 
@@ -84,13 +84,15 @@ public class AddMemberModel(PagerService pagerService) : PageModelBase
     {
         var response = await Sender.Send(command);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
+            Problem = response.Problem;
+            Notifier.Error($"Error add member {command.Username} to group {command.GroupId}");
             return Page();
         }
 
         TempData["success"] = "Success Add Member";
+        Notifier.Success($"Success add member {command.Username} to group {command.GroupId}");
         await LoadData(1);
         return Page();
     }

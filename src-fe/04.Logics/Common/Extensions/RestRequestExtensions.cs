@@ -42,9 +42,17 @@ public static class RestRequestExtensions
 
                     foreach (var childItem in ((IEnumerable)value).OfType<object>())
                     {
+                        var hehe = childItem.ToPrettyJson();
+
                         if (childItem.GetType().IsValueType)
                         {
                             _ = restRequest.AddParameter(property.Name, childItem.ToString());
+                        }
+                        else if (childItem.GetType() == typeof(string))
+                        {
+                            var name = $"{property.Name}[{index}]";
+
+                            _ = restRequest.AddParameter(name, childItem.ToString());
                         }
                         else
                         {

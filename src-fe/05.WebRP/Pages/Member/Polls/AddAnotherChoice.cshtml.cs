@@ -23,9 +23,9 @@ public class AddAnotherChoiceModel : PageModelBase
     {
         var response = await Sender.Send(Input);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
+            Problem = response.Problem;
 
             return Page();
         }

@@ -29,26 +29,12 @@
 
 <h1>@ViewData["Title"]</h1>
 
-@await Component.InvokeAsync("ErrorViewer", Model.Error)
-
-@if (TempData["success"] is not null)
-{
-    <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
-        <strong>Success!</strong> @TempData["success"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-@if (TempData["failed"] is not null)
-{
-    <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
-        <strong>Failed!</strong> @TempData["failed"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
+<vc:error-viewer problem="@Model.Problem">
+</vc:error-viewer>
 
 <div class="d-flex justify-content-end mb-3">
-    <a class="btn btn-primary" asp-page="Add">
+    <a class="btn btn-primary"
+       asp-page="/Contributor/Movies/Add">
         Add Movie
     </a>
 </div>

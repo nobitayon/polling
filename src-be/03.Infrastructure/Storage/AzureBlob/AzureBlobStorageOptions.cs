@@ -1,9 +1,10 @@
-﻿//namespace Zeta.Polling.Infrastructure.Storage.AzureBlob;
+﻿namespace Delta.Polling.Infrastructure.Storage.AzureBlob;
 
-//public class AzureBlobStorageOptions
-//{
-//    public static readonly string SectionKey = $"{nameof(Storage)}:{nameof(AzureBlob)}";
+public class AzureBlobStorageOptions
+{
+    public static readonly string SectionKey = $"{nameof(Storage)}:{nameof(AzureBlob)}";
 
-//    public string ConnectionString { get; set; } = default!;
-//    public string ContainerName { get; set; } = default!;
-//}
+    public required string ConnectionString { get; init; }
+    public required string AccountName { get; init; }
+    public required string ContainerName { get; init; }
+}

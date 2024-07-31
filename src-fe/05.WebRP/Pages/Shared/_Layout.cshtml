@@ -8,13 +8,7 @@
     <title>@ViewData["Title"] | Polling</title>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-
-    <script src="~/lib/jquery/jquery.min.js"></script>
-    <script src="~/lib/jquery-validate/jquery.validate.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
-    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
     <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow">
@@ -36,22 +30,6 @@
             </li>
         </ul>
     </header>
-
-    @* Coba taro modal di sini *@
-    <div class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" id="form-modal">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body"></div>
-            </div>
-        </div>
-    </div>
-
     <div class="container-fluid">
         <div class="row">
             <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
@@ -104,36 +82,6 @@
                             </ul>
                         }
 
-                        @if (User.IsInRole(RoleNameFor.Member))
-                        {
-                            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-2 text-body-secondary text-uppercase">
-                                <span>Member</span>
-                            </h6>
-                            <ul class="nav flex-column mb-auto">
-                                <li class="nav-item">
-                                    <a class="@this.GetNavLinkClass(MenuFor.MemberIndex)"
-                                       asp-page="/Member/Index">
-                                        <i class="bi bi-file-earmark-text"></i>
-                                        Feeds
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="@this.GetNavLinkClass(MenuFor.MemberGroupIndex)"
-                                       asp-page="/Member/Groups/Index">
-                                        <i class="bi bi-file-earmark-text"></i>
-                                        Groups
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="@this.GetNavLinkClass(MenuFor.MemberPollsIndex)"
-                                       asp-page="/Member/Polls/Index">
-                                        <i class="bi bi-file-earmark-text"></i>
-                                        Polls
-                                    </a>
-                                </li>
-                            </ul>
-                        }
-
                         <hr class="my-3">
                         <ul class="nav flex-column mb-auto">
                             <li class="nav-item">
@@ -145,6 +93,13 @@
                             </li>
                             @if (User.Identity!.IsAuthenticated)
                             {
+                                <li class="nav-item">
+                                    <a class="@this.GetNavLinkClass(MenuFor.EmailsTest)"
+                                       asp-page="/Emails/Test">
+                                        <i class="bi bi-mailbox"></i>
+                                        Send Test Email
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a class="@this.GetNavLinkClass(MenuFor.AccountMyClaims)"
                                        asp-page="/Account/MyClaims">
@@ -174,18 +129,17 @@
                     </div>
                 </div>
             </div>
-            <main id="main-render-body" class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-md-3">
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-md-3">
                 @RenderBody()
             </main>
         </div>
     </div>
-@*     <script src="~/lib/jquery/jquery.min.js"></script>
-    <script src="~/lib/jquery-validate/jquery.validate.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
-    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script> *@
-    <script src="~/lib/Chart.js/chart.umd.js"></script>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    @* <script src="~/lib/Chart.js/chart.umd.js"></script> *@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @* <script src="~/js/dashboard.js"></script> *@
+    @await Component.InvokeAsync("Notyf")
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

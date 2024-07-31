@@ -15,6 +15,13 @@ public static class ConfigureUserRole
             _ => throw new UnsupportedServiceProviderException(nameof(UserRole), userRoleOptions.Provider),
         };
 
+        var logger = ConfigureLogging
+            .CreateLoggerFactory()
+            .CreateLogger(nameof(ConfigureUserRole));
+
+        logger.LogInformation("The provider for {ServiceName} service is {Provider}.",
+            nameof(UserRole), userRoleOptions.Provider);
+
         return services;
     }
 }

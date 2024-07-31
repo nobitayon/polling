@@ -23,27 +23,43 @@
 <h1 class="text-danger">
     Oops. Something went wrong.
 </h1>
-<h5>
-    But don't worry. Just contact your administrator for help.
+<h5 class="mb-4">
+    Don't worry. Just contact your administrator for help.
 </h5>
 
 @if (!string.IsNullOrWhiteSpace(Model.ExceptionMessage))
 {
-    <div class="alert alert-danger my-3">
-        @Model.ExceptionMessage
+    <div class="accordion"
+         id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne"
+                        aria-expanded="true"
+                        aria-controls="collapseOne">
+                    Error Details
+                </button>
+            </h2>
+            <div id="collapseOne"
+                 class="accordion-collapse collapse"
+                 data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    @if (!string.IsNullOrWhiteSpace(Model.SourcePath))
+                    {
+                        <p class="p-0 m-0 mb-4">
+                            <strong>Source Path:</strong>
+                            <br />
+                            <code>@Model.SourcePath</code>
+                        </p>
+                    }
+                    <strong>Error Message:</strong>
+                    <span style="white-space: pre-line">
+                        @Model.ExceptionMessage
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
-}
-
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
-
-@if (!string.IsNullOrWhiteSpace(Model.SourcePath))
-{
-    <p>
-        <strong>Error Source Path:</strong> <code>@Model.SourcePath</code>
-    </p>
 }

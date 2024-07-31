@@ -169,7 +169,7 @@
                     </a>
                 }
 
-                @if (User.IsInRole(RoleNameFor.Administrator))
+                @if (User.IsInRole(RoleNameFor.Admin))
                 {
                     <a asp-page="/Admin/Index" class="@this.GetNavLinkClass(MenuFor.AdminIndex) custom-button">
                         Home

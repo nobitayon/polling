@@ -3,7 +3,7 @@ using Delta.Polling.Domain.Groups.Entities;
 
 namespace Delta.Polling.Logics.Admin.Groups.Queries.GetGroup;
 
-[Authorize(RoleName = RoleNameFor.Administrator)]
+[Authorize(RoleName = RoleNameFor.Admin)]
 public record GetGroupQuery : GetGroupRequest, IRequest<GetGroupOutput>
 {
 

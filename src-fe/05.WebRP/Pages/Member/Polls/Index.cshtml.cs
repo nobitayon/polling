@@ -2,7 +2,6 @@ using System.Text;
 using Delta.Polling.Base.Polls.Enums;
 using Delta.Polling.Both.Member.Polls.Queries.GetOngoingPolls;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Queries.GetOngoingPolls;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Delta.Polling.WebRP.Pages.Member.Polls;
 
@@ -61,9 +60,9 @@ public class IndexModel(PagerService pagerService) : PageModelBase
 
         var response = await Sender.Send(query);
 
-        if (response.Error is not null)
+        if (response.Problem is not null)
         {
-            Error = response.Error;
+            Problem = response.Problem;
 
             var pagerBuilderLocal = new StringBuilder();
 

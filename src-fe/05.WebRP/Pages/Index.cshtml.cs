@@ -10,7 +10,7 @@ public class IndexModel : PageModelBase
             {
                 return LocalRedirect("/Member/Index");
             }
-            else if (HttpContext.User.IsInRole(RoleNameFor.Administrator))
+            else if (HttpContext.User.IsInRole(RoleNameFor.Admin))
             {
                 return LocalRedirect("/Admin/Index");
             }

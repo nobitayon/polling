@@ -11,9 +11,16 @@ public static class ConfigureUserRole
 
         _ = userRoleOptions.Provider switch
         {
-            UserRoleProvider.SimpleTor => services.AddSimpleTorUserRoleService(configuration),
+            UserRoleProvider.SimpleTor => services.AddSimpleTorUserRole(configuration),
             _ => throw new UnsupportedServiceProviderException(nameof(UserRole), userRoleOptions.Provider),
         };
+
+        var logger = ConfigureLogging
+            .CreateLoggerFactory()
+            .CreateLogger(nameof(ConfigureUserRole));
+
+        logger.LogInformation("The provider for {ServiceName} service is {Provider}.",
+            nameof(UserRole), userRoleOptions.Provider);
 
         return services;
     }

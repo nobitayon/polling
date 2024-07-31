@@ -2,7 +2,7 @@
 
 namespace Delta.Polling.Logics.Admin.Groups.Commands.RemoveMember;
 
-[Authorize(RoleName = RoleNameFor.Administrator)]
+[Authorize(RoleName = RoleNameFor.Admin)]
 public record RemoveMemberCommand : RemoveMemberRequest, IRequest
 {
 }

@@ -2,7 +2,7 @@
 @model AddModel
 
 @{
-    ViewData["Title"] = "Add Movie Poster";
+    ViewData["Title"] = "Add Poster";
     ViewBag.CurrentMenu = MenuFor.ContributorMoviesIndex;
 }
 
@@ -40,9 +40,9 @@
     </ol>
 </nav>
 
-<h1>@ViewData["Title"]</h1>
+<h1>@ViewData["Title"] to @Model.MovieTitle</h1>
 
-<vc:error-viewer error=@Model.Error>
+<vc:error-viewer problem="@Model.Problem">
 </vc:error-viewer>
 
 <form method="post" enctype="multipart/form-data" class="col-8">
@@ -60,18 +60,15 @@
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
         Save
     </button>
-    <a asp-page="Index" class="btn btn-secondary">Back</a>
+    <a class="btn btn-secondary"
+       asp-page="/Contributor/Movies/Details"
+       asp-route-MovieId="@Model.MovieId">Back</a>
 
     <!-- Modal -->
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-
-
-
-
-
-er">
+                <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">Add Movie!Poster</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
