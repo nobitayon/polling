@@ -1,4 +1,5 @@
-﻿using Delta.Polling.Both.Member.Groups.Queries.GetMyGroup;
+﻿using Delta.Polling.Base.Polls.Enums;
+using Delta.Polling.Both.Member.Groups.Queries.GetMyGroup;
 
 namespace Delta.Polling.Logics.Member.Groups.Queries.GetMyGroup;
 
@@ -47,7 +48,7 @@ public class GetMyGroupQueryHandler(
         // TODO: Belum ada pagination untuk yang ini. Mungkin nunggu kak fu hari senin
         var listPolling = await databaseService.Polls
                             .Include(p => p.Group)
-                            .Where(poll => poll.GroupId == request.GroupId)
+                            .Where(poll => poll.GroupId == request.GroupId && (poll.Status == PollStatus.Ongoing || poll.Status == PollStatus.Finished))
                             .Select(poll => new PollItem
                             {
                                 Id = poll.Id,

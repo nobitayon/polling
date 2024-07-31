@@ -124,12 +124,21 @@
             <div class="list-group mb-4">
                 @foreach (var poll in Model.GroupItem.PollItems)
                 {
-                    <div class="list-group-item">
+                    @* <div class="list-group-item">
                         <h5>@poll.Title</h5>
                         <p class="text-muted">
-                            Created on: @poll.Created.ToString("MMM dd, yyyy HH:mm")
+                            Created on: @poll.Created.ToString("MMM dd, yyyy HH:mm")<br />
+                            Status: <span>@poll.Status</span>
                         </p>
-                    </div>
+                    </div> *@
+
+                    <a asp-page="/Member/Polls/Details" asp-route-pollId="@poll.Id" class="list-group-item list-group-item-action">
+                        <h5>@poll.Title</h5>
+                        <p class="text-muted">
+                            Created on: @poll.Created.ToString("MMM dd, yyyy HH:mm")<br />
+                            Status: <span>@poll.Status</span>
+                        </p>
+                    </a>
                 }
             </div>
             <!-- Pagination controls for polls (if needed) -->

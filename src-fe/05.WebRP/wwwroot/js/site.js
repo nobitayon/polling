@@ -1,5 +1,8 @@
 ﻿jQueryModalPost = form => {
     try {
+        if (!$(form).valid()) {
+            return false; 
+        }
         $.ajax({
             type: 'POST',
             url: form.action,
@@ -20,12 +23,16 @@
                     }
                 }
             },
-            error: function (err) {
-                console.log(err)
+            error: function (xhr) {
+                console.log("disini");
+                console.log(xhr)
+                $('#form-modal').modal('hide');
+                document.body.innerHTML = xhr.responseText;
             }
         })
         return false;
     } catch (ex) {
+        console.log("disana");
         console.log(ex)
     }
 }
