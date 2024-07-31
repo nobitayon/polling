@@ -11,5 +11,6 @@ public static class MenuFor
     public const string AdminIndex = "AdminIndex";
     public const string MemberGroupIndex = "MemberGroupIndex";
     public const string MemberPollsIndex = "MemberPollsIndex";
+    public const string MemberVotesIndex = "MemberVotesIndex";
     public const string AdminGroupIndex = "AdminGroupIndex";
 }

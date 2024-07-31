@@ -1,0 +1,84 @@
+﻿@page
+@using Delta.Polling.Base.Polls.Enums;
+@model Delta.Polling.WebRP.Pages.Member.Votes.IndexModel
+@{
+    ViewBag.CurrentMenu = MenuFor.MemberPollsIndex;
+}
+
+@await Component.InvokeAsync("ErrorViewer", Model.Error)
+
+@if (Model.Error == null)
+{
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Index">
+                    Home
+                </a>
+            </li>
+            <li class="breadcrumb-item active"
+                aria-current="page">
+                Votes
+            </li>
+        </ol>
+    </nav>
+
+    <h1>Your Poll Votes</h1>
+
+    <div class="list-group">
+        @foreach (var voteItem in Model.VoteItems)
+        {
+            <div class="list-group-item mb-3 border rounded">
+                <h5 class="mb-1">Poll Title: @voteItem.GroupName</h5>
+                <p class="mb-1"><strong>Status:</strong> <span class="badge bg-primary">@voteItem.Status</span></p>
+
+                <div class="mb-2">
+                    @if (voteItem.Status is PollStatus.Finished)
+                    {
+                        var maxVote = voteItem.ChoiceItems
+                        .Select(c => c.NumVote)
+                        .Max();
+                        if (maxVote > 0)
+                        {
+                            <strong>Winner:</strong>
+                            foreach (var choice in voteItem.ChoiceItems)
+                            {
+                                @if (choice.NumVote == maxVote)
+                                {
+                                    <div>
+                                        <span class="badge bg-success">
+                                            @choice.Description - <span class="badge bg-light text-dark">@choice.NumVote Votes</span>
+                                        </span>
+                                    </div>
+                                }
+                            }
+                        }
+                        <hr style="border-top: 2px solid #000; margin: 20px 0;">
+
+                        <strong>You vote for:</strong>
+                        foreach (var myChoice in voteItem.AnswerItems)
+                        {
+                            <div>
+                                <span class="badge bg-secondary">
+                                    @myChoice.Description
+                                </span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <strong>You vote for:</strong>
+                        foreach (var myChoice in voteItem.AnswerItems)
+                        {
+                            <span class="badge bg-secondary">
+                                @myChoice.Description
+                            </span>
+                        }
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    @Html.Raw(Model.Paging)
+}

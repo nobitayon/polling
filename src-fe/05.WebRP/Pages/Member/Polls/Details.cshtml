@@ -1,6 +1,7 @@
 ﻿@page "{pollId}"
 @using Delta.Polling.Base.Polls.Enums;
 @using Delta.Polling.FrontEnd.Services.CurrentUser;
+@using StaticChoice = Delta.Polling.Base.Choices.Statics;
 @inject ICurrentUserService currentUserService;
 @model Delta.Polling.WebRP.Pages.Member.Polls.DetailsModel
 
@@ -251,7 +252,7 @@
                     }
                     else if (Model.Poll.Status is PollStatus.Finished)
                     {
-                        @if(Model.Poll.AnswerItems.Count() > 0)
+                        @if (Model.Poll.AnswerItems.Count() > 0)
                         {
                             @foreach (var choice in Model.Poll.ChoiceItems)
                             {
@@ -291,7 +292,8 @@
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label asp-for="@Model.InputAddChoiceCommand.Description" class="form-label"></label>
-                                <input type="text" asp-for="@Model.InputAddChoiceCommand.Description" class="form-control" required>
+                                <input type="text" asp-for="@Model.InputAddChoiceCommand.Description" class="form-control" maxlength="@StaticChoice.MaxLengthFor.Description" required>
+                                <span asp-validation-for="@Model.InputAddChoiceCommand.Description" class="text-danger"></span>
                             </div>
                         </div>
 
@@ -314,16 +316,16 @@
 
     @if (Model.Poll.Status is PollStatus.Finished)
     {
-        
-         // TODO: Apakah perlu tabel untuk store hasil vote
-        
+
+        // TODO: Apakah perlu tabel untuk store hasil vote
+
         <div>
             <h3>Hasil Vote:</h3>
             @{
                 int maxNumVote = Model.Poll.ChoiceItems.Max(c => c.NumVote);
                 var choicesWithMaxVotes = Model.Poll.ChoiceItems
-                                .Where(c => c.NumVote == maxNumVote)
-                                .ToList();
+                .Where(c => c.NumVote == maxNumVote)
+                .ToList();
             }
             <ul class="list-group">
                 @foreach (var choice in choicesWithMaxVotes)
@@ -331,7 +333,7 @@
                     <li class="list-group-item">@choice.Description</li>
                 }
             </ul>
-            
+
 
         </div>
         <a class="btn btn-primary" asp-page="ResultPoll" asp-route-pollId="@Model.PollId">Atau bikin page baru aja</a>
@@ -344,6 +346,9 @@
 }
 
 <script type="text/javascript" language=javascript>
+    $('input, select, textarea').on('change keyup blur', function () {
+        $(this).valid();
+    });
 
     const addAnotherChoiceButton = document.getElementById('add-another-choice');
     if (addAnotherChoiceButton) {
@@ -422,6 +427,9 @@
                     $('#form-modal .modal-title').html("Update Poll");
                     $('#form-modal').modal('show');
                     $.validator.unobtrusive.parse('#update-poll');
+                    $('input, select, textarea').on('change keyup blur', function () {
+                        $(this).valid();
+                    });
                 })
         });
     }
@@ -439,6 +447,9 @@
                 $('#form-modal .modal-title').html("Edit Choice");
                 $('#form-modal').modal('show');
                 $.validator.unobtrusive.parse('#edit-choice');
+                $('input, select, textarea').on('change keyup blur', function () {
+                    $(this).valid();
+                });
             })
     }
 

@@ -1,4 +1,5 @@
 ﻿@using Delta.Polling.FrontEnd.Logics.Member.Polls.Commands.UpdatePoll;
+@using Delta.Polling.Base.Polls.Statics;
 @model UpdatePollCommand;
 
 <form id="update-poll"
@@ -13,7 +14,7 @@
     <div class="mb-1 row">
         <label class="col-md-3 col-form-label">Title</label>
         <div class="col-md-9">
-            <input type="text" autocomplete="off" asp-for="Title" name="Title" class="form-control" />
+            <input type="text" autocomplete="off" data-val="true" asp-for="Title" name="Title" maxlength="@MaxLengthFor.Title" class="form-control" required />
             <span asp-validation-for="Title" class="text-danger"></span>
         </div>
     </div>
@@ -21,7 +22,7 @@
     <div class="mb-1 row">
         <label class="col-md-3 col-form-label">Question</label>
         <div class="col-md-9">
-            <input type="text" autocomplete="off" asp-for="Question" name="Question" class="form-control" />
+            <input type="text" autocomplete="off" data-val="true" asp-for="Question" name="Question" maxlength="@MaxLengthFor.Question" class="form-control" required />
             <span asp-validation-for="Question" class="text-danger"></span>
         </div>
     </div>
@@ -29,7 +30,7 @@
     <div class="mb-1 row">
         <label class="col-md-3 col-form-label">MaximumAnswer</label>
         <div class="col-md-9">
-            <input type="number" autocomplete="off" asp-for="MaximumAnswer" name="MaximumAnswer" class="form-control" />
+            <input type="number" autocomplete="off" asp-for="MaximumAnswer" name="MaximumAnswer" min="@MinValueFor.MaximumAnswer" max="@MaxValueFor.MaximumAnswer" class="form-control" required />
             <span asp-validation-for="MaximumAnswer" class="text-danger"></span>
         </div>
     </div>
@@ -56,6 +57,10 @@
 
 <script type="text/javascript">
     $.validator.unobtrusive.parse("#update-poll");
+
+    $('input, select, textarea').on('change keyup blur', function () {
+        $(this).valid();
+    });
 </script>
 
 

@@ -29,8 +29,6 @@ public class GetRecentParticipatedPollQueryHandler(
                            .Where(gm => gm.Username == currentUserService.Username)
                            .Select(gm => gm.GroupId)
                            .ToListAsync(cancellationToken);
-        Console.WriteLine("CEK 4");
-        Console.WriteLine(groupIamIn.Count);
 
         var listPoll = await databaseService.Polls
                             .Include(p => p.Group)
@@ -55,9 +53,6 @@ public class GetRecentParticipatedPollQueryHandler(
                             })
                             .ToListAsync(cancellationToken);
 
-        Console.WriteLine("CEK 4");
-        Console.WriteLine(listPoll.Count);
-
         for (var i = 0; i < listPoll.Count; i++)
         {
             var poll = listPoll[i];
@@ -73,7 +68,7 @@ public class GetRecentParticipatedPollQueryHandler(
 
                     answerItems = await databaseService.Answers
                                         .Include(a => a.Voter)
-                                        .Where(a => a.Voter.PollId == poll.Id)
+                                        .Where(a => a.Voter.PollId == poll.Id && a.Voter.Username == currentUserService.Username)
                                         .Select(a => new AnswerItem
                                         {
                                             ChoiceId = a.ChoiceId,
@@ -85,6 +80,7 @@ public class GetRecentParticipatedPollQueryHandler(
 
                 var winnerAnswers = new List<ChoiceItem>();
                 var listChoice = await databaseService.Choices
+                                    .Where(c => c.PollId == poll.Id)
                                     .Include(c => c.Answers)
                                     .Select(c => new ChoiceItem
                                     {

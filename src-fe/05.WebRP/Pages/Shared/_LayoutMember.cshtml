@@ -164,6 +164,9 @@
                     <a asp-page="/Member/Groups/Index" class="@this.GetNavLinkClass(MenuFor.MemberGroupIndex) custom-button">
                         Groups
                     </a>
+                    <a asp-page="/Member/Votes/Index" class="@this.GetNavLinkClass(MenuFor.MemberVotesIndex) custom-button">
+                        Votes
+                    </a>
                 }
 
                 @if (User.IsInRole(RoleNameFor.Administrator))
