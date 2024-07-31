@@ -1,7 +1,7 @@
 using Delta.Polling.Infrastructure;
 using Delta.Polling.Infrastructure.Database;
 using Delta.Polling.Infrastructure.Documentation;
-using Delta.Polling.Infrastructure.Storage.LocalFolder;
+//using Delta.Polling.Infrastructure.Storage.LocalFolder;
 using Delta.Polling.Logics;
 using Delta.Polling.WebAPI;
 

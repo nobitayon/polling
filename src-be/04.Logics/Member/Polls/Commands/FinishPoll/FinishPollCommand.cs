@@ -1,5 +1,7 @@
 ﻿using Delta.Polling.Base.Polls.Enums;
 using Delta.Polling.Both.Member.Polls.Commands.FinishPoll;
+using Delta.Polling.Services.Email;
+using Delta.Polling.Services.UserProfile;
 
 namespace Delta.Polling.Logics.Member.Polls.Commands.FinishPoll;
 
@@ -16,9 +18,18 @@ public class FinishPollCommandValidator : AbstractValidator<FinishPollCommand>
     }
 }
 
+public record UsernameWithEmail
+{
+    public required string Username { get; init; }
+    public required string Name { get; init; }
+    public required string Email { get; init; }
+}
+
 public class FinishPollCommandHandler(
     IDatabaseService databaseService,
-    ICurrentUserService currentUserService)
+    ICurrentUserService currentUserService,
+    IEmailService emailService,
+    IUserProfileService userProfileService)
     : IRequestHandler<FinishPollCommand>
 {
     public async Task Handle(FinishPollCommand request, CancellationToken cancellationToken)
@@ -29,6 +40,7 @@ public class FinishPollCommandHandler(
         }
 
         var poll = await databaseService.Polls
+                    .Include(p => p.Group)
                     .Where(p => p.Id == request.PollId)
                     .SingleOrDefaultAsync(cancellationToken)
                     ?? throw new EntityNotFoundException("Poll", request.PollId);
@@ -63,6 +75,44 @@ public class FinishPollCommandHandler(
 
         _ = await databaseService.SaveAsync(cancellationToken);
 
-        // TODO: Send email to all voter
+        var listRecipientUsername = await databaseService.Voters
+                                    .Where(v => v.PollId == request.PollId)
+                                    .Select(v => v.Username)
+                                    .ToListAsync(cancellationToken);
+
+        var listRecipientWithEmail = new List<UsernameWithEmail>();
+        foreach (var recipientUsername in listRecipientUsername)
+        {
+            var responseGetEmail = userProfileService.GetUserProfileAsync(recipientUsername, cancellationToken)
+                ?? throw new Exception("Error get email");
+
+            if (responseGetEmail.Result is null)
+            {
+                throw new Exception("Error get email");
+            }
+
+            listRecipientWithEmail.Add(new UsernameWithEmail
+            {
+                Email = responseGetEmail.Result.Email,
+                Name = recipientUsername,
+                Username = responseGetEmail.Result.Name
+            });
+        }
+
+        var tos = listRecipientWithEmail.Select(recipient => new MailBoxModel
+        {
+            Name = recipient.Name,
+            Address = recipient.Email
+        });
+
+        var input = new SendEmailInput
+        {
+            Tos = tos,
+            Ccs = [],
+            Subject = $"Poll with title {poll.Title} in group {poll.Group.Name} already finished",
+            Body = $"You can go to /poll/details/{request.PollId} to see result"
+        };
+
+        emailService.SendEmail(input);
     }
 }
