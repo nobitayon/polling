@@ -2,7 +2,7 @@
 
 namespace Delta.Polling.FrontEnd.Logics.Admin.Groups.Queries.GetGroup;
 
-[Authorize(RoleName = RoleNameFor.Administrator)]
+[Authorize(RoleName = RoleNameFor.Admin)]
 public record GetGroupQuery : GetGroupRequest, IRequest<ResponseResult<GetGroupOutput>>
 {
 }

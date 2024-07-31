@@ -2,7 +2,7 @@
 
 namespace Delta.Polling.FrontEnd.Logics.Admin.Groups.Commands.AddMember;
 
-[Authorize(RoleName = RoleNameFor.Administrator)]
+[Authorize(RoleName = RoleNameFor.Admin)]
 public record AddMemberCommand : AddMemberRequest, IRequest<ResponseResult<AddMemberOutput>>
 {
 }

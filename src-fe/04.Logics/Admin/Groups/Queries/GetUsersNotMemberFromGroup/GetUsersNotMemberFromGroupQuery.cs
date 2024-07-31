@@ -2,7 +2,7 @@
 
 namespace Delta.Polling.FrontEnd.Logics.Admin.Groups.Queries.GetUsersNotMemberFromGroup;
 
-[Authorize(RoleName = RoleNameFor.Administrator)]
+[Authorize(RoleName = RoleNameFor.Admin)]
 public record GetUsersNotMemberFromGroupQuery : GetUsersNotMemberFromGroupRequest, IRequest<ResponseResult<GetUsersNotMemberFromGroupOutput>>
 {
 }

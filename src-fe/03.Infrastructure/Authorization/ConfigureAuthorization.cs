@@ -11,7 +11,7 @@ public static class ConfigureAuthorization
             options.AddPolicy(RoleNameFor.Contributor, policy => _ = policy.RequireRole(RoleNameFor.Contributor));
             options.AddPolicy(RoleNameFor.Moderator, policy => _ = policy.RequireRole(RoleNameFor.Moderator));
             options.AddPolicy(RoleNameFor.Member, policy => _ = policy.RequireRole(RoleNameFor.Member));
-            options.AddPolicy(RoleNameFor.Administrator, policy => _ = policy.RequireRole(RoleNameFor.Administrator));
+            options.AddPolicy(RoleNameFor.Admin, policy => _ = policy.RequireRole(RoleNameFor.Admin));
         });
 
         _ = services.AddRazorPages(options =>
@@ -19,7 +19,7 @@ public static class ConfigureAuthorization
             _ = options.Conventions.AuthorizeFolder($"/{RoleNameFor.Contributor}", RoleNameFor.Contributor);
             _ = options.Conventions.AuthorizeFolder($"/{RoleNameFor.Moderator}", RoleNameFor.Moderator);
             _ = options.Conventions.AuthorizeFolder($"/{RoleNameFor.Member}", RoleNameFor.Member);
-            _ = options.Conventions.AuthorizeFolder($"/{RoleNameFor.Administrator}", RoleNameFor.Administrator);
+            _ = options.Conventions.AuthorizeFolder($"/{RoleNameFor.Admin}", RoleNameFor.Admin);
         });
 
         return services;

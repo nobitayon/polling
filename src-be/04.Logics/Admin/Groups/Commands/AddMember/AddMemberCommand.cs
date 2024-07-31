@@ -3,7 +3,7 @@ using Delta.Polling.Domain.Groups.Entities;
 
 namespace Delta.Polling.Logics.Admin.Groups.Commands.AddMember;
 
-[Authorize(RoleName = RoleNameFor.Administrator)]
+[Authorize(RoleName = RoleNameFor.Admin)]
 public record AddMemberCommand : AddMemberRequest, IRequest<AddMemberOutput>
 {
 }
