@@ -199,6 +199,7 @@ public class DetailsModel : PageModelBase
         if (response.Problem is not null)
         {
             Problem = response.Problem;
+            Console.WriteLine("gagal kok disini");
             TempData["failed"] = Problem.Detail;
             await LoadData();
 

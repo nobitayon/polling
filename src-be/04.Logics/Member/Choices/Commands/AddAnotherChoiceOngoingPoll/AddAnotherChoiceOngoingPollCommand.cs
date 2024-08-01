@@ -1,6 +1,8 @@
 ﻿using Delta.Polling.Base.Polls.Enums;
 using Delta.Polling.Both.Member.Choices.Commands.AddAnotherChoiceOngoingPoll;
+using Delta.Polling.Domain.Answers.Entities;
 using Delta.Polling.Domain.Choices.Entities;
+using Delta.Polling.Domain.Voters.Entities;
 
 namespace Delta.Polling.Logics.Member.Choices.Commands.AddAnotherChoiceOngoingPoll;
 
@@ -75,6 +77,78 @@ public class AddAnotherChoiceOngoingPollCommandHandler(
         };
 
         _ = await databaseService.Choices.AddAsync(choice, cancellationToken);
+
+        var voter = await databaseService.Voters
+                            .Where(v => v.PollId == request.PollId && v.CreatedBy == currentUserService.Username)
+                            .SingleOrDefaultAsync(cancellationToken);
+
+        if (voter != null)
+        {
+            var currentVote = await databaseService.Answers
+                                .Include(a => a.Choice)
+                                .Where(a => a.VoterId == voter.Id)
+                                .ToListAsync(cancellationToken);
+            if (poll.MaximumAnswer > 1)
+            {
+                if (currentVote.Count() < poll.MaximumAnswer)
+                {
+                    var newAnswer = new Answer
+                    {
+                        ChoiceId = choice.Id,
+                        Created = DateTimeOffset.Now,
+                        CreatedBy = currentUserService.Username,
+                        VoterId = voter.Id
+                    };
+
+                    _ = await databaseService.Answers.AddAsync(newAnswer);
+                }
+                else
+                {
+                    throw new Exception("You must remove one of choice you already vote, by updating your vote");
+                }
+            }
+            else
+            {
+                var prevAnswer = await databaseService.Answers
+                                .Where(a => a.VoterId == voter.Id)
+                                .SingleOrDefaultAsync(cancellationToken)
+                                ?? throw new Exception("Should have previous vote, but no vote found");
+
+                _ = databaseService.Answers.Remove(prevAnswer);
+
+                var newAnswer = new Answer
+                {
+                    ChoiceId = choice.Id,
+                    Created = DateTimeOffset.Now,
+                    CreatedBy = currentUserService.Username,
+                    VoterId = voter.Id
+                };
+
+                _ = await databaseService.Answers.AddAsync(newAnswer);
+            }
+        }
+        else
+        {
+            var newVoter = new Voter
+            {
+                Username = currentUserService.Username,
+                PollId = request.PollId,
+                Created = DateTimeOffset.Now,
+                CreatedBy = currentUserService.Username
+            };
+
+            _ = await databaseService.Voters.AddAsync(newVoter);
+
+            var newAnswer = new Answer
+            {
+                ChoiceId = choice.Id,
+                Created = DateTimeOffset.Now,
+                CreatedBy = currentUserService.Username,
+                VoterId = newVoter.Id
+            };
+
+            _ = await databaseService.Answers.AddAsync(newAnswer);
+        }
 
         _ = await databaseService.SaveAsync(cancellationToken);
 

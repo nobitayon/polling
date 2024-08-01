@@ -108,7 +108,8 @@ public class GetPollQueryHandler(
                                 IsOther = c.IsOther,
                                 IsChosen = Helper.IsItChosen(c.Id, answerItems),
                                 NumVote = c.Answers.Count,
-                                CreatedBy = c.CreatedBy
+                                CreatedBy = c.CreatedBy,
+                                IsDisabled = c.IsOther && c.CreatedBy == currentUserService.Username
                             }).ToListAsync(cancellationToken);
 
         var pollItem = new PollItem
