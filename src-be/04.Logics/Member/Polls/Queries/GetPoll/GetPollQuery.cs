@@ -39,11 +39,13 @@ public class GetPollQueryHandler(
     {
 
         var pollDetails = await databaseService.Polls
+                        .Include(p => p.Group)
                         .Where(poll => poll.Id == request.PollId)
                         .Select(poll => new
                         {
                             Id = poll.Id,
                             GroupId = poll.GroupId,
+                            GroupName = poll.Group.Name,
                             Status = poll.Status,
                             Title = poll.Title,
                             AllowOtherChoice = poll.AllowOtherChoice,
@@ -105,12 +107,14 @@ public class GetPollQueryHandler(
                                 Description = c.Description,
                                 IsOther = c.IsOther,
                                 IsChosen = Helper.IsItChosen(c.Id, answerItems),
-                                NumVote = c.Answers.Count
+                                NumVote = c.Answers.Count,
+                                CreatedBy = c.CreatedBy
                             }).ToListAsync(cancellationToken);
 
         var pollItem = new PollItem
         {
             Id = pollDetails.Id,
+            GroupName = pollDetails.GroupName,
             Status = pollDetails.Status,
             Title = pollDetails.Title,
             Question = pollDetails.Question,

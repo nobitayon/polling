@@ -21,7 +21,7 @@ public class DetailsModel : PageModelBase
     public Guid PollId { get; init; }
 
     [BindProperty]
-    public AddAnotherChoiceOngoingPollCommand Input { get; set; } = default!;
+    public AddAnotherChoiceOngoingPollCommand InputAnotherChoiceOngoingPollCommand { get; set; } = default!;
 
     [BindProperty]
     public AddChoiceCommand InputAddChoiceCommand { get; set; } = default!;
@@ -36,6 +36,28 @@ public class DetailsModel : PageModelBase
     public UpdateVoteCommand InputUpdateVoteCommand { get; set; } = default!;
 
     public PollItem Poll { get; set; } = default!;
+
+    private async Task LoadData()
+    {
+        var response = await Sender.Send(new GetPollQuery { PollId = PollId });
+
+        if (response.Problem is not null)
+        {
+            Problem = response.Problem;
+
+            return;
+        }
+
+        if (response.Result is null)
+        {
+            TempData["failed"] = "failed get poll";
+        }
+
+        if (response.Result is not null)
+        {
+            Poll = response.Result.Data;
+        }
+    }
 
     public async Task<IActionResult> OnGet()
     {
@@ -72,28 +94,27 @@ public class DetailsModel : PageModelBase
         };
     }
 
-    public async Task<IActionResult> OnPostAddAnotherChoice(AddAnotherChoiceOngoingPollCommand input)
+    public async Task<IActionResult> OnPostAddAnotherChoice()
     {
-        if (ModelState.IsValid)
+        var response = await Sender.Send(InputAnotherChoiceOngoingPollCommand);
+
+        if (response.Problem is not null)
         {
-            var response = await Sender.Send(input);
+            Problem = response.Problem;
+            await LoadData();
+            return Page();
+        }
 
-            if (response.Problem is not null)
-            {
-                Problem = response.Problem;
-                return Page();
-            }
-
-            if (response.Result is not null)
-            {
-                Console.WriteLine(response.Result.Data);
-            }
-
-            return new JsonResult(new { isValid = true });
+        if (response.Result is not null)
+        {
+            TempData["success"] = "Success Add Another Choice";
+            return RedirectToPage("/Member/Polls/Details", new { pollId = PollId });
         }
         else
         {
-            return new JsonResult(new { isValid = false });
+            TempData["failed"] = "Failed to Add Another Choice";
+            await LoadData();
+            return Page();
         }
     }
 
@@ -114,6 +135,7 @@ public class DetailsModel : PageModelBase
         if (response.Problem is not null)
         {
             Problem = response.Problem;
+            await LoadData();
             return Page();
         }
 
@@ -125,6 +147,7 @@ public class DetailsModel : PageModelBase
         else
         {
             TempData["failed"] = "Failed to Add Choice";
+            await LoadData();
             return Page();
         }
     }
@@ -177,6 +200,7 @@ public class DetailsModel : PageModelBase
         {
             Problem = response.Problem;
             TempData["failed"] = Problem.Detail;
+            await LoadData();
 
             return Page();
         }
@@ -190,6 +214,7 @@ public class DetailsModel : PageModelBase
         else
         {
             TempData["failed"] = "Failed to Vote Poll";
+            await LoadData();
 
             return Page();
         }
@@ -203,8 +228,6 @@ public class DetailsModel : PageModelBase
             convertedList.Add(new Guid(choice));
         }
 
-        Console.WriteLine("CEK");
-        Console.WriteLine(convertedList.Count());
         InputUpdateVoteCommand.ListChoice = convertedList;
         var response = await Sender.Send(InputUpdateVoteCommand);
 
@@ -212,6 +235,7 @@ public class DetailsModel : PageModelBase
         {
             Problem = response.Problem;
             TempData["failed"] = Problem.Detail;
+            await LoadData();
 
             return Page();
         }
@@ -225,7 +249,7 @@ public class DetailsModel : PageModelBase
         else
         {
             TempData["failed"] = "Failed to Vote Poll";
-
+            await LoadData();
             return Page();
         }
     }

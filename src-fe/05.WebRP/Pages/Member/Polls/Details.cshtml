@@ -58,7 +58,7 @@
         <div class="mb-4 p-3 border rounded bg-light">
             <h4 class="mb-3">Polling Basic Information</h4>
             <p><strong>Title:</strong> @Model.Poll.Title</p>
-            <p><strong>Group Name:</strong> Dummy Group Name</p>
+            <p><strong>Group Name:</strong> @Model.Poll.GroupName</p>
             <p><strong>Created At:</strong> @Model.Poll.Created</p>
             <p><strong>Created By:</strong> @Model.Poll.CreatedBy</p>
 
@@ -142,11 +142,19 @@
     }
     else if (Model.Poll.Status is PollStatus.Ongoing)
     {
+
+        var isAlreadyAddAnotherChoice = Model.Poll.ChoiceItems
+        .Any(c => c.IsOther && c.CreatedBy == currentUserService.Username);
+
+        var choiceAdded = Model.Poll.ChoiceItems
+                            .Where(c => c.IsOther && c.CreatedBy == currentUserService.Username)
+                            .SingleOrDefault();
+
         <!-- Polling Information Section -->
         <div class="mb-4 p-3 border rounded bg-light">
             <h4 class="mb-3">Polling Basic Information</h4>
             <p><strong>Title:</strong> @Model.Poll.Title</p>
-            <p><strong>Group Name:</strong> Dummy Group Name</p>
+            <p><strong>Group Name:</strong> @Model.Poll.GroupName</p>
             <p><strong>Created At:</strong> @Model.Poll.Created</p>
             <p><strong>Created By:</strong> @Model.Poll.CreatedBy</p>
 
@@ -172,15 +180,55 @@
             }
 
             <p><strong>Maximum Answers Allowed:</strong> @Model.Poll.MaximumAnswer</p>
+            @if (isAlreadyAddAnotherChoice)
+            {
+                if (choiceAdded != null)
+                {
+                    <p><strong>You must include choice you add in your vote:</strong> @choiceAdded.Description</p>
+                }
+            }
         </div>
 
         <!-- Poll Details Section -->
         <div class="p-3 border rounded bg-light">
             <h4 class="mb-3">Poll Details</h4>
             <p><strong>Question:</strong> @Model.Poll.Question</p>
-            <a class="btn btn-primary me-2" asp-page="AddAnotherChoice" asp-route-pollId="@Model.PollId">
-                Add Another Choice(open new page)
-            </a>
+
+            @if (!isAlreadyAddAnotherChoice)
+            {
+                <form id="add-another-choice" asp-page-handler="AddAnotherChoice" method="post" class="col-8">
+                    <input type="hidden" asp-for="@Model.InputAnotherChoiceOngoingPollCommand.PollId" value="@Model.PollId">
+
+                    <!-- Button trigger modal -->
+                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAnotherChoice">
+                        Add Another Choice
+                    </a>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="addAnotherChoice" tabindex="-1" aria-labelledby="addAnotherChoice" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addAnotherChoiceLabel">Add Another Choice </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label asp-for="@Model.InputAnotherChoiceOngoingPollCommand.Description" class="form-label"></label>
+                                        <input type="text" asp-for="@Model.InputAnotherChoiceOngoingPollCommand.Description" class="form-control" maxlength="@StaticChoice.MaxLengthFor.Description" required>
+                                        <span asp-validation-for="@Model.InputAnotherChoiceOngoingPollCommand.Description" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Add Another Choice</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            }
+
             @if (Model.Poll.MaximumAnswer > 1)
             {
                 <form id="form-input-update" asp-page-handler="@(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")" method="post" class="col-8">
@@ -314,7 +362,7 @@
         <div class="mb-4 p-3 border rounded bg-light">
             <h4 class="mb-3">Polling Basic Information</h4>
             <p><strong>Title:</strong> @Model.Poll.Title</p>
-            <p><strong>Group Name:</strong> Dummy Group Name</p>
+            <p><strong>Group Name:</strong> @Model.Poll.GroupName</p>
             <p><strong>Created At:</strong> @Model.Poll.Created</p>
             <p><strong>Created By:</strong> @Model.Poll.CreatedBy</p>
         </div>
@@ -372,22 +420,6 @@
 
 <script type="text/javascript" language=javascript>
 
-    const addAnotherChoiceButton = document.getElementById('add-another-choice');
-    if (addAnotherChoiceButton) {
-        document.getElementById('add-another-choice').addEventListener('click', (event) => {
-            let pollId = event.target.getAttribute('data-poll-id');
-            fetch(`${pollId}?handler=AddAnotherChoice`)
-                .then((response) => {
-                    return response.text();
-                })
-                .then((htmlText) => {
-                    $('#form-modal .modal-body').html(htmlText);
-                    $('#form-modal .modal-title').html("Add Another Choice");
-                    $('#form-modal').modal('show');
-                })
-        });
-    }
-
     $.validator.addMethod("maxChecked", function (value, element, params) {
         var checkedCount = $(params.selector).filter(":checked").length;
         var isValid = checkedCount <= params.maxCount;
@@ -401,6 +433,15 @@
         };
         options.messages["maxChecked"] = options.message;
     });
+
+    if ($("#add-another-choice").length) {
+        $.validator.unobtrusive.parse("#add-another-choice");
+
+        $('input, select, textarea').on('change keyup blur', function () {
+            $(this).valid();
+        });
+    }
+
 
     $(document).ready(function () {
         if ($("#form-input-update").length) {
