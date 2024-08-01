@@ -68,6 +68,8 @@ public class StartPollCommandHandler(
         }
 
         poll.Status = PollStatus.Ongoing;
+        poll.Modified = DateTimeOffset.Now;
+        poll.ModifiedBy = currentUserService.Username;
 
         _ = await databaseService.SaveAsync(cancellationToken);
     }
