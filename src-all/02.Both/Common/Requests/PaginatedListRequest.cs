@@ -2,12 +2,12 @@
 
 public abstract record PaginatedListRequest
 {
-    public int Page { get; init; }
-    public int PageSize { get; init; }
-    public string? SearchText { get; init; }
-    public string? SearchField { get; init; }
-    public string? SortField { get; init; }
-    public SortOrder? SortOrder { get; init; }
+    public int Page { get; set; }
+    public int PageSize { get; set; }
+    public string? SearchText { get; set; }
+    public string? SearchField { get; set; }
+    public string? SortField { get; set; }
+    public SortOrder? SortOrder { get; set; }
 }
 
 public class PaginatedListRequestValidator : AbstractValidator<PaginatedListRequest>
