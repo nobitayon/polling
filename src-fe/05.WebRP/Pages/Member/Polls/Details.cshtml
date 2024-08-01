@@ -78,6 +78,7 @@
             @if (Model.Poll.AllowOtherChoice)
             {
                 <p><strong>Can Add More Choices:</strong> Yes</p>
+                <p><strong>You can only add 1 choice and that choice will be voted by you</strong></p>
             }
             else
             {
@@ -173,6 +174,7 @@
             @if (Model.Poll.AllowOtherChoice)
             {
                 <p><strong>Can Add More Choices:</strong> Yes</p>
+                <p><strong>You can only add 1 choice and that choice will be voted by you</strong></p>
             }
             else
             {
@@ -194,13 +196,13 @@
             <h4 class="mb-3">Poll Details</h4>
             <p><strong>Question:</strong> @Model.Poll.Question</p>
 
-            @if (!isAlreadyAddAnotherChoice)
+            @if (!isAlreadyAddAnotherChoice && Model.Poll.AllowOtherChoice)
             {
                 <form id="add-another-choice" asp-page-handler="AddAnotherChoice" method="post" class="col-8">
                     <input type="hidden" asp-for="@Model.InputAnotherChoiceOngoingPollCommand.PollId" value="@Model.PollId">
 
                     <!-- Button trigger modal -->
-                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAnotherChoice">
+                    <a class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addAnotherChoice">
                         Add Another Choice
                     </a>
 
@@ -281,14 +283,13 @@
                                     <label class="form-check-label" for="@choice.Id">
                                         @choice.Description
                                     </label>
-
-                                    <span id="message-validation-checkbox" class="text-danger"></span>
-
                                 </div>
                             </li>
                         }
                     </ul>
-
+                    <div>
+                        <span id="message-validation-checkbox" class="text-danger me-2"></span>
+                    </div>
                     <a class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#checkBoxVote">
                         @(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")
                     </a>
@@ -338,7 +339,11 @@
                                            type="radio"
                                            value="@choice.Id"
                                            name="listChoices"
-                                    @(choice.IsChosen ? "checked" : "")>
+                                           data-val="true"
+                                           data-val-maxchecked="You can only select up to @Model.Poll.MaximumAnswer options."
+                                           data-val-maxchecked-maxcount="@Model.Poll.MaximumAnswer"
+                                           data-val-maxchecked-selector="input[name='listChoices']"
+                                           @(choice.IsChosen ? "checked" : "")>
                                     <label class="form-check-label" for="pollOption">
                                         @choice.Description
                                     </label>
@@ -346,12 +351,13 @@
                             </li>
                         }
                     </ul>
-
-
-                    <!-- Button trigger modal -->
-                    <a class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#radioButtonVote">
-                        @(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")
-                    </a>
+                    @if (!isAlreadyAddAnotherChoice)
+                    {
+                        <!-- Button trigger modal -->
+                        <a id="modal-form-vote" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#radioButtonVote">
+                            @(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")
+                        </a>
+                    }
                 </form>
             }
         </div>
@@ -373,6 +379,7 @@
             @if (Model.Poll.AllowOtherChoice)
             {
                 <p><strong>Can Add More Choices:</strong> Yes</p>
+                <p><strong>You can only add 1 choice and that choice will be voted by you</strong></p>
             }
             else
             {
@@ -380,6 +387,7 @@
             }
 
             <p><strong>Maximum Answers Allowed:</strong> @Model.Poll.MaximumAnswer</p>
+
         </div>
 
         <!-- Poll Details Section -->
@@ -422,14 +430,21 @@
 
     $.validator.addMethod("maxChecked", function (value, element, params) {
         var checkedCount = $(params.selector).filter(":checked").length;
-        var isValid = checkedCount <= params.maxCount;
+        var isValid = checkedCount <= params.maxCount && checkedCount > 0;
+        if (!isValid) {
+            $("#message-validation-checkbox").html(`You choose more than ${params.maxCount} or you choose 0 choice`);
+        }
+        else 
+        {
+            $("#message-validation-checkbox").html("");
+        }
         return isValid;
     }, "You can only select up to {0} options.");
 
     $.validator.unobtrusive.adapters.add("maxchecked", ["maxcount", "selector"], function (options) {
         options.rules["maxChecked"] = {
             selector: options.params.selector,
-            maxCount: options.params.maxcount
+            maxCount: options.params.maxcount,
         };
         options.messages["maxChecked"] = options.message;
     });
@@ -442,21 +457,13 @@
         });
     }
 
+    if ($("#add-choice").length) {
+        $.validator.unobtrusive.parse("#add-choice");
 
-    $(document).ready(function () {
-        if ($("#form-input-update").length) {
-            $("#form-input-update").validate({
-                errorPlacement: function (error, element) {
-                    $("#message-validation-checkbox").html(error);
-                }
-            });
-
-            // Validate the form when checkboxes change
-            $("input[name='listChoices']").on("change", function () {
-                $("#form-input-update").valid();
-            });
-        }
-    });
+        $('input, select, textarea').on('change keyup blur', function () {
+            $(this).valid();
+        });
+    }
 
     const startPollButton = document.getElementById('start-poll');
     if (startPollButton) {
@@ -559,47 +566,6 @@
                 $.validator.unobtrusive.parse('#delete-choice');
             })
     }
-
-
-    function initChart() {
-        const ctx = document.getElementById('myChart').getContext('2d');
-        const myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ["Label 1", "Label 2", "Label 3"],
-                datasets: [
-                    {
-                        label: 'Hasil Polling',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1,
-                        data: [20, 30, 40],
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-
-    $(document).ready(function () {
-        // Cek apakah id myChart ada
-
-        let chartContainer = document.getElementById('myChart');
-
-        if (chartContainer) {
-            initChart();
-        }
-
-        // $('#viewAll').load('?handler=ViewTimeline');
-
-    });
 </script>
 
 <style>

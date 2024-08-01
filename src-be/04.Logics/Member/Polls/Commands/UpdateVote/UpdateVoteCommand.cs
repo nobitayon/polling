@@ -52,12 +52,12 @@ public class UpdateVoteCommandHandler(
 
         if (!isInGroup)
         {
-            throw new ForbiddenException($"You can't vote this poll because you are not member of the group");
+            throw new Exception($"You can't vote this poll because you are not member of the group");
         }
 
         if (request.ListChoice.Count() > poll.MaximumAnswer || request.ListChoice.Count() <= 0)
         {
-            throw new ForbiddenException($"Maximum answer is {poll.MaximumAnswer} and at least 1 choice must choosen");
+            throw new Exception($"Maximum answer is {poll.MaximumAnswer} and at least 1 choice must choosen");
         }
 
         var isAlreadyFirstTimeVote = await databaseService.Voters
@@ -79,7 +79,7 @@ public class UpdateVoteCommandHandler(
 
             if (!isUserPickHisChoice)
             {
-                throw new ForbiddenException($"You must pick choice you add");
+                throw new Exception($"You must pick choice you add");
             }
         }
 

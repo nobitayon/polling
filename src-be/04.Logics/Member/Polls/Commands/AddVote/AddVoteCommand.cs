@@ -81,7 +81,7 @@ public class AddVoteCommandHandler(
 
             if (!isUserPickHisChoice)
             {
-                throw new ForbiddenException($"You must pick choice you add");
+                throw new Exception($"You must pick choice you add");
             }
         }
 
