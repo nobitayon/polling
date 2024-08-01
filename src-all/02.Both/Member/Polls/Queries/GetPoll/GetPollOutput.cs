@@ -9,6 +9,7 @@ public record GetPollOutput : Output<PollItem>
 public record PollItem
 {
     public required Guid Id { get; init; }
+    public required string GroupName { get; init; }
     public required string Title { get; init; }
     public required PollStatus Status { get; set; }
     public required string Question { get; init; }
@@ -29,6 +30,7 @@ public record ChoiceItem
     public required bool IsOther { get; set; }
     public required bool IsChosen { get; set; }
     public required int NumVote { get; set; }
+    public required string CreatedBy { get; init; }
 }
 
 // TODO: Apakah menggunakan list Guid saja
