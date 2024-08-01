@@ -72,6 +72,8 @@ public class FinishPollCommandHandler(
         }
 
         poll.Status = PollStatus.Finished;
+        poll.Modified = DateTimeOffset.Now;
+        poll.ModifiedBy = currentUserService.Username;
 
         _ = await databaseService.SaveAsync(cancellationToken);
 
