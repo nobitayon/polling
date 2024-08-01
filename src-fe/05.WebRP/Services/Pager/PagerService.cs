@@ -9,7 +9,9 @@ public class PagerService
         var maxPage = (int)Math.Ceiling(totalCount / (decimal)request.PageSize);
         var safeMaxPage = maxPage < 1 ? 1 : maxPage;
 
-        var keyword = string.IsNullOrWhiteSpace(request.SearchText) ? string.Empty : $"&k={request.SearchText}";
+        var keyword = string.IsNullOrWhiteSpace(request.SearchText) && string.IsNullOrWhiteSpace(request.SearchField) ? string.Empty : $"&k={request.SearchText}&kf={request.SearchField}";
+        var sortField = request.SortField == null ? string.Empty : $"&sf={request.SortField}";
+        var sortOrder = $"&so={request.SortOrder}";
         var pageSize = $"&ps={request.PageSize}";
 
         var pagerBuilder = new StringBuilder();
@@ -27,7 +29,7 @@ public class PagerService
             var previousPage = request.Page - 1;
 
             _ = pagerBuilder.Append("""<li class="page-item">""");
-            _ = pagerBuilder.Append($"""<a class="page-link" href="{pageName}?p={previousPage}{pageSize}{keyword}">Previous</a>""");
+            _ = pagerBuilder.Append($"""<a class="page-link" href="{pageName}?p={previousPage}{pageSize}{keyword}{sortField}{sortOrder}">Previous</a>""");
             _ = pagerBuilder.Append("""</li>""");
         }
 
@@ -42,7 +44,7 @@ public class PagerService
             else
             {
                 _ = pagerBuilder.Append("""<li class="page-item">""");
-                _ = pagerBuilder.Append($"""<a class="page-link" href="{pageName}?p={i}{pageSize}{keyword}">{i}</a>""");
+                _ = pagerBuilder.Append($"""<a class="page-link" href="{pageName}?p={i}{pageSize}{keyword}{sortField}{sortOrder}">{i}</a>""");
                 _ = pagerBuilder.Append("""</li>""");
             }
         }
@@ -58,7 +60,7 @@ public class PagerService
             var nextPage = request.Page + 1;
 
             _ = pagerBuilder.Append("""<li class="page-item">""");
-            _ = pagerBuilder.Append($"""<a class="page-link" href="{pageName}?p={nextPage}{pageSize}{keyword}">Next</a>""");
+            _ = pagerBuilder.Append($"""<a class="page-link" href="{pageName}?p={nextPage}{pageSize}{keyword}{sortField}{sortOrder}">Next</a>""");
             _ = pagerBuilder.Append("""</li>""");
         }
 
