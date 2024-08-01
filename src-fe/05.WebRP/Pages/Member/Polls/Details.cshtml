@@ -290,9 +290,9 @@
                     <div>
                         <span id="message-validation-checkbox" class="text-danger me-2"></span>
                     </div>
-                    <a class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#checkBoxVote">
+                    <button type="button" id="submit-form-vote" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#checkBoxVote">
                         @(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")
-                    </a>
+                    </button>
 
                 </form>
             }
@@ -433,10 +433,12 @@
         var isValid = checkedCount <= params.maxCount && checkedCount > 0;
         if (!isValid) {
             $("#message-validation-checkbox").html(`You choose more than ${params.maxCount} or you choose 0 choice`);
+            $("#submit-form-vote").prop("disabled", true);
         }
         else 
         {
             $("#message-validation-checkbox").html("");
+            $("#submit-form-vote").prop("disabled", false);
         }
         return isValid;
     }, "You can only select up to {0} options.");
