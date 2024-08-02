@@ -343,7 +343,7 @@
                                            data-val-maxchecked="You can only select up to @Model.Poll.MaximumAnswer options."
                                            data-val-maxchecked-maxcount="@Model.Poll.MaximumAnswer"
                                            data-val-maxchecked-selector="input[name='listChoices']"
-                                           @(choice.IsChosen ? "checked" : "")>
+                                    @(choice.IsChosen ? "checked" : "")>
                                     <label class="form-check-label" for="pollOption">
                                         @choice.Description
                                     </label>
@@ -435,8 +435,7 @@
             $("#message-validation-checkbox").html(`You choose more than ${params.maxCount} or you choose 0 choice`);
             $("#submit-form-vote").prop("disabled", true);
         }
-        else 
-        {
+        else {
             $("#message-validation-checkbox").html("");
             $("#submit-form-vote").prop("disabled", false);
         }
@@ -480,6 +479,18 @@
                     $('#form-modal .modal-title').html("Start Poll");
                     $('#form-modal').modal('show');
                 })
+                .catch((error) => {
+                    $('#form-modal .modal-body').html(`
+                                    <p>There was an error loading the content. Please try again later.</p>
+                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                `);
+                    $('#form-modal .modal-title').html("Error");
+                    $('#form-modal').modal('show');
+
+                    $('#refresh-button').on('click', function () {
+                        window.location.reload();
+                    });
+                });
         });
     }
 
@@ -496,6 +507,18 @@
                     $('#form-modal .modal-title').html("Finish Poll");
                     $('#form-modal').modal('show');
                 })
+                .catch((error) => {
+                    $('#form-modal .modal-body').html(`
+                                    <p>There was an error loading the content. Please try again later.</p>
+                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                `);
+                    $('#form-modal .modal-title').html("Error");
+                    $('#form-modal').modal('show');
+
+                    $('#refresh-button').on('click', function () {
+                        window.location.reload();
+                    });
+                });
         });
     }
 
@@ -512,6 +535,18 @@
                     $('#form-modal .modal-title').html("Delete Poll");
                     $('#form-modal').modal('show');
                 })
+                .catch((error) => {
+                    $('#form-modal .modal-body').html(`
+                                <p>There was an error loading the content. Please try again later.</p>
+                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                            `);
+                    $('#form-modal .modal-title').html("Error");
+                    $('#form-modal').modal('show');
+
+                    $('#refresh-button').on('click', function () {
+                        window.location.reload();
+                    });
+                });
         });
     }
 
@@ -532,6 +567,18 @@
                         $(this).valid();
                     });
                 })
+                .catch((error) => {
+                    $('#form-modal .modal-body').html(`
+                            <p>There was an error loading the content. Please try again later.</p>
+                            <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                        `);
+                    $('#form-modal .modal-title').html("Error");
+                    $('#form-modal').modal('show');
+
+                    $('#refresh-button').on('click', function () {
+                        window.location.reload();
+                    });
+                });
         });
     }
 
@@ -552,6 +599,21 @@
                     $(this).valid();
                 });
             })
+            .catch((error) => {
+                $('#form-modal .modal-body').html(`
+                                <p>There was an error loading the content. Please try again later.</p>
+                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                            `);
+                $('#form-modal .modal-title').html("Error");
+                $('#form-modal').modal('show');
+
+                $('#refresh-button').on('click', function () {
+                    window.location.reload();
+                });
+            });
+
+
+
     }
 
     function handleDelete() {
@@ -567,6 +629,18 @@
                 $('#form-modal').modal('show');
                 $.validator.unobtrusive.parse('#delete-choice');
             })
+            .catch((error) => {
+                $('#form-modal .modal-body').html(`
+                                    <p>There was an error loading the content. Please try again later.</p>
+                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                `);
+                $('#form-modal .modal-title').html("Error");
+                $('#form-modal').modal('show');
+
+                $('#refresh-button').on('click', function () {
+                    window.location.reload();
+                });
+            });
     }
 </script>
 

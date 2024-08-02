@@ -14,6 +14,7 @@ public record VoteItem
     public required string PollQuestion { get; init; }
     public required string GroupName { get; init; }
     public required PollStatus Status { get; init; }
+    public required DateTimeOffset Created { get; init; }
     public required IEnumerable<ChoiceItem> ChoiceItems { get; set; }
     public required IEnumerable<AnswerItem> AnswerItems { get; set; }
 }
