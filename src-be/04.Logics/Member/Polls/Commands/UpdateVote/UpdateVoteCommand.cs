@@ -1,6 +1,9 @@
 ﻿using Delta.Polling.Base.Polls.Enums;
 using Delta.Polling.Both.Member.Polls.Commands.UpdateVote;
 using Delta.Polling.Domain.Answers.Entities;
+using Delta.Polling.Logics.SignalR;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace Delta.Polling.Logics.Member.Polls.Commands.UpdateVote;
 
@@ -19,7 +22,8 @@ public class UpdateVoteCommandValidator : AbstractValidator<UpdateVoteCommand>
 
 public class UpdateVoteCommandHandler(
     IDatabaseService databaseService,
-    ICurrentUserService currentUserService)
+    ICurrentUserService currentUserService,
+    IHubContext<PollHub> hubContext)
     : IRequestHandler<UpdateVoteCommand, UpdateVoteOutput>
 {
     public async Task<UpdateVoteOutput> Handle(UpdateVoteCommand request, CancellationToken cancellationToken)
@@ -111,6 +115,22 @@ public class UpdateVoteCommandHandler(
         }
 
         _ = await databaseService.SaveAsync(cancellationToken);
+
+        var currentVote = await databaseService.Choices
+                                .Include(c => c.Answers)
+                                .Where(c => c.PollId == request.PollId)
+                                .Select(c => new ChoiceItem
+                                {
+                                    ChoiceId = c.Id,
+                                    Description = c.Description,
+                                    NumVote = c.Answers.Count(),
+                                })
+                                .OrderBy(c => c.Description)
+                                .ToListAsync(cancellationToken);
+
+        var jsonVote = JsonConvert.SerializeObject(currentVote);
+
+        await hubContext.Clients.All.SendAsync("SendVote", request.PollId, jsonVote);
 
         return new UpdateVoteOutput
         {

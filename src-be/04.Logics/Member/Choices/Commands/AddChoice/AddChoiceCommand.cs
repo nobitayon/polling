@@ -1,6 +1,8 @@
 ﻿using Delta.Polling.Base.Polls.Enums;
 using Delta.Polling.Both.Member.Choices.Commands.AddChoice;
 using Delta.Polling.Domain.Choices.Entities;
+using Delta.Polling.Logics.SignalR;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Delta.Polling.Logics.Member.Choices.Commands.AddChoice;
 
@@ -19,7 +21,8 @@ public class AddChoiceCommandValidator : AbstractValidator<AddChoiceCommand>
 
 public class AddChoiceCommandHandler(
     IDatabaseService databaseService,
-    ICurrentUserService currentUserService)
+    ICurrentUserService currentUserService,
+    IHubContext<PollHub> hubContext)
     : IRequestHandler<AddChoiceCommand, AddChoiceOutput>
 {
     public async Task<AddChoiceOutput> Handle(AddChoiceCommand request, CancellationToken cancellationToken)
@@ -68,6 +71,8 @@ public class AddChoiceCommandHandler(
             Created = DateTimeOffset.Now,
             CreatedBy = currentUserService.Username
         };
+
+        await hubContext.Clients.All.SendAsync("ReceiveMessage", "Hello", "Hi");
 
         _ = await databaseService.Choices.AddAsync(choice, cancellationToken);
 

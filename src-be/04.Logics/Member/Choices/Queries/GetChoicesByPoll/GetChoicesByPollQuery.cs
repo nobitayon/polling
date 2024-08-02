@@ -1,7 +1,7 @@
 ﻿using Delta.Polling.Base.Polls.Enums;
 using Delta.Polling.Both.Member.Choices.Queries.GetChoicesByPoll;
 
-namespace Delta.Polling.Logics.Member.Choices.Queries.GetChoiceByPoll;
+namespace Delta.Polling.Logics.Member.Choices.Queries.GetChoicesByPoll;
 
 [Authorize(RoleName = RoleNameFor.Member)]
 public record GetChoicesByPollQuery : GetChoicesByPollRequest, IRequest<GetChoicesByPollOutput>
@@ -24,15 +24,15 @@ public class GetChoicesByPollQueryHandler(
 {
     public async Task<GetChoicesByPollOutput> Handle(GetChoicesByPollQuery request, CancellationToken cancellationToken)
     {
-
+        // Sekarang dijadiin untuk dapetin choice di live result
         var pollDetails = await databaseService.Polls
                         .Where(poll => poll.Id == request.PollId)
                         .Select(poll => new
                         {
-                            Id = poll.Id,
-                            GroupId = poll.GroupId,
-                            CreatedBy = poll.CreatedBy,
-                            Status = poll.Status
+                            poll.Id,
+                            poll.GroupId,
+                            poll.CreatedBy,
+                            poll.Status
                         }).SingleOrDefaultAsync(cancellationToken)
                         ?? throw new EntityNotFoundException("Poll", request.PollId);
 
@@ -52,19 +52,23 @@ public class GetChoicesByPollQueryHandler(
             throw new Exception($"You can't access choices of this poll, because you are not member of group");
         }
 
-        if (!(pollDetails.CreatedBy == currentUserService.Username || pollDetails.Status is PollStatus.Finished || pollDetails.Status is PollStatus.Ongoing))
+        if (!(pollDetails.CreatedBy == currentUserService.Username && pollDetails.Status is PollStatus.Ongoing))
         {
-            throw new Exception($"You can't access choices this poll, because this poll is not published yet");
+            throw new Exception($"You can't see live result of this poll");
         }
 
         var choiceItems = await databaseService.Choices
+                            .Include(c => c.Answers)
                             .Where(c => c.PollId == request.PollId)
                             .Select(c => new ChoiceItem
                             {
                                 Id = c.Id,
                                 Description = c.Description,
                                 IsOther = c.IsOther,
-                            }).ToListAsync(cancellationToken);
+                                NumVote = c.Answers.Count()
+                            })
+                            .OrderBy(c => c.Description)
+                            .ToListAsync(cancellationToken);
 
         return new GetChoicesByPollOutput { Data = choiceItems };
     }

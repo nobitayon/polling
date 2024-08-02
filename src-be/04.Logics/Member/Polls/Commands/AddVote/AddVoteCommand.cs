@@ -2,6 +2,9 @@
 using Delta.Polling.Both.Member.Polls.Commands.AddVote;
 using Delta.Polling.Domain.Answers.Entities;
 using Delta.Polling.Domain.Voters.Entities;
+using Delta.Polling.Logics.SignalR;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace Delta.Polling.Logics.Member.Polls.Commands.AddVote;
 
@@ -21,7 +24,8 @@ public class AddVoteCommandValidator : AbstractValidator<AddVoteCommand>
 // TODO: Mikirin lagi apakah dengan membedakan endpoint saat orang submit dan resubmit(ketika mungkin ingin ubah vote) itu perlu atau tidak
 public class AddVoteCommandHandler(
     IDatabaseService databaseService,
-    ICurrentUserService currentUserService)
+    ICurrentUserService currentUserService,
+    IHubContext<PollHub> hubContext)
     : IRequestHandler<AddVoteCommand, AddVoteOutput>
 {
     public async Task<AddVoteOutput> Handle(AddVoteCommand request, CancellationToken cancellationToken)
@@ -124,6 +128,22 @@ public class AddVoteCommandHandler(
         }
 
         _ = await databaseService.SaveAsync(cancellationToken);
+
+        var currentVote = await databaseService.Choices
+                                .Include(c => c.Answers)
+                                .Where(c => c.PollId == request.PollId)
+                                .OrderBy(c => c.Description)
+                                .Select(c => new ChoiceItem
+                                {
+                                    ChoiceId = c.Id,
+                                    Description = c.Description,
+                                    NumVote = c.Answers.Count(),
+                                })
+                                 .ToListAsync(cancellationToken);
+
+        var jsonVote = JsonConvert.SerializeObject(currentVote);
+
+        await hubContext.Clients.All.SendAsync("SendVote", request.PollId, jsonVote);
 
         return new AddVoteOutput
         {

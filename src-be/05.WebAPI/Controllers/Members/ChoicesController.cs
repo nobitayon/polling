@@ -7,14 +7,14 @@ using Delta.Polling.Logics.Member.Choices.Commands.AddChoice;
 using Delta.Polling.Logics.Member.Choices.Commands.DeleteChoice;
 using Delta.Polling.Logics.Member.Choices.Commands.UpdateChoice;
 using Delta.Polling.Logics.Member.Choices.Queries.GetChoice;
-using Delta.Polling.Logics.Member.Choices.Queries.GetChoiceByPoll;
+using Delta.Polling.Logics.Member.Choices.Queries.GetChoicesByPoll;
 
 namespace Delta.Polling.WebAPI.Controllers.Members;
 
 [Route("api/Member/[controller]")]
 public class ChoicesController : ApiControllerBase
 {
-    [HttpGet]
+    [HttpGet("by-poll-id/{PollId:guid}")]
     public async Task<GetChoicesByPollOutput> GetChoicesByPoll([FromRoute] GetChoicesByPollQuery request)
     {
         return await Sender.Send(request);

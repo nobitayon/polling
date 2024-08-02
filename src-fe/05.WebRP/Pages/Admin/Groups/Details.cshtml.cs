@@ -137,13 +137,11 @@ public class DetailsModel(PagerService pagerService) : PageModelBase
 
         if (response.Result is not null)
         {
-            Console.WriteLine("sukses");
             TempData["success"] = "Success Remove Member";
             return RedirectToPage("/Admin/Groups/Details", new { groupId = GroupId });
         }
         else
         {
-            Console.WriteLine("failed");
             TempData["failed"] = "Failed to remove member";
             return Page();
         }

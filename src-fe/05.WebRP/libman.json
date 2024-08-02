@@ -1,11 +1,13 @@
 {
   "version": "1.0",
   "defaultProvider": "cdnjs",
-  "libraries": [
+  "libraries":
+  [
     {
       "library": "bootstrap@5.3.3",
       "destination": "wwwroot/lib/bootstrap/",
-      "files": [
+      "files":
+      [
         "css/bootstrap.min.css",
         "js/bootstrap.bundle.min.js"
       ]
@@ -13,7 +15,8 @@
     {
       "library": "bootstrap-icons@1.11.3",
       "destination": "wwwroot/lib/bootstrap-icons/",
-      "files": [
+      "files":
+      [
         "font/fonts/bootstrap-icons.woff",
         "font/fonts/bootstrap-icons.woff2",
         "font/bootstrap-icons.min.css"
@@ -22,7 +25,8 @@
     {
       "library": "Chart.js@4.4.1",
       "destination": "wwwroot/lib/Chart.js/",
-      "files": [
+      "files":
+      [
         "chart.umd.js"
       ]
     },
@@ -41,19 +45,30 @@
     {
       "library": "datatables@1.10.21",
       "destination": "wwwroot/datatables/",
-      "files": [
+      "files":
+      [
         "js/jquery.dataTables.min.js"
       ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "datatables@1.10.21",
+      "destination": "wwwroot/datatables/",
+      "files":
+      [
+        "js/jquery.dataTables.min.js",
+        "js/dataTables.dataTables.min.js"
+      ]
+    },
+    {
+      "provider": "unpkg",
+      "library": "@microsoft/signalr@8.0.7",
+      "destination": "wwwroot/lib/microsoft/signalr/",
+      "files":
+      [
+        "dist/browser/signalr.js",
+        "dist/browser/signalr.min.js"
+      ]
     }
-  ,
-{
-  "provider": "cdnjs",
-  "library": "datatables@1.10.21",
-  "destination": "wwwroot/datatables/",
-  "files": [
-    "js/jquery.dataTables.min.js",
-    "js/dataTables.dataTables.min.js"
   ]
-}
-]
 }
