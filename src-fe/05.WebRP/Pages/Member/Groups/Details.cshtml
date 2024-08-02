@@ -1,4 +1,5 @@
 ﻿@page "{GroupId}"
+@using StaticPoll = Delta.Polling.Base.Polls.Statics;
 @model Delta.Polling.WebRP.Pages.Member.Groups.DetailsModel
 
 @{
@@ -75,7 +76,7 @@
         <!-- List of Polls -->
         <div>
             <h2 class="mb-3">Polls</h2>
-            <form asp-page-handler="AddPoll" method="post" class="col-8">
+            <form id="form-create-group" asp-page-handler="AddPoll" method="post" class="col-8">
                 <input type="hidden" asp-for="@Model.Input.GroupId" value="@Model.GroupId" class="form-control" required>
 
                 <!-- Button trigger modal -->
@@ -94,15 +95,18 @@
                             <div class="modal-body">
                                 <div class="mb-3">
                                     <label asp-for="@Model.Input.Title" class="form-label"></label>
-                                    <input type="text" asp-for="@Model.Input.Title" class="form-control" required>
+                                    <input type="text" asp-for="@Model.Input.Title" class="form-control" maxlength="@StaticPoll.MaxLengthFor.Title" required>
+                                    <span asp-validation-for="@Model.Input.Title" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3">
                                     <label asp-for="@Model.Input.Question" class="form-label"></label>
-                                    <input type="text" asp-for="@Model.Input.Question" class="form-control" required>
+                                    <input type="text" asp-for="@Model.Input.Question" class="form-control" maxlength="@StaticPoll.MaxLengthFor.Question" required>
+                                    <span asp-validation-for="@Model.Input.Question" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3">
                                     <label asp-for="@Model.Input.MaximumAnswer" class="form-label"></label>
-                                    <input type="number" asp-for="@Model.Input.MaximumAnswer" class="form-control" required>
+                                    <input type="number" asp-for="@Model.Input.MaximumAnswer" class="form-control" min="@StaticPoll.MinValueFor.MaximumAnswer" max="@StaticPoll.MaxValueFor.MaximumAnswer" required>
+                                    <span asp-validation-for="@Model.Input.MaximumAnswer" class="text-danger"></span>
                                 </div>
                                 <div class="mb-3">
                                     <label asp-for="@Model.Input.AllowOtherChoice" class="form-label text-warning"></label>
@@ -178,8 +182,8 @@
 }
 
 <script>
+
     $(document).ready(function () {
-        console.log("Hello");
         $('#form-search-member').on('input', function () {
             // Code to execute on input event
             var filter = $(this).val().toLowerCase();
@@ -188,6 +192,12 @@
                 console.log(text);
                 $(this).toggle(text.indexOf(filter) > -1);
             });
+        });
+
+        $.validator.unobtrusive.parse("#form-create-group");
+
+        $('input, select, textarea').on('change keyup blur', function () {
+            $(this).valid();
         });
     });
 

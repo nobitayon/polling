@@ -25,60 +25,154 @@
     </nav>
 
     <h1>Your Poll Votes</h1>
-
-    <div class="list-group">
-        @foreach (var voteItem in Model.VoteItems)
-        {
-            <div class="list-group-item mb-3 border rounded">
-                <h5 class="mb-1">Poll Title: @voteItem.GroupName</h5>
-                <p class="mb-1"><strong>Status:</strong> <span class="badge bg-primary">@voteItem.Status</span></p>
-
-                <div class="mb-2">
-                    @if (voteItem.Status is PollStatus.Finished)
-                    {
-                        var maxVote = voteItem.ChoiceItems
-                        .Select(c => c.NumVote)
-                        .Max();
-                        if (maxVote > 0)
-                        {
-                            <strong>Winner:</strong>
-                            foreach (var choice in voteItem.ChoiceItems)
-                            {
-                                @if (choice.NumVote == maxVote)
-                                {
-                                    <div>
-                                        <span class="badge bg-success">
-                                            @choice.Description - <span class="badge bg-light text-dark">@choice.NumVote Votes</span>
-                                        </span>
-                                    </div>
-                                }
-                            }
-                        }
-                        <hr style="border-top: 2px solid #000; margin: 20px 0;">
-
-                        <strong>You vote for:</strong>
-                        foreach (var myChoice in voteItem.AnswerItems)
-                        {
-                            <div>
-                                <span class="badge bg-secondary">
-                                    @myChoice.Description
-                                </span>
+    <form method="post" asp-page-handler="SearchQuery">
+        <div class="search-container">
+            <input name="querySearch" type="text" class="search-bar" placeholder="Search..." onfocus="showTooltip()"
+                   onblur="hideTooltip()" required />
+            <button type="submit" class="btn btn-primary mt-3">
+                <i class="bi bi-search"></i> Search
+            </button>
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Search Rules
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>SortField: Created; SortOrder: 0</li>
+                                        <li>SearchField: Title; SearchText: a</li>
+                                        <li>Page: 1; PageSize: 5</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>SortField: Created; SortOrder: 1</li>
+                                        <li>SearchField: Status; SearchText: Ongoing</li>
+                                        <li>SearchField: Status; SearchText: Draft</li>
+                                        <li>SortField: Created; SortOrder: 0;Page:1;PageSize:5</li>
+                                    </ul>
+                                </div>
                             </div>
-                        }
-                    }
-                    else
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    @if (Model.VoteItems != null)
+    {
+        <div style="height:400px">
+            <div style="height:70%">
+
+
+                <div class="list-group scrollable-content mt-2">
+                    @foreach (var voteItem in Model.VoteItems)
                     {
-                        <strong>You vote for:</strong>
-                        foreach (var myChoice in voteItem.AnswerItems)
-                        {
-                            <span class="badge bg-secondary">
-                                @myChoice.Description
-                            </span>
-                        }
+                        <div class="list-group-item mb-3 border rounded">
+                            <h5 class="mb-1">Group: @voteItem.GroupName</h5>
+                            <p class="mb-1"><strong>Status:</strong> <span class="badge bg-primary">@voteItem.Status</span></p>
+                            <p class="mb-1"><strong>Title:</strong> <span class="badge bg-primary">@voteItem.PollTitle</span></p>
+                            <p class="mb-1"><strong>Question:</strong> <span class="badge bg-primary">@voteItem.PollQuestion</span></p>
+                            <p class="mb-1"><strong>Created:</strong> <span class="badge bg-primary">@voteItem.Created.ToString("MMM dd, yyyy HH:mm")</span></p>
+
+                            <div class="mb-2">
+                                @if (voteItem.Status is PollStatus.Finished)
+                                {
+                                    var maxVote = voteItem.ChoiceItems
+                                    .Select(c => c.NumVote)
+                                    .Max();
+                                    if (maxVote > 0)
+                                    {
+                                        <strong>Winner:</strong>
+
+                                        @foreach (var choice in voteItem.ChoiceItems)
+                                        {
+                                            @if (choice.NumVote == maxVote)
+                                            {
+                                                <div>
+                                                    <span class="badge bg-success">
+                                                        @choice.Description - <span class="badge bg-light text-dark">@choice.NumVote Votes</span>
+                                                    </span>
+                                                </div>
+                                            }
+                                        }
+
+                                    }
+                                    <hr style="border-top: 2px solid #000; margin: 20px 0;">
+
+                                    <strong>You vote for:</strong>
+                                    @foreach (var myChoice in voteItem.AnswerItems)
+                                    {
+                                        <div>
+                                            <span class="badge bg-secondary">
+                                                @myChoice.Description
+                                            </span>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <strong>You vote for:</strong>
+                                    @foreach (var myChoice in voteItem.AnswerItems)
+                                    {
+                                        <span class="badge bg-secondary">
+                                            @myChoice.Description
+                                        </span>
+                                    }
+                                }
+                            </div>
+                        </div>
                     }
                 </div>
             </div>
-        }
-    </div>
-    @Html.Raw(Model.Paging)
+
+            <div style="height:30%;margin-top:20px">
+                <div class="pagination">
+                    @Html.Raw(Model.Paging)
+                </div>
+            </div>
+        </div>
+    }
+
 }
+
+<script>
+
+</script>
+
+<style>
+    .search-container {
+        position: relative;
+        /* Position the container relative to handle absolute positioning of the tooltip */
+    }
+
+    .search-bar {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .poll-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        height: 400px;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
+    .scrollable-content {
+        overflow-y: auto; /* Adds vertical scrollbar if content overflows */
+        max-height: 100%; /* Adjust if needed */
+    }
+
+</style>

@@ -1,4 +1,5 @@
-﻿using Delta.Polling.Both.Member.Votes.Queries.GetMyVotes;
+﻿using Delta.Polling.Base.Polls.Enums;
+using Delta.Polling.Both.Member.Votes.Queries.GetMyVotes;
 using Delta.Polling.Domain.Polls.Entities;
 
 namespace Delta.Polling.Logics.Member.Votes.Queries.GetMyVotes;
@@ -34,8 +35,6 @@ public class GetMyVotesQueryHandler(
             .Include(v => v.Answers)
                 .ThenInclude(a => a.Choice)
             .AsNoTracking();
-
-        var totalCount = await query.CountAsync(cancellationToken);
 
         if (string.IsNullOrWhiteSpace(request.SortField))
         {
@@ -75,6 +74,39 @@ public class GetMyVotesQueryHandler(
             }
         }
 
+        if (!string.IsNullOrWhiteSpace(request.SearchField) && !string.IsNullOrWhiteSpace(request.SearchText))
+        {
+            if (request.SearchField == nameof(Poll.Title))
+            {
+                query = query.Where(v => v.Poll.Title.ToLower().Contains(request.SearchText!.ToLower()));
+            }
+            else if (request.SearchField == nameof(Poll.Question))
+            {
+                query = query.Where(v => v.Poll.Question.ToLower().Contains(request.SearchText!.ToLower()));
+            }
+            else if (request.SearchField == nameof(VoteItem.GroupName))
+            {
+                query = query.Where(v => v.Poll.Group.Name.ToLower().Contains(request.SearchText!.ToLower()));
+            }
+            else if (request.SearchField == nameof(Poll.Status))
+            {
+                if (request.SearchText == nameof(PollStatus.Draft))
+                {
+                    query = query.Where(v => v.Poll.Status == PollStatus.Draft);
+                }
+                else if (request.SearchText == nameof(PollStatus.Ongoing))
+                {
+                    query = query.Where(v => v.Poll.Status == PollStatus.Ongoing);
+                }
+                else if (request.SearchText == nameof(PollStatus.Finished))
+                {
+                    query = query.Where(v => v.Poll.Status == PollStatus.Finished);
+                }
+            }
+        }
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
         var skippedAmount = PagerHelper.GetSkipAmount(request.Page, request.PageSize);
 
         var votes = await query
@@ -88,6 +120,7 @@ public class GetMyVotesQueryHandler(
                 Status = v.Poll.Status,
                 PollQuestion = v.Poll.Question,
                 PollTitle = v.Poll.Title,
+                Created = v.Poll.Created,
                 ChoiceItems = v.Poll.Choices.Select(
                         c => new ChoiceItem
                         {
