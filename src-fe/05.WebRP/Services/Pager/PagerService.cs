@@ -14,8 +14,6 @@ public class PagerService
         var sortOrder = request.SortField == null ? string.Empty : $"&so={request.SortOrder}";
         var pageSize = $"&ps={request.PageSize}";
 
-        Console.WriteLine("Here 4");
-
         var pagerBuilder = new StringBuilder();
         _ = pagerBuilder.Append("""<nav aria-label="Pager">""");
         _ = pagerBuilder.Append("""<ul class="pagination">""");
@@ -35,8 +33,6 @@ public class PagerService
             _ = pagerBuilder.Append("""</li>""");
         }
 
-        Console.WriteLine("Here 3");
-
         for (var i = 1; i <= safeMaxPage; i++)
         {
             if (request.Page == i)
@@ -52,8 +48,6 @@ public class PagerService
                 _ = pagerBuilder.Append("""</li>""");
             }
         }
-
-        Console.WriteLine("Here 2");
 
         if (request.Page == safeMaxPage)
         {
@@ -72,8 +66,6 @@ public class PagerService
 
         _ = pagerBuilder.Append("""</ul>""");
         _ = pagerBuilder.Append("""</nav>""");
-
-        Console.WriteLine("Here 1");
 
         return pagerBuilder.ToString();
     }

@@ -163,8 +163,9 @@
                 @if (Model.Poll.CreatedBy == currentUserService.Username)
                 {
                     <a id="finish-poll" data-poll-id="@Model.PollId" class="btn btn-primary me-2">Finish Poll</a>
-                }
+                    <a asp-page="/Member/Polls/LiveResult" asp-route-pollId="@Model.PollId" class="btn btn-primary me-2">Live Result</a>
 
+                }
             </div>
         </div>
 
@@ -481,9 +482,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                                    <p>There was an error loading the content. Please try again later.</p>
-                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                `);
+                                        <p>There was an error loading the content. Please try again later.</p>
+                                        <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                    `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -509,9 +510,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                                    <p>There was an error loading the content. Please try again later.</p>
-                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                `);
+                                        <p>There was an error loading the content. Please try again later.</p>
+                                        <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                    `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -537,9 +538,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                                <p>There was an error loading the content. Please try again later.</p>
-                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                            `);
+                                    <p>There was an error loading the content. Please try again later.</p>
+                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -569,9 +570,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                            <p>There was an error loading the content. Please try again later.</p>
-                            <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                        `);
+                                <p>There was an error loading the content. Please try again later.</p>
+                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                            `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -601,9 +602,9 @@
             })
             .catch((error) => {
                 $('#form-modal .modal-body').html(`
-                                <p>There was an error loading the content. Please try again later.</p>
-                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                            `);
+                                    <p>There was an error loading the content. Please try again later.</p>
+                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                `);
                 $('#form-modal .modal-title').html("Error");
                 $('#form-modal').modal('show');
 
@@ -631,9 +632,9 @@
             })
             .catch((error) => {
                 $('#form-modal .modal-body').html(`
-                                    <p>There was an error loading the content. Please try again later.</p>
-                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                `);
+                                        <p>There was an error loading the content. Please try again later.</p>
+                                        <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                    `);
                 $('#form-modal .modal-title').html("Error");
                 $('#form-modal').modal('show');
 
