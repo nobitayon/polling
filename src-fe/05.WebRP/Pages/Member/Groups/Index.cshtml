@@ -16,7 +16,7 @@
                 Home
             </a>
         </li>
-        
+
         <li class="breadcrumb-item active"
             aria-current="page">
             @ViewData["Title"]
@@ -42,24 +42,89 @@
     </div>
 }
 
-<div class="row">
-    @foreach (var group in Model.Groups)
-    {
-        <div class="col-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <a class="text-decoration-none" asp-page="Details" asp-route-groupId="@group.Id">
-                        <h5 class="card-title">
-                            @group.Name
-                        </h5>
-                    </a>
-                    @* <p class="card-text">
-                Something
-                </p> *@
+<form method="post" asp-page-handler="SearchQuery">
+    <div class="search-container">
+        <input name="querySearch" type="text" class="search-bar" placeholder="Search..." required />
+        <button type="submit" class="btn btn-primary mt-3">
+            <i class="bi bi-search"></i> Search
+        </button>
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Search Rules
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>SortField: Name; SortOrder: 0</li>
+                                    <li>SearchField: Name; SearchText: a</li>
+                                    <li>Page: 1; PageSize: 5</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>SortField: Name; SortOrder: 0</li>
+                                    <li>SearchField: Name; SearchText: a</li>
+                                    <li>SortField: Name; SortOrder: 0;Page:1;PageSize:5</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
+    </div>
+</form>
+
+<div style="height:500px" class="mt-2">
+    <div style="height:70%">
+        <div class="row scrollable-content">
+            @foreach (var group in Model.Groups)
+            {
+                <div class="col-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <a class="text-decoration-none" asp-page="Details" asp-route-groupId="@group.Id">
+                                <h5 class="card-title">
+                                    @group.Name
+                                </h5>
+                            </a>
+                            @* <p class="card-text">
+                        Something
+                        </p> *@
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div style="height:30%" class="mt-2">
+        @Html.Raw(Model.Paging)
+    </div>
+</div>
+
+
+<style>
+    .scrollable-content {
+        overflow-y: auto; /* Adds vertical scrollbar if content overflows */
+        max-height: 100%; /* Adjust if needed */
     }
 
-    @Html.Raw(Model.Paging)
-</div>
+    .search-container {
+        position: relative;
+        /* Position the container relative to handle absolute positioning of the tooltip */
+    }
+
+    .search-bar {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+</style>
