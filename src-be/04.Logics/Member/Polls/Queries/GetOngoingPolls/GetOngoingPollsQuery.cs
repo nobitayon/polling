@@ -1,5 +1,6 @@
 ﻿using Delta.Polling.Base.Polls.Enums;
 using Delta.Polling.Both.Member.Polls.Queries.GetOngoingPolls;
+using Delta.Polling.Domain.Polls.Entities;
 
 namespace Delta.Polling.Logics.Member.Polls.Queries.GetOngoingPolls;
 
@@ -34,8 +35,6 @@ public class GetOngoingPollsQueryHandler(
             .AsNoTracking()
             .Where(p => p.Status == PollStatus.Ongoing && myGroup.Contains(p.GroupId));
 
-        var totalCount = await query.CountAsync(cancellationToken);
-
         if (string.IsNullOrWhiteSpace(request.SortField))
         {
             query = query.OrderBy(poll => poll.Title);
@@ -52,6 +51,10 @@ public class GetOngoingPollsQueryHandler(
                 {
                     query = query.OrderBy(poll => poll.Title);
                 }
+                else if (request.SortField == nameof(Poll.Created))
+                {
+                    query = query.OrderBy(poll => poll.Created);
+                }
             }
             else if (sortOrder is SortOrder.Desc)
             {
@@ -59,12 +62,49 @@ public class GetOngoingPollsQueryHandler(
                 {
                     query = query.OrderByDescending(poll => poll.Title);
                 }
+                else if (request.SortField == nameof(Poll.Created))
+                {
+                    query = query.OrderByDescending(poll => poll.Created);
+                }
             }
             else
             {
-                query = query.OrderBy(poll => poll.Title);
+                query = query.OrderBy(poll => poll.Created);
             }
         }
+
+        if (!string.IsNullOrWhiteSpace(request.SearchField) && !string.IsNullOrWhiteSpace(request.SearchText))
+        {
+            if (request.SearchField == nameof(Poll.Title))
+            {
+                query = query.Where(poll => poll.Title.ToLower().Contains(request.SearchText!.ToLower()));
+            }
+            else if (request.SearchField == nameof(Poll.Question))
+            {
+                query = query.Where(poll => poll.Question.ToLower().Contains(request.SearchText!.ToLower()));
+            }
+            else if (request.SearchField == nameof(Poll.Group.Name))
+            {
+                query = query.Where(poll => poll.Group.Name.ToLower().Contains(request.SearchText!.ToLower()));
+            }
+            else if (request.SearchField == nameof(Poll.Status))
+            {
+                if (request.SearchText == nameof(PollStatus.Draft))
+                {
+                    query = query.Where(poll => poll.Status == PollStatus.Draft);
+                }
+                else if (request.SearchText == nameof(PollStatus.Ongoing))
+                {
+                    query = query.Where(poll => poll.Status == PollStatus.Ongoing);
+                }
+                else if (request.SearchText == nameof(PollStatus.Finished))
+                {
+                    query = query.Where(poll => poll.Status == PollStatus.Finished);
+                }
+            }
+        }
+
+        var totalCount = await query.CountAsync(cancellationToken);
 
         var skippedAmount = PagerHelper.GetSkipAmount(request.Page, request.PageSize);
 
