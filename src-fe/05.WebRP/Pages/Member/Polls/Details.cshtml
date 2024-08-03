@@ -359,6 +359,10 @@
                             @(Model.Poll.AnswerItems.Count() > 0 ? "UpdateVote" : "AddVote")
                         </a>
                     }
+                    else
+                    {
+                        <span>You already add another choice and can't change your vote</span>
+                    }
                 </form>
             }
         </div>
