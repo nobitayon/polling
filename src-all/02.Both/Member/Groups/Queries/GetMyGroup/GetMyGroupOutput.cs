@@ -1,5 +1,4 @@
 ﻿using Delta.Polling.Base.Polls.Enums;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Delta.Polling.Both.Member.Groups.Queries.GetMyGroup;
 
@@ -14,7 +13,7 @@ public record GroupItem
     public required string Name { get; init; }
     public required DateTimeOffset Created { get; init; }
     public required string CreatedBy { get; init; }
-    public IEnumerable<PollItem> PollItems { get; init; } = [];
+    public required PaginatedListResponse<PollItem> PollItems { get; init; }
     public IEnumerable<string> MemberItems { get; init; } = [];
 }
 

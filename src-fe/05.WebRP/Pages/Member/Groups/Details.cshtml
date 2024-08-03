@@ -4,7 +4,7 @@
 
 @{
     ViewBag.CurrentMenu = MenuFor.MemberGroupIndex;
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.GroupItem.Name;
 }
 
 @await Component.InvokeAsync("ErrorViewer", Model.Problem)
@@ -125,27 +125,75 @@
                     </div>
                 </div>
             </form>
-            <div class="list-group mb-4">
-                @foreach (var poll in Model.GroupItem.PollItems)
-                {
-                    @* <div class="list-group-item">
-                        <h5>@poll.Title</h5>
-                        <p class="text-muted">
-                            Created on: @poll.Created.ToString("MMM dd, yyyy HH:mm")<br />
-                            Status: <span>@poll.Status</span>
-                        </p>
+            <div class="section-divider">
+                <form method="post" asp-page-handler="SearchQuery">
+                    <div class="search-container">
+                        <input name="querySearch" type="text" class="search-bar" placeholder="Search..." onfocus="showTooltip()"
+                               onblur="hideTooltip()" required />
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Search Rules
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <ul>
+                                                    <li>SortField: Created; SortOrder: 0</li>
+                                                    <li>SearchField: Title; SearchText: a</li>
+                                                    <li>Page: 1; PageSize: 5</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <ul>
+                                                    <li>SortField: Created; SortOrder: 1</li>
+                                                    <li>SearchField: Status; SearchText: Ongoing</li>
+                                                    <li>SearchField: Status; SearchText: Draft</li>
+                                                    <li>SortField: Created; SortOrder: 0;Page:1;PageSize:5</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div style="height:500px">
+                <div style="height:70%" class="scrollable-content">
+                    <div class="list-group mb-4">
+                        @foreach (var poll in Model.GroupItem.PollItems.Items)
+                        {
+                            @* <div class="list-group-item">
+                    <h5>@poll.Title</h5>
+                    <p class="text-muted">
+                    Created on: @poll.Created.ToString("MMM dd, yyyy HH:mm")<br />
+                    Status: <span>@poll.Status</span>
+                    </p>
                     </div> *@
 
-                    <a asp-page="/Member/Polls/Details" asp-route-pollId="@poll.Id" class="list-group-item list-group-item-action">
-                        <h5>@poll.Title</h5>
-                        <p class="text-muted">
-                            Created on: @poll.Created.ToString("MMM dd, yyyy HH:mm")<br />
-                            Status: <span>@poll.Status</span>
-                        </p>
-                    </a>
-                }
+                            <a asp-page="/Member/Polls/Details" asp-route-pollId="@poll.Id" class="list-group-item list-group-item-action">
+                                <h5>@poll.Title</h5>
+                                <p class="text-muted">
+                                    Created on: @poll.Created.ToString("MMM dd, yyyy HH:mm")<br />
+                                    Status: <span>@poll.Status</span>
+                                </p>
+                            </a>
+                        }
+                    </div>
+                </div>
+                <div style="height:30%">
+                    @Html.Raw(Model.Paging)
+                </div>
             </div>
-            <!-- Pagination controls for polls (if needed) -->
         </div>
     </div>
 
@@ -162,7 +210,6 @@
                     <div class="mb-3">
                         <input id="form-search-member" type="text" class="form-control" id="memberSearch" placeholder="Search members...">
                     </div>
-
                     <!-- List of Members in Modal -->
                     <ul id="list-member" class="list-group">
                         @foreach (var memberItem in Model.GroupItem.MemberItems)
@@ -184,19 +231,24 @@
 <script>
 
     $(document).ready(function () {
-        $('#form-search-member').on('input', function () {
-            // Code to execute on input event
+        $('#form-search-member').on('change keyup blur', function () {
             var filter = $(this).val().toLowerCase();
             $('#list-member .list-group-item').each(function () {
                 var text = $(this).text().toLowerCase();
-                console.log(text);
-                $(this).toggle(text.indexOf(filter) > -1);
+                let matches = text.indexOf(filter) > -1
+                if (matches) {
+                    this.style.setProperty('display', 'block', 'important');
+                }
+                else { 
+                    this.style.setProperty('display', 'none', 'important');
+                }
+
             });
         });
 
         $.validator.unobtrusive.parse("#form-create-group");
 
-        $('input, select, textarea').on('change keyup blur', function () {
+        $('input, select, textarea').not('#form-search-member').on('change keyup blur', function () {
             $(this).valid();
         });
     });
@@ -264,6 +316,24 @@
         #backToTop:hover {
             background-color: #0056b3;
         }
+
+    .scrollable-content {
+        overflow-y: auto; /* Adds vertical scrollbar if content overflows */
+        max-height: 100%; /* Adjust if needed */
+    }
+
+    .search-container {
+        position: relative;
+        /* Position the container relative to handle absolute positioning of the tooltip */
+    }
+
+    .search-bar {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
 </style>
 
 
