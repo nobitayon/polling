@@ -54,7 +54,7 @@ public class GetMyPollsQueryHandler(
                 }
                 else if (request.SortField == nameof(Poll.Created))
                 {
-                    query = query.OrderBy(poll => poll.Title);
+                    query = query.OrderBy(poll => poll.Created);
                 }
             }
             else if (sortOrder is SortOrder.Desc)
