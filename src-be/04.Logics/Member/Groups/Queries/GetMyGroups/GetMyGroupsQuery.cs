@@ -1,5 +1,5 @@
 ﻿using Delta.Polling.Both.Member.Groups.Queries.GetMyGroups;
-using Delta.Polling.Both.Member.Polls.Queries.GetMyPolls;
+using Delta.Polling.Domain.Groups.Entities;
 
 namespace Delta.Polling.Logics.Member.Groups.Queries.GetMyGroups;
 
@@ -28,8 +28,6 @@ public class GetMyGroupsQueryHandler(
             .AsNoTracking()
             .Where(gm => gm.Username == currentUserService.Username);
 
-        var totalCount = await query.CountAsync(cancellationToken);
-
         if (string.IsNullOrWhiteSpace(request.SortField))
         {
             query = query.Include(gm => gm.Group)
@@ -40,10 +38,11 @@ public class GetMyGroupsQueryHandler(
             var sortOrder = request.SortOrder is not null
                 ? request.SortOrder.Value
                 : SortOrder.Asc;
-
+            Console.WriteLine($"Yang kebaca di logic {sortOrder}");
             if (sortOrder is SortOrder.Asc)
             {
-                if (request.SortField == nameof(GroupItem.Name))
+                Console.WriteLine($"Yang kebaca di logic ASC {sortOrder}");
+                if (request.SortField == nameof(Group.Name))
                 {
                     query = query.Include(gm => gm.Group)
                         .OrderBy(gm => gm.Group.Name);
@@ -51,7 +50,8 @@ public class GetMyGroupsQueryHandler(
             }
             else if (sortOrder is SortOrder.Desc)
             {
-                if (request.SortField == nameof(PollItem.Title))
+                Console.WriteLine($"Yang kebaca di logic DESC {sortOrder}");
+                if (request.SortField == nameof(Group.Name))
                 {
                     query = query.Include(gm => gm.Group)
                         .OrderByDescending(gm => gm.Group.Name);
@@ -63,6 +63,16 @@ public class GetMyGroupsQueryHandler(
                         .OrderBy(gm => gm.Group.Name);
             }
         }
+
+        if (!string.IsNullOrWhiteSpace(request.SearchField) && !string.IsNullOrWhiteSpace(request.SearchText))
+        {
+            if (request.SearchField == nameof(Group.Name))
+            {
+                query = query.Where(gm => gm.Group.Name.ToLower().Contains(request.SearchText!.ToLower()));
+            }
+        }
+
+        var totalCount = await query.CountAsync(cancellationToken);
 
         var skippedAmount = PagerHelper.GetSkipAmount(request.Page, request.PageSize);
 

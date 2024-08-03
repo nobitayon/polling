@@ -17,7 +17,7 @@ public class DetailsModel(PagerService pagerService) : PageModelBase
     [BindProperty]
     public AddPollCommand Input { get; set; } = default!;
 
-    public async Task<IActionResult> OnGet(int? p, int? ps, string k, string kf, string sf, int? so)
+    public async Task<IActionResult> OnGet(int? p, int? ps, string k, string kf, string sf, SortOrder? so)
     {
         var page = PagerHelper.GetSafePage(p);
         var pageSize = PagerHelper.GetSafePageSize(ps);

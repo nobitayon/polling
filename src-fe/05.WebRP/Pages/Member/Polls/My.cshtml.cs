@@ -10,7 +10,7 @@ public class MyModel(PagerService pagerService) : PageModelBase
     public IEnumerable<PollItemModel> Polls { get; set; } = [];
     public string Paging { get; set; } = string.Empty;
 
-    public async Task<IActionResult> OnGet(int? p, int? ps, string k, string kf, string sf, int? so)
+    public async Task<IActionResult> OnGet(int? p, int? ps, string k, string kf, string sf, SortOrder? so)
     {
         var page = PagerHelper.GetSafePage(p);
         var pageSize = PagerHelper.GetSafePageSize(ps);
