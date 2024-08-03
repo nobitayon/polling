@@ -402,8 +402,16 @@
             <ul class="list-group mb-3">
                 @foreach (var choice in Model.Poll.ChoiceItems)
                 {
-                    <li class="list-group-item d-flex justify-content-between align-items-center @(choice.IsChosen ? "chosen" : "")">
-                        @choice.Description
+                    <li class="list-group-item d-flex justify-flex-start align-items-center @(choice.IsChosen ? "chosen" : "")">
+                        @if(choice.IsChosen)
+                        {
+                            <i class="bi bi-info-circle me-2" data-toggle="tooltip" title="You vote this before"></i>
+                            <span>@choice.Description</span>
+                        }
+                        else
+                        {
+                            @choice.Description
+                        }
                     </li>
                 }
             </ul>
@@ -432,7 +440,9 @@
 }
 
 <script type="text/javascript" language=javascript>
-
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
     $.validator.addMethod("maxChecked", function (value, element, params) {
         var checkedCount = $(params.selector).filter(":checked").length;
         var isValid = checkedCount <= params.maxCount && checkedCount > 0;

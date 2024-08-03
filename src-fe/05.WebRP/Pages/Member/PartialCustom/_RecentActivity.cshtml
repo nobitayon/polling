@@ -26,72 +26,75 @@ else
         {
             @foreach (var poll in data)
             {
-                <a asp-page="/Member/Polls/Details" asp-route-pollId="@poll.Id" class="list-group-item list-group-item-action">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <small class="text-muted">@poll.GroupName</small>
-                    </div>
+                <div class="card mb-3 shadow-sm">
+                    <a asp-page="/Member/Polls/Details" asp-route-pollId="@poll.Id" class="list-group-item list-group-item-action">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-muted">@poll.GroupName</small>
+                            </div>
 
-                    <h5 class="mb-1">@poll.Title</h5>
-                    @if (poll.Status is PollStatus.Finished)
-                    {
-                        <p>Winner is: </p>
-                        <ul class="list-group">
-                            @foreach (var vote in poll.WinnerAnswers)
+                            <h5 class="mb-1">@poll.Title</h5>
+                            @if (poll.Status is PollStatus.Finished)
                             {
-                                <li class="list-group-item">@vote.Description</li>
+                                <p>Winner is: </p>
+                                <ul class="list-group">
+                                    @foreach (var vote in poll.WinnerAnswers)
+                                    {
+                                        <li class="list-group-item">@vote.Description</li>
+                                    }
+                                </ul>
+                                @if (poll.AnswerItems.Count() > 0)
+                                {
+                                    <p>You vote for:</p>
+                                    <ul class="list-group">
+                                        @foreach (var vote in poll.AnswerItems)
+                                        {
+                                            <li class="list-group-item">@vote.Description</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p>You are not participate</p>
+                                }
                             }
-                        </ul>
-                        @if (poll.AnswerItems.Count() > 0)
-                        {
-                            <p>You vote for:</p>
-                            <ul class="list-group">
-                                @foreach (var vote in poll.AnswerItems)
-                                {
-                                    <li class="list-group-item">@vote.Description</li>
-                                }
-                            </ul>
-                        }
-                        else
-                        {
-                            <p>You are not participate</p>
-                        }
-                    }
 
-                    @if (poll.Status is PollStatus.Ongoing)
-                    {
-                        @if (poll.AnswerItems.Count() > 0)
-                        {
-                            <p>Currently you vote for:</p>
-                            <ul class="list-group">
-                                @foreach (var vote in poll.AnswerItems)
+                            @if (poll.Status is PollStatus.Ongoing)
+                            {
+                                @if (poll.AnswerItems.Count() > 0)
                                 {
-                                    <li class="list-group-item">@vote.Description</li>
+                                    <p>Currently you vote for:</p>
+                                    <ul class="list-group">
+                                        @foreach (var vote in poll.AnswerItems)
+                                        {
+                                            <li class="list-group-item">@vote.Description</li>
+                                        }
+                                    </ul>
                                 }
-                            </ul>
-                        }
-                        else
-                        {
-                            <p>You are not vote yet</p>
-                        }
-                    }
-                    @if (poll.Status is PollStatus.Draft)
-                    {
-                        <p>Maybe you want to publish this draft ?</p>
-                    }
+                                else
+                                {
+                                    <p>You are not vote yet</p>
+                                }
+                            }
+                            @if (poll.Status is PollStatus.Draft)
+                            {
+                                <p>Maybe you want to publish this draft ?</p>
+                            }
 
-                    <small>Created: @poll.Created.ToString("MMM dd, yyyy HH:mm")</small>
-                    <div class="mt-3 p-2 text-white" style="
-                        background-color: @(poll.Status switch
+                            <small>Created: @poll.Created.ToString("MMM dd, yyyy HH:mm")</small>
+
+                        </div>
+                        <div class="card-footer text-white" style="background-color: @(poll.Status switch
                         {
-                            PollStatus.Finished => "#28a745", 
-                            PollStatus.Ongoing => "#ffc107", 
-                            PollStatus.Draft => "#6c757d", 
-                            _ => "#343a40" 
-                        })"
-                     >
-                        <small>@poll.Status.ToString()</small>
-                    </div>
-                </a>
+                            PollStatus.Finished => "#28a745",
+                            PollStatus.Ongoing => "#ffc107",
+                            PollStatus.Draft => "#6c757d",
+                            _ => "#343a40"
+                        })">
+                            <small>@poll.Status.ToString()</small>
+                        </div>
+                    </a>
+                </div>
             }
         }
     }
