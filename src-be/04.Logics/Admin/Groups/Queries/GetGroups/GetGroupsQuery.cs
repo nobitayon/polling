@@ -1,4 +1,5 @@
 ﻿using Delta.Polling.Both.Admin.Groups.Queries.GetGroups;
+using Delta.Polling.Domain.Groups.Entities;
 
 namespace Delta.Polling.Logics.Admin.Groups.Queries.GetGroups;
 
@@ -25,8 +26,6 @@ public class GetGroupsQueryHandler(
         var query = databaseService.Groups
             .AsNoTracking();
 
-        var totalCount = await query.CountAsync(cancellationToken);
-
         if (string.IsNullOrWhiteSpace(request.SortField))
         {
             query = query.OrderBy(group => group.Name);
@@ -39,9 +38,13 @@ public class GetGroupsQueryHandler(
 
             if (sortOrder is SortOrder.Asc)
             {
-                if (request.SortField == nameof(GroupItem.Name))
+                if (request.SortField == nameof(Group.Name))
                 {
                     query = query.OrderBy(group => group.Name);
+                }
+                else if (request.SortField == nameof(Group.Created))
+                {
+                    query = query.OrderBy(group => group.Created);
                 }
             }
             else if (sortOrder is SortOrder.Desc)
@@ -50,12 +53,30 @@ public class GetGroupsQueryHandler(
                 {
                     query = query.OrderByDescending(group => group.Name);
                 }
+                else if (request.SortField == nameof(Group.Created))
+                {
+                    query = query.OrderByDescending(group => group.Created);
+                }
             }
             else
             {
-                query = query.OrderBy(poll => poll.Name);
+                query = query.OrderBy(group => group.Name);
             }
         }
+
+        if (!string.IsNullOrWhiteSpace(request.SearchField) && !string.IsNullOrWhiteSpace(request.SearchText))
+        {
+            if (request.SearchField == nameof(Group.Name))
+            {
+                query = query.Where(group => group.Name.ToLower().Contains(request.SearchText!.ToLower()));
+            }
+            else if (request.SearchField == nameof(Group.CreatedBy))
+            {
+                query = query.Where(group => group.CreatedBy.ToLower().Contains(request.SearchText!.ToLower()));
+            }
+        }
+
+        var totalCount = await query.CountAsync(cancellationToken);
 
         var skippedAmount = PagerHelper.GetSkipAmount(request.Page, request.PageSize);
 
@@ -65,7 +86,9 @@ public class GetGroupsQueryHandler(
             .Select(group => new GroupItem
             {
                 Id = group.Id,
-                Name = group.Name
+                Name = group.Name,
+                Created = group.Created,
+                CreatedBy = group.CreatedBy
             })
             .ToListAsync(cancellationToken);
 

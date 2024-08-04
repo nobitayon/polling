@@ -65,6 +65,61 @@
                 <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
             </div>
             <div class="card-body">
+                <form method="post" asp-page-handler="SearchQuery">
+                    <div class="search-container">
+                        <input name="querySearch" type="text" class="search-bar" placeholder="Search..." required />
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                        <div class="accordion" id="accordionSearchGroup">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#rulesSearchGroup" aria-expanded="true" aria-controls="rulesSearchGroup">
+                                        Search Rules
+                                    </button>
+                                </h2>
+                                <div id="rulesSearchGroup" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionSearchGroup">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <ul>
+                                                    <li>SortField: Username; SortOrder: 0</li>
+                                                    <li>SearchField: Username; SearchText: a</li>
+                                                    <li>Page: 1; PageSize: 5</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <ul>
+                                                    <li>
+                                                        Available SortField
+                                                        <ul>
+                                                            <li>Username</li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        Available SortOrder
+                                                        <ul>
+                                                            <li>0:Default</li>
+                                                            <li>1: ASC</li>
+                                                            <li>2: DESC</li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        Available SearchField
+                                                        <ul>
+                                                            <li>Username</li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
                 <div class="table-responsive">
                     <table id="table-member-not-in-group" class="table table-bordered" width="100%" cellspacing="0">
                         <thead>
@@ -132,7 +187,30 @@
         $("#table-member-not-in-group").DataTable({
             paging: false,
             info: false,
-            lengthChange: false
+            lengthChange: false,
+            language: {
+                search: "Search Fast Data on Table:"
+            }
         });
     });
 </script>
+
+<style>
+    .search-container {
+        position: relative;
+        /* Position the container relative to handle absolute positioning of the tooltip */
+    }
+
+    .search-bar {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .scrollable-content {
+        overflow-y: auto; /* Adds vertical scrollbar if content overflows */
+        max-height: 100%; /* Adjust if needed */
+    }
+</style>

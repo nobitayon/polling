@@ -28,6 +28,9 @@
 
 <script type="text/javascript">
     $.validator.unobtrusive.parse("#create-group");
+    $('input, select, textarea').on('change keyup blur', function () {
+        $(this).valid();
+    });
 </script>
 
 

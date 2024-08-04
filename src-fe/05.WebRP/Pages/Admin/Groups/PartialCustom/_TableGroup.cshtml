@@ -66,20 +66,20 @@ else
 
                         for (int i = 1; i <= totalPages; i++)
                         {
-                            <li class="page-item @(i == count ? "active" : "")">
-                                @if (count == i)
-                                {
+
+                            @if (count == i)
+                            {
                                 <li class="page-item active">
                                     <a class="page-link" href="#"> @i <span class="sr-only">(current)</span></a>
                                 </li>
-                                }
-                                else
-                                {
+                            }
+                            else
+                            {
                                 <a class="page-link" onclick="handleToPage(@i,@pageSize)">
-                                        @i
+                                    @i
                                 </a>
-                                }
-                            </li>
+                            }
+
                         }
                     }
                 </ul>

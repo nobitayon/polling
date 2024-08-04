@@ -8,4 +8,9 @@ public static class RazorPageBaseExtensions
     {
         return pageBase.ViewBag.CurrentMenu == menu ? $"{CssClassFor.NavLink} active" : CssClassFor.NavLink;
     }
+
+    public static string GetNavLinkClassAdmin(this RazorPageBase pageBase, string menu)
+    {
+        return pageBase.ViewBag.CurrentMenu == menu ? $"{CssClassFor.NavLink}  active-link-admin" : $"{CssClassFor.NavLink} text-white" ;
+    }
 }

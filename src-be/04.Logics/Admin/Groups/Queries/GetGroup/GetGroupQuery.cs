@@ -27,11 +27,9 @@ public class GetGroupQueryHandler(
            .AsNoTracking()
            .Where(gm => gm.GroupId == request.GroupId);
 
-        var totalCount = await queryMemberGroup.CountAsync(cancellationToken);
-
         if (string.IsNullOrWhiteSpace(request.SortField))
         {
-            queryMemberGroup = queryMemberGroup.OrderBy(gm => gm.Group.Name);
+            queryMemberGroup = queryMemberGroup.OrderBy(gm => gm.Username);
         }
         else
         {
@@ -41,23 +39,34 @@ public class GetGroupQueryHandler(
 
             if (sortOrder is SortOrder.Asc)
             {
-                if (request.SortField == nameof(GroupItem.Name))
+                if (request.SortField == nameof(GroupMember.Username))
                 {
-                    queryMemberGroup = queryMemberGroup.OrderBy(gm => gm.Group.Name);
+                    queryMemberGroup = queryMemberGroup.OrderBy(gm => gm.Username);
                 }
             }
             else if (sortOrder is SortOrder.Desc)
             {
-                if (request.SortField == nameof(GroupItem.Name))
+                if (request.SortField == nameof(GroupMember.Username))
                 {
-                    queryMemberGroup = queryMemberGroup.OrderByDescending(gm => gm.Group.Name);
+                    Console.WriteLine("masuk sini kan DESC");
+                    queryMemberGroup = queryMemberGroup.OrderByDescending(gm => gm.Username);
                 }
             }
             else
             {
-                queryMemberGroup = queryMemberGroup.OrderBy(gm => gm.Group.Name);
+                queryMemberGroup = queryMemberGroup.OrderBy(gm => gm.Username);
             }
         }
+
+        if (!string.IsNullOrWhiteSpace(request.SearchField) && !string.IsNullOrWhiteSpace(request.SearchText))
+        {
+            if (request.SearchField == nameof(GroupMember.Username))
+            {
+                queryMemberGroup = queryMemberGroup.Where(gm => gm.Username.ToLower().Contains(request.SearchText!.ToLower()));
+            }
+        }
+
+        var totalCount = await queryMemberGroup.CountAsync(cancellationToken);
 
         var skippedAmount = PagerHelper.GetSkipAmount(request.Page, request.PageSize);
 
