@@ -32,6 +32,7 @@ public class GetOngoingPollsQueryHandler(
                         .ToListAsync(cancellationToken);
 
         var query = databaseService.Polls
+            .Include(p => p.Voters)
             .AsNoTracking()
             .Where(p => p.Status == PollStatus.Ongoing && myGroup.Contains(p.GroupId));
 
@@ -102,6 +103,18 @@ public class GetOngoingPollsQueryHandler(
                     query = query.Where(poll => poll.Status == PollStatus.Finished);
                 }
             }
+            else if (request.SearchField == "MeAlreadyVote")
+            {
+
+                if (request.SearchText == "true")
+                {
+                    query = query.Where(poll => poll.Voters.Any(v => v.Username == currentUserService.Username && v.PollId == poll.Id));
+                }
+                else if (request.SearchText == "false")
+                {
+                    query = query.Where(poll => !poll.Voters.Any(v => v.Username == currentUserService.Username && v.PollId == poll.Id));
+                }
+            }
         }
 
         var totalCount = await query.CountAsync(cancellationToken);
@@ -116,6 +129,7 @@ public class GetOngoingPollsQueryHandler(
                 Id = poll.Id,
                 Title = poll.Title,
                 Status = poll.Status,
+                IsVotedByMe = poll.Voters.Any(v => v.Username == currentUserService.Username && v.PollId == poll.Id),
                 Created = poll.Created,
                 CreatedBy = poll.CreatedBy,
                 GroupName = poll.Group.Name
