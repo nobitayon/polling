@@ -118,6 +118,17 @@ public class GetMyGroupQueryHandler(
                     query = query.Where(poll => poll.Status == PollStatus.Finished);
                 }
             }
+            else if (request.SearchField == "MeAlreadyVote")
+            {
+                if (request.SearchText == "true")
+                {
+                    query = query.Where(poll => poll.Voters.Any(v => v.Username == currentUserService.Username && v.PollId == poll.Id));
+                }
+                else if (request.SearchText == "false")
+                {
+                    query = query.Where(poll => !poll.Voters.Any(v => v.Username == currentUserService.Username && v.PollId == poll.Id));
+                }
+            }
         }
 
         var totalCount = await query.CountAsync(cancellationToken);

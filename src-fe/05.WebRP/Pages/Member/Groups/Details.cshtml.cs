@@ -111,8 +111,6 @@ public class DetailsModel(PagerService pagerService) : PageModelBase
             else if (kvp.Key == nameof(PaginatedListRequest.SearchText))
             {
                 query.SearchText = kvp.Value;
-                Console.WriteLine(query.SearchText);
-                Console.WriteLine(kvp.Value);
             }
             else if (kvp.Key == nameof(PaginatedListRequest.SearchField))
             {

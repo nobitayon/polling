@@ -88,6 +88,7 @@
                                     var maxVote = voteItem.ChoiceItems
                                     .Select(c => c.NumVote)
                                     .Max();
+                                    var listWinner = new List<Guid>();
                                     if (maxVote > 0)
                                     {
                                         <strong>Winner:</strong>
@@ -96,6 +97,7 @@
                                         {
                                             @if (choice.NumVote == maxVote)
                                             {
+                                                listWinner.Add(choice.Id);
                                                 <div>
                                                     <span class="badge bg-success">
                                                         @choice.Description - <span class="badge bg-light text-dark">@choice.NumVote Votes</span>
@@ -111,6 +113,10 @@
                                     @foreach (var myChoice in voteItem.AnswerItems)
                                     {
                                         <div>
+                                            @if(listWinner.Contains(myChoice.Id))
+                                            {
+                                                <i class="bi bi-info-circle me-2" data-toggle="tooltip" title="Your choice is one of the winners"></i>
+                                            }
                                             <span class="badge bg-secondary">
                                                 @myChoice.Description
                                             </span>
@@ -144,7 +150,9 @@
 }
 
 <script>
-
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 </script>
 
 <style>

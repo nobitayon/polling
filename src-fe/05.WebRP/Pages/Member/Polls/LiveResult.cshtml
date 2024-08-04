@@ -4,10 +4,43 @@
 @model Delta.Polling.WebRP.Pages.Member.Polls.LiveResultModel
 
 @await Component.InvokeAsync("ErrorViewer", Model.Problem)
-
+@{
+    ViewData["Title"] = "Live Result";
+    ViewBag.CurrentMenu = MenuFor.MemberPollsIndex;
+}
 
 @if (Model.Poll.CreatedBy == currentUserService.Username)
 {
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Index">
+                    Home
+                </a>
+            </li>
+
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Member/Polls/Index">
+                    Polls
+                </a>
+            </li>
+
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none"
+                   asp-page="/Member/Polls/Details"
+                   asp-route-pollId="@Model.PollId">
+                    @Model.Poll.Title
+                </a>
+            </li>
+
+            <li class="breadcrumb-item active"
+                aria-current="page">
+                @ViewData["Title"]
+            </li>
+        </ol>
+    </nav>
 
     <div class="container mt-5">
         <div class="row mb-4">
@@ -70,7 +103,7 @@ else
     let accessToken = '';
     let connection;
     @* let ctx = document.getElementById('myChart').getContext('2d'); *@
-    let ctx;
+        let ctx;
     let myChart;
 
     async function start() {
