@@ -11,12 +11,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>@ViewData["Title"] | PollingApp Admin</title>
 
     <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/lib/jquery-validate/jquery.validate.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
-    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/datatables/js/jquery.dataTables.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
     <!-- Custom fonts for this template-->
@@ -33,23 +32,19 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark sidebar-sticky" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-page="/Admin/Index">
+                <div style="display:block !important" class="sidebar-brand-text mx-3">PollingApp Admin </div>
             </a>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="@this.GetNavLinkClass(MenuFor.AccountMyClaims)"
-                   asp-page="/Admin/Groups/Index">
+            <li>
+                <a class="@this.GetNavLinkClassAdmin(MenuFor.AdminGroupIndex) p-2" asp-page="/Admin/Groups/Index">
                     Groups
                 </a>
             </li>
@@ -83,13 +78,8 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                @* <a class="@CssClassFor.NavLink"
-                                   asp-page="/Account/Logout">
-                                    <i class="bi bi-box-arrow-in-left"></i>
-                                    Logout
-                                </a> *@
                                 <form asp-page="/Account/Logout" method="post" class="@CssClassFor.NavLink col-8">
-                                    
+
                                     <!-- Button trigger modal -->
                                     <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Logout">
                                         Logout
@@ -124,11 +114,8 @@
                                 </a>
                             </li>
                             }
-                            
                         </li>
-
                     </ul>
-
                 </nav>
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->
@@ -143,7 +130,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2021</span>
+                        <span>Copyright &copy; Polling 2024</span>
                     </div>
                 </div>
             </footer>
@@ -160,18 +147,18 @@
     </a>
 
     @* Coba taro modal di sini *@
-   @*  <div class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" id="form-modal">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body"></div>
-            </div>
-        </div>
+    @*  <div class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" id="form-modal">
+    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title"></h5>
+    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">×</span>
+    </button>
+    </div>
+    <div class="modal-body"></div>
+    </div>
+    </div>
     </div> *@
 
     @* Coba taro modal di sini *@
@@ -209,3 +196,22 @@
 </body>
 
 </html>
+
+<style>
+    .active-link-admin {
+        color: blue;
+        background: white;
+    }
+
+    .text-white {
+        color:white;
+    }
+
+    .sidebar-sticky {
+        position: sticky;
+        top: 0; 
+        height: 100vh; 
+        overflow-y: auto; 
+    }
+</style>
+

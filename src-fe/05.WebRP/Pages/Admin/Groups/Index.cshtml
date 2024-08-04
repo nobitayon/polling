@@ -2,8 +2,11 @@
 @model Delta.Polling.WebRP.Pages.Admin.Groups.IndexModel
 
 @{
-    ViewData["Title"] = "Groups";
+    ViewData["Title"] = "All Groups";
+    ViewBag.CurrentMenu = MenuFor.AdminGroupIndex;
 }
+
+@await Component.InvokeAsync("ErrorViewer", Model.Problem)
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -36,85 +39,186 @@
     </div>
 }
 
-<h1 class="h3 mb-2 text-gray-800">Daftar Grup</h1>
-<p class="mb-4">
-    DataTables is a third party plugin that is used to generate the demo table below.
-    For more information about DataTables, please visit the <a target="_blank"
-                                                               href="https://datatables.net">official DataTables documentation</a>.
-</p>
+@if (Model.Groups != null)
+{
+    <h1 class="h3 mb-2 text-gray-800">All Groups</h1>
+    <p class="mb-4">
+        List of groups in polling application. You can see all the member in each group by go to details
+    </p>
 
-<div class="card">
-    <div class="col-sm-12" style="padding:20px">
-        <a class="btn btn-primary" onclick="handleCreateGroup()">
-            Create
-        </a>
-    </div>
-    
-
-    <!-- DataTales Example -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+    <div class="card">
+        <div class="col-sm-12" style="padding:20px">
+            <a class="btn btn-primary" onclick="handleCreateGroup()">
+                Create New Group
+            </a>
         </div>
-        <div class="card-body">
-            <div id="table-pagination" class="table-responsive">
-                <table class="table table-bordered" width="100%" cellspacing="0">
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">List of All Groups</h6>
+            </div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="SearchQuery">
+                    <div class="search-container">
+                        <input name="querySearch" type="text" class="search-bar" placeholder="Search..." required />
+                        <button type="submit" class="btn btn-primary mt-3">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                        <div class="accordion" id="accordionSearchGroup">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#rulesSearchGroup" aria-expanded="true" aria-controls="rulesSearchGroup">
+                                        Search Rules
+                                    </button>
+                                </h2>
+                                <div id="rulesSearchGroup" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionSearchGroup">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <ul>
+                                                    <li>SortField: Created; SortOrder: 0</li>
+                                                    <li>SearchField: Name; SearchText: a</li>
+                                                    <li>Page: 1; PageSize: 5</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <ul>
+                                                    <li>SortField: Created; SortOrder: 1</li>
+                                                    <li>SearchField: Name; SearchText: a</li>
+                                                    <li>SortField: Created; SortOrder: 0;Page:1;PageSize:5</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <ul>
+                                                    <li>
+                                                        Available SortField
+                                                        <ul>
+                                                            <li>Created</li>
+                                                            <li>Name</li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        Available SortOrder
+                                                        <ul>
+                                                            <li>0:Default</li>
+                                                            <li>1: ASC</li>
+                                                            <li>2: DESC</li>
+                                                        </ul>
+                                                    </li>
+                                                    <li>
+                                                        Available SearchField
+                                                        <ul>
+                                                            <li>Name</li>
+                                                            <li>CreatedBy</li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+                <table id="groupsTable" class="table table-bordered mt-2" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>Group Name</th>
+                            <th>Created By</th>
+                            <th>Created</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th>Group Name</th>
-                            <th>Actions</th>
-                        </tr>
-                    </tfoot>
                     <tbody>
-                        @for (int i = 0; i < 3; i++)
+
+                        @foreach (var group in Model.Groups)
                         {
                             <tr>
                                 <td>
-                                    <p class="card-text placeholder-glow">
-                                        <span class="placeholder" style="width: 100%;"></span>
-                                    </p>
+                                    @group.Name
                                 </td>
                                 <td>
-                                    <p class="card-text placeholder-glow">
-                                        <span class="placeholder" style="width: 100%;"></span>
-                                    </p>
+                                    @group.CreatedBy
+                                </td>
+                                <td>
+                                    @group.Created.ToString("MMM dd, yyyy HH:mm")
+                                </td>
+                                <td>
+                                    <a asp-page="Details" asp-route-groupId="@group.Id" class="btn btn-info text-white">
+                                        Details
+                                    </a>
                                 </td>
                             </tr>
                         }
+
                     </tbody>
                 </table>
+                @Html.Raw(Model.Paging)
             </div>
         </div>
+
     </div>
-    
-</div>
+
+}
 
 <script>
-    $(document).ready(function () {
+    @* $(document).ready(function () {
         $('#table-pagination').load('?handler=DataTable');
-    });
+        });
 
-    function handleToPage(page, pageSize) {
+        function handleToPage(page, pageSize) {
         $('#table-pagination').load(`?handler=DataTable&p=${page}&ps={pageSize}`);
-    }
+        } *@
 
-    function handleCreateGroup() {
-        fetch(`?handler=CreateGroup`)
-            .then((response) => {
-                return response.text();
-            })
-            .then((htmlText) => {
-                $('#form-modal .modal-body').html(htmlText);
-                $('#form-modal .modal-title').html("Create Group");
-                $('#form-modal').modal('show');
-                $.validator.unobtrusive.parse('#create-group');
-            })
-    }
+        function handleCreateGroup() {
+            fetch(`?handler=CreateGroup`)
+                .then((response) => {
+                    return response.text();
+                })
+                .then((htmlText) => {
+                    $('#form-modal .modal-body').html(htmlText);
+                    $('#form-modal .modal-title').html("Create Group");
+                    $('#form-modal').modal('show');
+                    $.validator.unobtrusive.parse('#create-group');
+                    $('input, select, textarea').on('change keyup blur', function () {
+                        $(this).valid();
+                    });
+                })
+                .catch((error) => {
+                    $('#form-modal .modal-body').html(`
+                                                            <p>There was an error loading the content. Please try again later.</p>
+                                                            <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                                        `);
+                    $('#form-modal .modal-title').html("Error");
+                    $('#form-modal').modal('show');
+
+                    $('#refresh-button').on('click', function () {
+                        window.location.reload();
+                    });
+                });
+        }
 
 </script>
+
+<style>
+    .search-container {
+        position: relative;
+        /* Position the container relative to handle absolute positioning of the tooltip */
+    }
+
+    .search-bar {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .scrollable-content {
+        overflow-y: auto; /* Adds vertical scrollbar if content overflows */
+        max-height: 100%; /* Adjust if needed */
+    }
+</style>

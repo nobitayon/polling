@@ -1,4 +1,5 @@
 ﻿using Delta.Polling.Both.Admin.Groups.Queries.GetUsersNotMemberFromGroup;
+using Delta.Polling.Domain.Groups.Entities;
 using Delta.Polling.Services.UserProfile;
 
 namespace Delta.Polling.Logics.Admin.Groups.Queries.GetUsersNotMemberFromGroup;
@@ -53,11 +54,10 @@ public class GetUsersNotMemberFromGroupQueryHandler(
             }
         }
 
-        var totalCount = notAMember.Count;
-
         if (string.IsNullOrWhiteSpace(request.SortField))
         {
-            notAMember = [.. notAMember.OrderBy(s => s)];
+            notAMember.Sort(StringComparer.OrdinalIgnoreCase);
+
         }
         else
         {
@@ -69,21 +69,31 @@ public class GetUsersNotMemberFromGroupQueryHandler(
             {
                 if (request.SortField == nameof(MemberItem.Username))
                 {
-                    notAMember = [.. notAMember.OrderBy(s => s)];
+                    notAMember.Sort(StringComparer.OrdinalIgnoreCase);
                 }
             }
             else if (sortOrder is SortOrder.Desc)
             {
                 if (request.SortField == nameof(MemberItem.Username))
                 {
-                    notAMember = [.. notAMember.OrderByDescending(s => s)];
+                    notAMember.Sort((x, y) => StringComparer.OrdinalIgnoreCase.Compare(y, x));
                 }
             }
             else
             {
-                notAMember = [.. notAMember.OrderBy(s => s)];
+                notAMember.Sort(StringComparer.OrdinalIgnoreCase);
             }
         }
+
+        if (!string.IsNullOrWhiteSpace(request.SearchField) && !string.IsNullOrWhiteSpace(request.SearchText))
+        {
+            if (request.SearchField == nameof(GroupMember.Username))
+            {
+                notAMember = [.. notAMember.Where(s => s.ToLower().Contains(request.SearchText!.ToLower()))];
+            }
+        }
+
+        var totalCount = notAMember.Count;
 
         var skippedAmount = PagerHelper.GetSkipAmount(request.Page, request.PageSize);
 
