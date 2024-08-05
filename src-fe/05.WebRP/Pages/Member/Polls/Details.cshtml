@@ -63,7 +63,7 @@
             <p><strong>Created By:</strong> @Model.Poll.CreatedBy</p>
 
             <div class="mt-3">
-                @if (Model.Poll.ChoiceItems.Count() > 0)
+                @if (Model.Poll.ChoiceItems.Count() > 1)
                 {
                     <a id="start-poll" data-poll-id="@Model.PollId" class="btn btn-primary me-2">Start Poll</a>
                 }
@@ -197,7 +197,7 @@
             <h4 class="mb-3">Poll Details</h4>
             <p><strong>Question:</strong> @Model.Poll.Question</p>
 
-            @if (!isAlreadyAddAnotherChoice && Model.Poll.AllowOtherChoice)
+            @if (!isAlreadyAddAnotherChoice && Model.Poll.AllowOtherChoice && currentUserService.Username != Model.Poll.CreatedBy)
             {
                 <form id="add-another-choice" asp-page-handler="AddAnotherChoice" method="post" class="col-8">
                     <input type="hidden" asp-for="@Model.InputAnotherChoiceOngoingPollCommand.PollId" value="@Model.PollId">
