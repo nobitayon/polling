@@ -13,12 +13,14 @@ builder.Services.AddLogics();
 builder.Services.AddWebAPI();
 builder.Services.AddSignalR();
 
+var frontEndUrl = builder.Configuration["FrontEnd"] ?? throw new Exception("Failed get frontend url");
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
         builder =>
         {
-            _ = builder.WithOrigins("https://localhost:44322")
+            _ = builder.WithOrigins(frontEndUrl)
                 .AllowAnyHeader()
                 .WithMethods("GET", "POST")
                 .AllowCredentials();
