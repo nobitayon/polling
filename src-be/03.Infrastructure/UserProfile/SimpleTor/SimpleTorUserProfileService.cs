@@ -41,7 +41,7 @@ public class SimpleTorUserProfileService : IUserProfileService
         return restResponse.Data;
     }
 
-        public async Task<UserProfileItem?> GetUserProfileAsync(string username, CancellationToken cancellationToken = default)
+    public async Task<UserProfileItem?> GetUserProfileAsync(string username, CancellationToken cancellationToken = default)
     {
         var getAccessTokenInput = new GetAccessTokenInput
         {

@@ -26,13 +26,13 @@ public class GetUsersNotMemberFromGroupQueryHandler(
     public async Task<GetUsersNotMemberFromGroupOutput> Handle(GetUsersNotMemberFromGroupQuery request, CancellationToken cancellationToken)
     {
         List<string> listMember = [];
-        var response = userProfileService.GetUsersAsync(cancellationToken);
+        var listOfFullProfile = await userProfileService.GetUsersAsync(cancellationToken);
 
-        if (response != null)
+        if (listOfFullProfile != null)
         {
-            foreach (var check in response.Result)
+            foreach (var profileItem in listOfFullProfile)
             {
-                listMember.Add(check.Username);
+                listMember.Add(profileItem.Username);
             }
         }
         else
