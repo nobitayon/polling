@@ -99,18 +99,6 @@
         <div class="mt-4">
             <h2>Recent Activity</h2>
             <div id="container-recent-activity" class="list-group">
-                <!-- Example recent activities -->
-                @* <a href="#" class="list-group-item list-group-item-action">
-                <h5 class="mb-1">Poll Title 1</h5>
-                <p class="mb-1">You participated in this poll.</p>
-                <small>July 27, 2024</small>
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                <h5 class="mb-1">Poll Title 2</h5>
-                <p class="mb-1">New poll created in your favorite category.</p>
-                <small>July 26, 2024</small>
-                </a> *@
-                <!-- Add more recent activities -->
                 @for (var i = 0; i < 3; i++)
                 {
                     <div class="placeholder-glow list-group-item list-group-item-action">
@@ -125,18 +113,15 @@
         <!-- Recently Finished Polls -->
         <div class="mt-4">
             <h2>Recently Finished Polls</h2>
-            <div class="list-group">
-                <!-- Example recently finished polls -->
-                <a href="#" class="list-group-item list-group-item-action">
-                    <h5 class="mb-1">Poll Title A</h5>
-                    <p class="mb-1">This poll was completed recently.</p>
-                    <small>July 24, 2024</small>
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <h5 class="mb-1">Poll Title B</h5>
-                    <p class="mb-1">See the results of this finished poll.</p>
-                    <small>July 23, 2024</small>
-                </a>
+            <div id="container-recent-finished-polls" class="list-group">
+                @for (var i = 0; i < 3; i++)
+                {
+                    <div class="placeholder-glow list-group-item list-group-item-action">
+                        <span class="placeholder" style="width: 100%;"></span>
+                        <span class="placeholder" style="width: 100%;"></span>
+                        <span class="placeholder" style="width: 100%;"></span>
+                    </div>
+                }
                 <!-- Add more recently finished polls -->
             </div>
         </div>
@@ -164,27 +149,9 @@
                 <!-- Add more statistics as needed -->
             </div>
         </div>
-    </div>
 
 
-    <div class="row">
-        @foreach (var poll in Model.Polls)
-        {
-            <div class="col-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <a class="text-decoration-none" asp-page="Polls/Details" asp-route-pollId="@poll.Id">
-                            <h5 class="card-title">
-                                @poll.Title
-                            </h5>
-                        </a>
-                        <p class="card-text">
-                            Something
-                        </p>
-                    </div>
-                </div>
-            </div>
-        }
+
     </div>
 </div>
 
@@ -232,5 +199,24 @@
 
     $(document).ready(function () {
         $('#container-recent-activity').load('?handler=RecentPoll');
+        $('#container-recent-finished-polls').load('?handler=RecentFinishedPoll');
     });
 </script>
+
+<style>
+    .close-btn-custom {
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .card-custom {
+        position: relative;
+        transition: opacity 0.5s ease-out;
+    }
+
+    .fade-out-custom {
+        opacity: 0;
+    }
+</style>

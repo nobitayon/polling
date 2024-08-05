@@ -1,6 +1,6 @@
 ﻿namespace Delta.Polling.Both.Member.Polls.Queries.GetRecentParticipatedPoll;
 
-public record GetRecentParticipatedPollRequest
+public record GetRecentParticipatedPollRequest : PaginatedListRequest
 {
 }
 
@@ -8,5 +8,6 @@ public class GetRecentParticipatedPollRequestValidator : AbstractValidator<GetRe
 {
     public GetRecentParticipatedPollRequestValidator()
     {
+        Include(new PaginatedListRequestValidator());
     }
 }

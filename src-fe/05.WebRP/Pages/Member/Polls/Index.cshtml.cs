@@ -2,6 +2,8 @@ using Delta.Polling.Base.Polls.Enums;
 using Delta.Polling.Both.Common.Enums;
 using Delta.Polling.Both.Member.Polls.Queries.GetOngoingPolls;
 using Delta.Polling.FrontEnd.Logics.Member.Polls.Queries.GetOngoingPolls;
+using Delta.Polling.FrontEnd.Logics.Member.Polls.Queries.GetRecentParticipatedPoll;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Delta.Polling.WebRP.Pages.Member.Polls;
 
@@ -88,6 +90,31 @@ public class IndexModel(PagerService pagerService) : PageModelBase
         }
 
         return Page();
+    }
+
+    public async Task<IActionResult> GetRecentPollAsJson(GetRecentParticipatedPollQuery query)
+    {
+        var response = await Sender.Send(query);
+
+        if (response.Problem is not null)
+        {
+            Problem = response.Problem;
+            return Page();
+        }
+
+        if (response.Result is not null)
+        {
+            Polls = response.Result.Data.Items.Select(item => new OngoingPollItemModel
+            {
+                Id = item.Id,
+                Status = item.Status,
+                Title = item.Title,
+                Created = item.Created,
+                CreatedBy = item.CreatedBy,
+                IsVotedByMe = item.IsVotedByMe,
+                GroupName = item.GroupName
+            }).ToList();
+        }
     }
 
     public async Task<IActionResult> OnPostSearchQuery(string querySearch)

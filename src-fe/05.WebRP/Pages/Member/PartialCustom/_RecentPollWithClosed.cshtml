@@ -1,0 +1,66 @@
+﻿@using Delta.Polling.Both.Member.Polls.Queries.GetRecentParticipatedPoll;
+@using Delta.Polling.Base.Polls.Enums;
+
+@{
+    var data = ViewData["Data"] as IEnumerable<PollItem>;
+    var error = ViewData["Error"] as string;
+}
+
+@if (error != null)
+{
+    <div class="list-group-item list-group-item-action">
+        <h5 class="mb-1">Error Get data: @error</h5>
+    </div>
+}
+else
+{
+    if (data != null)
+    {
+        foreach (var poll in data)
+        {
+            <div class="card mb-3" data-id="@poll.Id">
+                <div class="card-body">
+                    <h5 class="card-title">@poll.Title</h5>
+                    <p class="card-text">@poll.Status</p>
+                    <span class="close-btn-custom">&times;</span>
+                </div>
+            </div>
+        }
+    }
+}
+
+<script>
+    document.querySelectorAll('.close-btn-custom').forEach(button => {
+        button.addEventListener('click', function () {
+            const card = this.closest('.card');
+            card.classList.add('fade-out');
+            setTimeout(() => {
+                card.remove();
+            }, 500);
+
+            fetch(`?handler=DeleteChoice&choiceId=${choiceId}`)
+                .then((response) => {
+                    return response.text();
+                })
+                .then((htmlText) => {
+                    $('#form-modal .modal-body').html(htmlText);
+                    $('#form-modal .modal-title').html("Delete Choice");
+                    $('#form-modal').modal('show');
+                    $.validator.unobtrusive.parse('#delete-choice');
+                })
+                .catch((error) => {
+                    $('#form-modal .modal-body').html(`
+                                            <p>There was an error loading the content. Please try again later.</p>
+                                            <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                        `);
+                    $('#form-modal .modal-title').html("Error");
+                    $('#form-modal').modal('show');
+
+                    $('#refresh-button').on('click', function () {
+                        window.location.reload();
+                    });
+                });
+        });
+    });
+</script>
+

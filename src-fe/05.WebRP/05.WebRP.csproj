@@ -17,4 +17,10 @@
   <ItemGroup>
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Member\PartialCustom\_RecentPollWithClosed.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Member\PartialCustom\_RecentPollWithClosed.cshtml" />
+  </ItemGroup>
 </Project>
