@@ -41,6 +41,16 @@ public class AddAnotherChoiceOngoingPollCommandHandler(
             throw new Exception($"Can't add another choice to poll with status that is not ongoing");
         }
 
+        if (currentUserService.Username == poll.CreatedBy)
+        {
+            throw new Exception($"You can't add another choice to this poll in this group, because you are creator of this poll");
+        }
+
+        if (!poll.AllowOtherChoice)
+        {
+            throw new Exception($"Can't add another choice to this poll, because it is not allowed");
+        }
+
         var memberGroup = await databaseService.GroupMembers
                         .Where(gm => gm.GroupId == poll.GroupId)
                         .Select(gm => gm.Username)
@@ -61,7 +71,6 @@ public class AddAnotherChoiceOngoingPollCommandHandler(
                                         .Where(c => c.CreatedBy == currentUserService.Username && c.PollId == request.PollId && c.IsOther)
                                         .ToListAsync(cancellationToken);
 
-        // TODO: Asumsikan semua orang hanya boleh add choice-nya 1 maks
         if (choiceAddedByThisUser.Count() >= 1)
         {
             throw new Exception($"You already add another choice to this ongoing poll");

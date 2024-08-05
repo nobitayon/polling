@@ -59,12 +59,13 @@ public class StartPollCommandHandler(
             throw new ForbiddenException($"Can't start poll: {request.PollId}, because this is not your poll");
         }
 
-        var isChoiceExist = await databaseService.Choices
-                            .AnyAsync(c => c.PollId == request.PollId, cancellationToken);
+        var numChoiceExist = await databaseService.Choices
+                                .Where(c => c.PollId == request.PollId)
+                                .ToListAsync(cancellationToken);
 
-        if (!isChoiceExist)
+        if (numChoiceExist.Count() <= 1)
         {
-            throw new Exception("You can't start this poll, because no choice exist on this poll");
+            throw new ForbiddenException($"Can't start poll: {request.PollId}, because number of choice is less or equal 1");
         }
 
         poll.Status = PollStatus.Ongoing;
