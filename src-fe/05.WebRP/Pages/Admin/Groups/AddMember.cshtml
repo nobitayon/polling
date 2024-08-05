@@ -25,7 +25,7 @@
                 <a class="text-decoration-none"
                    asp-page="/Admin/Groups/Details"
                    asp-route-groupId="@Model.GroupId">
-                    Details
+                    @Model.GroupItem.Name
                 </a>
             </li>
             <li class="breadcrumb-item active"
@@ -51,18 +51,16 @@
         </div>
     }
 
-    <h1 class="h3 mb-2 text-gray-800">Daftar username yang tidak berada di grup</h1>
+    <h1 class="h3 mb-2 text-gray-800">Daftar username yang tidak berada di grup @Model.GroupItem.Name</h1>
     <p class="mb-4">
-        DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank"
-                                                                   href="https://datatables.net">official DataTables documentation</a>.
+        
     </p>
 
     <div class="card">
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                <h6 class="m-0 font-weight-bold text-primary"></h6>
             </div>
             <div class="card-body">
                 <form method="post" asp-page-handler="SearchQuery">
