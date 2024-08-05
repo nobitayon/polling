@@ -103,15 +103,25 @@ public class GetUsersNotMemberFromGroupQueryHandler(
             .Select(member => new MemberItem { Username = member })
             .ToList();
 
-        var output = new GetUsersNotMemberFromGroupOutput
+        var group = await databaseService.Groups
+                        .Where(g => g.Id == request.GroupId)
+                        .Select(group => new GroupItem
+                        {
+                            Id = group.Id,
+                            Name = group.Name
+                        }).SingleOrDefaultAsync(cancellationToken)
+                        ?? throw new EntityNotFoundException(nameof(Group), request.GroupId);
+
+        var data = new GetUsersNotMemberFromGroupResult
         {
-            Data = new PaginatedListResponse<MemberItem>
+            GroupItem = group,
+            MemberItems = new PaginatedListResponse<MemberItem>
             {
                 Items = members,
                 TotalCount = totalCount
             }
         };
-
-        return output;
+        Console.WriteLine("berhasil 123");
+        return new GetUsersNotMemberFromGroupOutput { Data = data };
     }
 }

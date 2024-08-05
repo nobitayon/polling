@@ -22,7 +22,7 @@ public class GetUsersNotMemberFromGroupQueryHandler(IBackEndService backEndServi
     {
         var restRequest = new RestRequest($"admin/groups/{request.GroupId}/not-member", Method.Get);
         restRequest.AddParameters(request);
-
+        Console.WriteLine("berhasil 1234");
         return await backEndService.SendRequestAsync<GetUsersNotMemberFromGroupOutput>(restRequest, cancellationToken);
     }
 }

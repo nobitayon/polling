@@ -60,7 +60,7 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">List of member in group @Model.GroupItem.Name</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Number of current ongoing poll is @Model.GroupItem.NumOngoingPoll</h6>
             </div>
             <div class="card-body">
                 <form method="post" asp-page-handler="SearchQuery">
@@ -122,6 +122,7 @@
                         <thead>
                             <tr>
                                 <th>Member Username</th>
+                                <th>Current Ongoing Poll Created</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -135,6 +136,9 @@
                                 <tr>
                                     <td>
                                         @memberItem.Username
+                                    </td>
+                                    <td>
+                                        @memberItem.NumOngoingPoll
                                     </td>
                                     <td>
                                         <form asp-page-handler="RemoveMember" method="post" class="col-8">

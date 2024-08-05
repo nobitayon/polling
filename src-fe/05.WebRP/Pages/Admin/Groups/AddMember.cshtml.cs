@@ -10,6 +10,9 @@ public class AddMemberModel(PagerService pagerService) : PageModelBase
     [BindProperty]
     public IEnumerable<MemberItem> MemberItems { get; set; } = default!;
 
+    [BindProperty]
+    public GroupItem GroupItem { get; set; } = default!;
+
     [BindProperty(SupportsGet = true)]
     public Guid GroupId { get; init; }
 
@@ -62,9 +65,9 @@ public class AddMemberModel(PagerService pagerService) : PageModelBase
 
         if (response.Result is not null)
         {
-            MemberItems = response.Result.Data.Items;
-
-            Paging = pagerService.GetHtml($"", response.Result.Data.TotalCount, query);
+            MemberItems = response.Result.Data.MemberItems.Items;
+            GroupItem = response.Result.Data.GroupItem;
+            Paging = pagerService.GetHtml($"", response.Result.Data.MemberItems.TotalCount, query);
         }
     }
 

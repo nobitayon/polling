@@ -1,4 +1,5 @@
-﻿using Delta.Polling.Both.Admin.Groups.Queries.GetGroup;
+﻿using Delta.Polling.Base.Polls.Enums;
+using Delta.Polling.Both.Admin.Groups.Queries.GetGroup;
 using Delta.Polling.Domain.Groups.Entities;
 
 namespace Delta.Polling.Logics.Admin.Groups.Queries.GetGroup;
@@ -23,9 +24,22 @@ public class GetGroupQueryHandler(
 {
     public async Task<GetGroupOutput> Handle(GetGroupQuery request, CancellationToken cancellationToken)
     {
+        //var queryMemberGroup = databaseService.GroupMembers
+        //   .AsNoTracking()
+        //   .Where(gm => gm.GroupId == request.GroupId);
+
         var queryMemberGroup = databaseService.GroupMembers
-           .AsNoTracking()
-           .Where(gm => gm.GroupId == request.GroupId);
+                   .Where(gm => gm.GroupId == request.GroupId)
+                   .GroupJoin(
+                       databaseService.Polls,
+                       gm => gm.Username,
+                       p => p.CreatedBy,
+                       (gm, p) => new
+                       {
+                           Id = gm.Id,
+                           Username = gm.Username,
+                           NumOngoingPoll = p.Count(p => p.Status == PollStatus.Ongoing && p.GroupId == gm.GroupId)
+                       });
 
         if (string.IsNullOrWhiteSpace(request.SortField))
         {
@@ -76,16 +90,37 @@ public class GetGroupQueryHandler(
             .Select(gm => new MemberItem
             {
                 GroupMemberId = gm.Id,
-                Username = gm.Username
+                Username = gm.Username,
+                NumOngoingPoll = gm.NumOngoingPoll
             })
             .ToListAsync(cancellationToken);
 
+        //var group = await databaseService.Groups
+        //                .Where(g => g.Id == request.GroupId)
+        //                .Select(group => new GroupItem
+        //                {
+        //                    Id = group.Id,
+        //                    Name = group.Name
+        //                }).SingleOrDefaultAsync(cancellationToken)
+        //                ?? throw new EntityNotFoundException(nameof(Group), request.GroupId);
+
         var group = await databaseService.Groups
                         .Where(g => g.Id == request.GroupId)
+                        .GroupJoin(
+                       databaseService.Polls,
+                       g => g.Id,
+                       p => p.GroupId,
+                       (g, p) => new
+                       {
+                           Id = g.Id,
+                           Name = g.Name,
+                           NumOngoingPoll = p.Count(p => p.Status == PollStatus.Ongoing)
+                       })
                         .Select(group => new GroupItem
                         {
                             Id = group.Id,
-                            Name = group.Name
+                            Name = group.Name,
+                            NumOngoingPoll = group.NumOngoingPoll
                         }).SingleOrDefaultAsync(cancellationToken)
                         ?? throw new EntityNotFoundException(nameof(Group), request.GroupId);
 
