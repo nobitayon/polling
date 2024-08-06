@@ -31,7 +31,7 @@
 
 <form method="post" asp-page-handler="SearchQuery" class="mb-2">
     <div class="search-container">
-        <input name="querySearch" type="text" class="search-bar" placeholder="Search..."  required />
+        <input asp-for="@Model.QuerySearch" type="text" class="search-bar" placeholder="Search..."  required />
         <button type="submit" class="btn btn-primary mt-3">
             <i class="bi bi-search"></i> Search
         </button>
@@ -45,7 +45,7 @@
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="accordion-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <ul>
                                     <li>SortField: Created; SortOrder: 0</li>
                                     <li>SearchField: Title; SearchText: a</li>
@@ -53,12 +53,38 @@
                                     <li>SearchField: MeAlreadyVote; SearchText: true</li>
                                 </ul>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <ul>
                                     <li>SortField: Created; SortOrder: 1</li>
-                                    <li>SearchField: Status; SearchText: Ongoing</li>
-                                    <li>SearchField: Status; SearchText: Draft</li>
                                     <li>SortField: Created; SortOrder: 0;Page:1;PageSize:5</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <ul>
+                                    <li>
+                                        Available SortField
+                                        <ul>
+                                            <li>Created</li>
+                                            <li>Title</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        Available SortOrder
+                                        <ul>
+                                            <li>0:Default</li>
+                                            <li>1: ASC</li>
+                                            <li>2: DESC</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        Available SearchField
+                                        <ul>
+                                            <li>MeAlreadyVote</li>
+                                            <li>Question</li>
+                                            <li>Name</li>
+                                            <li>Title</li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

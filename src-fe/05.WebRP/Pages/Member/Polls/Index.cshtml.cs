@@ -1,3 +1,4 @@
+using System.Text;
 using Delta.Polling.Base.Polls.Enums;
 using Delta.Polling.Both.Common.Enums;
 using Delta.Polling.Both.Member.Polls.Queries.GetOngoingPolls;
@@ -9,6 +10,9 @@ public class IndexModel(PagerService pagerService) : PageModelBase
 {
     public IEnumerable<OngoingPollItemModel> Polls { get; set; } = [];
     public string Paging { get; set; } = string.Empty;
+
+    [BindProperty]
+    public string QuerySearch { get; set; } = "";
 
     //public async Task<IActionResult> OnGet(int? p, int ps = 5)
     //{
@@ -44,8 +48,54 @@ public class IndexModel(PagerService pagerService) : PageModelBase
     //    return Page();
     //}
 
+    private string BuildQuery(int? p, int? ps, string k, string kf, string sf, SortOrder? so)
+    {
+        if (p == null && ps == null && k == null && kf == null && sf == null && so == null)
+        {
+            return "";
+        }
+
+        var sb = new StringBuilder();
+
+        if (!string.IsNullOrEmpty(kf))
+        {
+            _ = sb.Append($"SearchField:{kf};");
+        }
+
+        if (!string.IsNullOrEmpty(k))
+        {
+            _ = sb.Append($"SearchText:{k};");
+        }
+
+        if (!string.IsNullOrEmpty(sf))
+        {
+            _ = sb.Append($"SortField:{sf};");
+        }
+
+        if (so != null)
+        {
+            _ = sb.Append($"SortOrder:{(int)so};");
+        }
+
+        if (p != null)
+        {
+            _ = sb.Append($"Page:{p};");
+        }
+
+        if (ps != null)
+        {
+            _ = sb.Append($"PageSize:{ps};");
+        }
+
+        var buildedString = sb.ToString().TrimEnd(';');
+
+        return buildedString;
+    }
+
     public async Task<IActionResult> OnGet(int? p, int? ps, string k, string kf, string sf, SortOrder? so)
     {
+        QuerySearch = BuildQuery(p, ps, k, kf, sf, so);
+
         var page = PagerHelper.GetSafePage(p);
         var pageSize = PagerHelper.GetSafePageSize(ps);
 
@@ -90,7 +140,7 @@ public class IndexModel(PagerService pagerService) : PageModelBase
         return Page();
     }
 
-    public async Task<IActionResult> OnPostSearchQuery(string querySearch)
+    public async Task<IActionResult> OnPostSearchQuery()
     {
         var query = new GetOngoingPollsQuery
         {
@@ -101,7 +151,7 @@ public class IndexModel(PagerService pagerService) : PageModelBase
             SortOrder = null
         };
 
-        var dictionaryParsing = ParseKeyValuePairs(querySearch);
+        var dictionaryParsing = ParseKeyValuePairs(QuerySearch);
         foreach (var kvp in dictionaryParsing)
         {
             if (kvp.Key == nameof(PaginatedListRequest.SortOrder))
