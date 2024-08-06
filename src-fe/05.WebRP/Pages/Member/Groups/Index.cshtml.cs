@@ -1,3 +1,4 @@
+using System.Text;
 using Delta.Polling.Both.Common.Enums;
 using Delta.Polling.Both.Member.Groups.Queries.GetMyGroups;
 using Delta.Polling.FrontEnd.Logics.Member.Groups.Queries.GetMyGroups;
@@ -9,10 +10,15 @@ public class IndexModel(PagerService pagerService) : PageModelBase
     [BindProperty]
     public IEnumerable<GroupItem> Groups { get; set; } = [];
 
+    [BindProperty]
+    public string? QuerySearch { get; set; } = "";
+
     public string Paging { get; set; } = string.Empty;
 
     public async Task<IActionResult> OnGet(int? p, int? ps, string k, string kf, string sf, SortOrder? so)
     {
+        QuerySearch = BuildQuery(p, ps, k, kf, sf, so);
+
         var page = PagerHelper.GetSafePage(p);
         var pageSize = PagerHelper.GetSafePageSize(ps);
 
@@ -27,8 +33,6 @@ public class IndexModel(PagerService pagerService) : PageModelBase
 
         if (so != null)
         {
-            Console.WriteLine(so);
-            Console.WriteLine("so");
             query.SortOrder = (SortOrder)so;
         }
 
@@ -51,7 +55,7 @@ public class IndexModel(PagerService pagerService) : PageModelBase
         return Page();
     }
 
-    public async Task<IActionResult> OnPostSearchQuery(string querySearch)
+    public async Task<IActionResult> OnPostSearchQuery()
     {
         var query = new GetMyGroupsQuery
         {
@@ -63,49 +67,52 @@ public class IndexModel(PagerService pagerService) : PageModelBase
             SortOrder = null
         };
 
-        var dictionaryParsing = ParseKeyValuePairs(querySearch);
-        foreach (var kvp in dictionaryParsing)
+        if (!string.IsNullOrEmpty(QuerySearch))
         {
-            if (kvp.Key == nameof(PaginatedListRequest.SortOrder))
+            var dictionaryParsing = ParseKeyValuePairs(QuerySearch);
+            foreach (var kvp in dictionaryParsing)
             {
-                var parsed = int.TryParse(kvp.Value, out var sortOrder);
-                if (parsed)
+                if (kvp.Key == nameof(PaginatedListRequest.SortOrder))
                 {
-                    if (Enum.IsDefined(typeof(SortOrder), sortOrder))
+                    var parsed = int.TryParse(kvp.Value, out var sortOrder);
+                    if (parsed)
                     {
-                        query.SortOrder = (SortOrder)sortOrder;
+                        if (Enum.IsDefined(typeof(SortOrder), sortOrder))
+                        {
+                            query.SortOrder = (SortOrder)sortOrder;
+                        }
                     }
                 }
-            }
-            else if (kvp.Key == nameof(PaginatedListRequest.SortField))
-            {
-                query.SortField = kvp.Value;
-            }
-            else if (kvp.Key == nameof(PaginatedListRequest.Page))
-            {
-                var parsed = int.TryParse(kvp.Value, out var p);
-                if (parsed)
+                else if (kvp.Key == nameof(PaginatedListRequest.SortField))
                 {
-                    var page = PagerHelper.GetSafePage(p);
-                    query.Page = page;
+                    query.SortField = kvp.Value;
                 }
-            }
-            else if (kvp.Key == nameof(PaginatedListRequest.PageSize))
-            {
-                var parsed = int.TryParse(kvp.Value, out var ps);
-                if (parsed)
+                else if (kvp.Key == nameof(PaginatedListRequest.Page))
                 {
-                    var pageSize = PagerHelper.GetSafePageSize(ps);
-                    query.PageSize = pageSize;
+                    var parsed = int.TryParse(kvp.Value, out var p);
+                    if (parsed)
+                    {
+                        var page = PagerHelper.GetSafePage(p);
+                        query.Page = page;
+                    }
                 }
-            }
-            else if (kvp.Key == nameof(PaginatedListRequest.SearchText))
-            {
-                query.SearchText = kvp.Value;
-            }
-            else if (kvp.Key == nameof(PaginatedListRequest.SearchField))
-            {
-                query.SearchField = kvp.Value;
+                else if (kvp.Key == nameof(PaginatedListRequest.PageSize))
+                {
+                    var parsed = int.TryParse(kvp.Value, out var ps);
+                    if (parsed)
+                    {
+                        var pageSize = PagerHelper.GetSafePageSize(ps);
+                        query.PageSize = pageSize;
+                    }
+                }
+                else if (kvp.Key == nameof(PaginatedListRequest.SearchText))
+                {
+                    query.SearchText = kvp.Value;
+                }
+                else if (kvp.Key == nameof(PaginatedListRequest.SearchField))
+                {
+                    query.SearchField = kvp.Value;
+                }
             }
         }
 
@@ -144,5 +151,49 @@ public class IndexModel(PagerService pagerService) : PageModelBase
         }
 
         return result;
+    }
+
+    private string BuildQuery(int? p, int? ps, string? k, string? kf, string? sf, SortOrder? so)
+    {
+        if (p == null && ps == null && k == null && kf == null && sf == null && so == null)
+        {
+            return "";
+        }
+
+        var sb = new StringBuilder();
+
+        if (!string.IsNullOrEmpty(kf))
+        {
+            _ = sb.Append($"SearchField:{kf};");
+        }
+
+        if (!string.IsNullOrEmpty(k))
+        {
+            _ = sb.Append($"SearchText:{k};");
+        }
+
+        if (!string.IsNullOrEmpty(sf))
+        {
+            _ = sb.Append($"SortField:{sf};");
+        }
+
+        if (so != null)
+        {
+            _ = sb.Append($"SortOrder:{(int)so};");
+        }
+
+        if (p != null)
+        {
+            _ = sb.Append($"Page:{p};");
+        }
+
+        if (ps != null)
+        {
+            _ = sb.Append($"PageSize:{ps};");
+        }
+
+        var buildedString = sb.ToString().TrimEnd(';');
+
+        return buildedString;
     }
 }

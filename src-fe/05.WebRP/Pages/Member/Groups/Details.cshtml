@@ -129,8 +129,8 @@
             <div class="section-divider">
                 <form method="post" asp-page-handler="SearchQuery">
                     <div class="search-container">
-                        <input name="querySearch" type="text" class="search-bar" placeholder="Search..." onfocus="showTooltip()"
-                               onblur="hideTooltip()" required />
+                        <input asp-for="@Model.QuerySearch" type="text" class="search-bar" placeholder="Search..." onfocus="showTooltip()"
+                               onblur="hideTooltip()"/>
                         <button type="submit" class="btn btn-primary mt-3">
                             <i class="bi bi-search"></i> Search
                         </button>
