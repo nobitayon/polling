@@ -12,7 +12,7 @@ public class IndexModel(PagerService pagerService) : PageModelBase
     public string Paging { get; set; } = string.Empty;
 
     [BindProperty]
-    public string QuerySearch { get; set; } = "";
+    public string? QuerySearch { get; set; } = "";
 
     //public async Task<IActionResult> OnGet(int? p, int ps = 5)
     //{
@@ -151,49 +151,52 @@ public class IndexModel(PagerService pagerService) : PageModelBase
             SortOrder = null
         };
 
-        var dictionaryParsing = ParseKeyValuePairs(QuerySearch);
-        foreach (var kvp in dictionaryParsing)
+        if (!string.IsNullOrEmpty(QuerySearch))
         {
-            if (kvp.Key == nameof(PaginatedListRequest.SortOrder))
+            var dictionaryParsing = ParseKeyValuePairs(QuerySearch);
+            foreach (var kvp in dictionaryParsing)
             {
-                var parsed = int.TryParse(kvp.Value, out var sortOrder);
-                if (parsed)
+                if (kvp.Key == nameof(PaginatedListRequest.SortOrder))
                 {
-                    if (Enum.IsDefined(typeof(SortOrder), sortOrder))
+                    var parsed = int.TryParse(kvp.Value, out var sortOrder);
+                    if (parsed)
                     {
-                        query.SortOrder = (SortOrder)sortOrder;
+                        if (Enum.IsDefined(typeof(SortOrder), sortOrder))
+                        {
+                            query.SortOrder = (SortOrder)sortOrder;
+                        }
                     }
                 }
-            }
-            else if (kvp.Key == nameof(PaginatedListRequest.SortField))
-            {
-                query.SortField = kvp.Value;
-            }
-            else if (kvp.Key == nameof(PaginatedListRequest.Page))
-            {
-                var parsed = int.TryParse(kvp.Value, out var p);
-                if (parsed)
+                else if (kvp.Key == nameof(PaginatedListRequest.SortField))
                 {
-                    var page = PagerHelper.GetSafePage(p);
-                    query.Page = page;
+                    query.SortField = kvp.Value;
                 }
-            }
-            else if (kvp.Key == nameof(PaginatedListRequest.PageSize))
-            {
-                var parsed = int.TryParse(kvp.Value, out var ps);
-                if (parsed)
+                else if (kvp.Key == nameof(PaginatedListRequest.Page))
                 {
-                    var pageSize = PagerHelper.GetSafePageSize(ps);
-                    query.PageSize = pageSize;
+                    var parsed = int.TryParse(kvp.Value, out var p);
+                    if (parsed)
+                    {
+                        var page = PagerHelper.GetSafePage(p);
+                        query.Page = page;
+                    }
                 }
-            }
-            else if (kvp.Key == nameof(PaginatedListRequest.SearchText))
-            {
-                query.SearchText = kvp.Value;
-            }
-            else if (kvp.Key == nameof(PaginatedListRequest.SearchField))
-            {
-                query.SearchField = kvp.Value;
+                else if (kvp.Key == nameof(PaginatedListRequest.PageSize))
+                {
+                    var parsed = int.TryParse(kvp.Value, out var ps);
+                    if (parsed)
+                    {
+                        var pageSize = PagerHelper.GetSafePageSize(ps);
+                        query.PageSize = pageSize;
+                    }
+                }
+                else if (kvp.Key == nameof(PaginatedListRequest.SearchText))
+                {
+                    query.SearchText = kvp.Value;
+                }
+                else if (kvp.Key == nameof(PaginatedListRequest.SearchField))
+                {
+                    query.SearchField = kvp.Value;
+                }
             }
         }
 
