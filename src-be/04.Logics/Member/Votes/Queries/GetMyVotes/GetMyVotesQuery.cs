@@ -34,6 +34,7 @@ public class GetMyVotesQueryHandler(
                     .ThenInclude(c => c.Answers)
             .Include(v => v.Answers)
                 .ThenInclude(a => a.Choice)
+            .Where(v => v.Poll.Status != PollStatus.Abandoned)
             .AsNoTracking();
 
         if (string.IsNullOrWhiteSpace(request.SortField))

@@ -58,6 +58,11 @@ public class GetPollQueryHandler(
                         }).SingleOrDefaultAsync(cancellationToken)
                         ?? throw new EntityNotFoundException("Poll", request.PollId);
 
+        if (pollDetails.Status == PollStatus.Abandoned)
+        {
+            throw new Exception("You can't access abandoned poll");
+        }
+
         var memberGroup = await databaseService.GroupMembers
             .Where(gm => gm.GroupId == pollDetails.GroupId)
             .Select(gm => gm.Username)

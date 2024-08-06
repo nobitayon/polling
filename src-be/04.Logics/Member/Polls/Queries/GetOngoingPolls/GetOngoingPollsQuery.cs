@@ -88,21 +88,6 @@ public class GetOngoingPollsQueryHandler(
             {
                 query = query.Where(poll => poll.Group.Name.ToLower().Contains(request.SearchText!.ToLower()));
             }
-            else if (request.SearchField == nameof(Poll.Status))
-            {
-                if (request.SearchText == nameof(PollStatus.Draft))
-                {
-                    query = query.Where(poll => poll.Status == PollStatus.Draft);
-                }
-                else if (request.SearchText == nameof(PollStatus.Ongoing))
-                {
-                    query = query.Where(poll => poll.Status == PollStatus.Ongoing);
-                }
-                else if (request.SearchText == nameof(PollStatus.Finished))
-                {
-                    query = query.Where(poll => poll.Status == PollStatus.Finished);
-                }
-            }
             else if (request.SearchField == "MeAlreadyVote")
             {
 
