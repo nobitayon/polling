@@ -112,7 +112,7 @@ public class FinishPollCommandHandler(
             Tos = tos,
             Ccs = [],
             Subject = $"Poll with title {poll.Title} in group {poll.Group.Name} already finished",
-            Body = $"You can go to /poll/details/{request.PollId} to see result"
+            Body = $"You can go to {{{{LinkBaseUrl}}}}/Member/Polls/Details/{request.PollId} to see result"
         };
 
         emailService.SendEmail(input);
