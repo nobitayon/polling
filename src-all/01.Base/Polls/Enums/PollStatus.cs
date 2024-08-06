@@ -4,6 +4,7 @@ public enum PollStatus
 {
     Draft = 0,
     Ongoing = 100,
-    Finished = 200
+    Finished = 200,
+    Abandoned = 300
 }
 

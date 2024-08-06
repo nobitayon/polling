@@ -32,6 +32,7 @@ public class GetMyPollsQueryHandler(
                         .ToListAsync(cancellationToken);
 
         var query = databaseService.Polls
+            .Where(p => p.Status != PollStatus.Abandoned)
             .Include(p => p.Group)
             .AsNoTracking()
             .Where(p => p.CreatedBy == currentUserService.Username && myGroup.Contains(p.GroupId));

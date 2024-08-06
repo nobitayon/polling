@@ -42,7 +42,6 @@ public class DetailsModel(PagerService pagerService) : PageModelBase
         if (response.Problem is not null)
         {
             Problem = response.Problem;
-
             return Page();
         }
 

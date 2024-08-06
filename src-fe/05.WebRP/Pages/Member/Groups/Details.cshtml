@@ -4,13 +4,14 @@
 
 @{
     ViewBag.CurrentMenu = MenuFor.MemberGroupIndex;
-    ViewData["Title"] = Model.GroupItem.Name;
 }
 
 @await Component.InvokeAsync("ErrorViewer", Model.Problem)
 
 @if (Model.Problem == null)
 {
+    ViewData["Title"] = Model.GroupItem.Name;
+
     if (TempData["success"] is not null)
     {
         <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
