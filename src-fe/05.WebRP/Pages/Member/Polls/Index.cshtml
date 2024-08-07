@@ -104,8 +104,14 @@
                 <div class="poll-card">
                     <div class="poll-card-header">
                         <h5 class="mb-0">@poll.Title</h5>
+                        <h6 class="mb-0">Group: @poll.GroupName</h6>
+                        <p class="text-muted mb-0">Question: @poll.Question</p>
                         <p class="text-muted mb-0">Posted by @poll.CreatedBy on @poll.Created.ToString("MMM dd, yyyy HH:mm")</p>
-                        <p class="text-muted mb-0"><small>Group: @poll.GroupName</small></p>
+                        @if (poll.Modified != null)
+                        {
+                            var modifiedDate = poll.Modified.Value;
+                            <p class="text-muted mb-0">Last Modified @modifiedDate.ToString("MMM dd, yyyy HH:mm")</p>
+                        }
                         @if (poll.IsVotedByMe)
                         {
                             <p class="text-muted mb-0"><small>You already vote</small></p>
@@ -120,7 +126,6 @@
                     </div>
                 </div>
             }
-            @* <button id="load-more-button" data-current-page="1" onclick="handleClickMore()">Load More</button> *@
         </div>
     </div>
 
