@@ -37,7 +37,7 @@ public class GetRecentParticipatedPollQueryHandler(
                                 poll.Status == PollStatus.Ongoing ||
                                 poll.CreatedBy == currentUserService.Username))
                             .OrderByDescending(poll => poll.Modified)
-                            .OrderByDescending(poll => poll.Created)
+                            .ThenByDescending(poll => poll.Created)
                             .Take(5)
                             .Select(poll => new PollItem
                             {

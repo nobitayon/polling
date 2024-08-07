@@ -128,10 +128,12 @@ public class IndexModel(PagerService pagerService) : PageModelBase
                 Id = item.Id,
                 Status = item.Status,
                 Title = item.Title,
+                Question = item.Question,
                 Created = item.Created,
                 CreatedBy = item.CreatedBy,
                 IsVotedByMe = item.IsVotedByMe,
-                GroupName = item.GroupName
+                GroupName = item.GroupName,
+                Modified = item.Modified,
             }).ToList();
 
             Paging = pagerService.GetHtml("", response.Result.Data.TotalCount, query);
@@ -214,10 +216,12 @@ public class IndexModel(PagerService pagerService) : PageModelBase
                 Id = item.Id,
                 Status = item.Status,
                 Title = item.Title,
+                Question = item.Question,
                 Created = item.Created,
                 CreatedBy = item.CreatedBy,
                 IsVotedByMe = item.IsVotedByMe,
-                GroupName = item.GroupName
+                GroupName = item.GroupName,
+                Modified = item.Modified,
             }).ToList();
 
             Paging = pagerService.GetHtml("", response.Result.Data.TotalCount, query);

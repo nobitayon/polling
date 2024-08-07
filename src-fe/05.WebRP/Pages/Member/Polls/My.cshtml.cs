@@ -42,7 +42,11 @@ public class MyModel(PagerService pagerService) : PageModelBase
             {
                 Id = item.Id,
                 Status = item.Status,
-                Title = item.Title
+                Title = item.Title,
+                Created = item.Created,
+                GroupName = item.GroupName,
+                Question = item.Question,
+                Modified = item.Modified
             }).ToList();
 
             Paging = pagerService.GetHtml("", response.Result.Data.TotalCount, query);
@@ -123,7 +127,11 @@ public class MyModel(PagerService pagerService) : PageModelBase
             {
                 Id = item.Id,
                 Status = item.Status,
-                Title = item.Title
+                Title = item.Title,
+                Created = item.Created,
+                GroupName = item.GroupName,
+                Question = item.Question,
+                Modified = item.Modified
             }).ToList();
 
             Paging = pagerService.GetHtml("", response.Result.Data.TotalCount, query);

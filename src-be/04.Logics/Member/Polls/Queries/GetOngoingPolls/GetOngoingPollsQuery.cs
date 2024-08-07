@@ -113,11 +113,13 @@ public class GetOngoingPollsQueryHandler(
             {
                 Id = poll.Id,
                 Title = poll.Title,
+                Question = poll.Question,
                 Status = poll.Status,
                 IsVotedByMe = poll.Voters.Any(v => v.Username == currentUserService.Username && v.PollId == poll.Id),
                 Created = poll.Created,
                 CreatedBy = poll.CreatedBy,
-                GroupName = poll.Group.Name
+                GroupName = poll.Group.Name,
+                Modified = poll.Modified
             })
             .ToListAsync(cancellationToken);
 

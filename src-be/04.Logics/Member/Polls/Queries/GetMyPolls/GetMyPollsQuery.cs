@@ -118,7 +118,11 @@ public class GetMyPollsQueryHandler(
             {
                 Id = poll.Id,
                 Title = poll.Title,
-                Status = poll.Status
+                Question = poll.Question,
+                Status = poll.Status,
+                GroupName = poll.Group.Name,
+                Created = poll.Created,
+                Modified = poll.Modified
             })
             .ToListAsync(cancellationToken);
 
