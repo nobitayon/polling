@@ -1,8 +1,7 @@
 ﻿using Delta.Polling.Base.Polls.Enums;
 using Delta.Polling.Both.Member.Choices.Commands.AddChoice;
 using Delta.Polling.Domain.Choices.Entities;
-using Delta.Polling.Logics.SignalR;
-using Microsoft.AspNetCore.SignalR;
+using Delta.Polling.Services.Storage;
 
 namespace Delta.Polling.Logics.Member.Choices.Commands.AddChoice;
 
@@ -22,7 +21,7 @@ public class AddChoiceCommandValidator : AbstractValidator<AddChoiceCommand>
 public class AddChoiceCommandHandler(
     IDatabaseService databaseService,
     ICurrentUserService currentUserService,
-    IHubContext<PollHub> hubContext)
+    IStorageService storageService)
     : IRequestHandler<AddChoiceCommand, AddChoiceOutput>
 {
     public async Task<AddChoiceOutput> Handle(AddChoiceCommand request, CancellationToken cancellationToken)
@@ -72,7 +71,33 @@ public class AddChoiceCommandHandler(
             CreatedBy = currentUserService.Username
         };
 
-        await hubContext.Clients.All.SendAsync("ReceiveMessage", "Hello", "Hi");
+        // We need to loops
+        foreach (var mediaItem in request.MediaRequest)
+        {
+            using var memoryStream = new MemoryStream();
+            await mediaItem.File.CopyToAsync(memoryStream, cancellationToken);
+            memoryStream.Position = 0;
+            var content = memoryStream.ToArray();
+
+            var choiceMediaId = Guid.NewGuid();
+            var fileName = $"{choiceMediaId}{Path.GetExtension(mediaItem.File.FileName)}";
+            var storedFileId = await storageService.CreateAsync(content, choice.Id.ToString(), fileName);
+
+            var choiceMedia = new ChoiceMedia
+            {
+                Id = choiceMediaId,
+                ChoiceId = choice.Id,
+                Created = DateTimeOffset.Now,
+                CreatedBy = currentUserService.Username,
+                Description = mediaItem.Description,
+                FileName = mediaItem.File.FileName,
+                FileContentType = mediaItem.File.ContentType,
+                FileSize = mediaItem.File.Length,
+                StoredFileId = storedFileId
+            };
+
+            _ = await databaseService.ChoiceMedias.AddAsync(choiceMedia, cancellationToken);
+        }
 
         _ = await databaseService.Choices.AddAsync(choice, cancellationToken);
 

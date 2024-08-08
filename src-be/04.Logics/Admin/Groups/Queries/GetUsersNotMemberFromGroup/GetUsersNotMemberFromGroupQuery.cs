@@ -26,18 +26,11 @@ public class GetUsersNotMemberFromGroupQueryHandler(
     public async Task<GetUsersNotMemberFromGroupOutput> Handle(GetUsersNotMemberFromGroupQuery request, CancellationToken cancellationToken)
     {
         List<string> listMember = [];
-        var listOfFullProfile = await userProfileService.GetUsersAsync(cancellationToken);
+        var listOfFullProfile = await userProfileService.GetUsersAsync(cancellationToken) ?? throw new Exception("Error getting users from simpletor");
 
-        if (listOfFullProfile != null)
+        foreach (var profileItem in listOfFullProfile)
         {
-            foreach (var profileItem in listOfFullProfile)
-            {
-                listMember.Add(profileItem.Username);
-            }
-        }
-        else
-        {
-            throw new Exception("Error getting users from simpletor");
+            listMember.Add(profileItem.Username);
         }
 
         List<string> notAMember = [];

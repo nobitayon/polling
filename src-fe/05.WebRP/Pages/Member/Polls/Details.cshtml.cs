@@ -1,3 +1,4 @@
+using Delta.Polling.Both.Member.Choices.Commands.AddChoice;
 using Delta.Polling.Both.Member.Polls.Queries.GetPoll;
 using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.AddAnotherChoiceOngoingPoll;
 using Delta.Polling.FrontEnd.Logics.Member.Choices.Commands.AddChoices;
@@ -27,6 +28,9 @@ public class DetailsModel : PageModelBase
     public AddChoiceCommand InputAddChoiceCommand { get; set; } = default!;
 
     [BindProperty]
+    public AddChoiceFormDTO InputAddChoiceWithMediaCommand { get; set; } = default!;
+
+    [BindProperty]
     public StartPollCommand InputStartPollCommand { get; set; } = default!;
 
     [BindProperty]
@@ -34,6 +38,9 @@ public class DetailsModel : PageModelBase
 
     [BindProperty]
     public UpdateVoteCommand InputUpdateVoteCommand { get; set; } = default!;
+
+    [BindProperty]
+    public AddChoiceFormDTO InputAddChoiceMediaCommand { get; set; } = default!;
 
     public PollItem Poll { get; set; } = default!;
 
@@ -130,26 +137,93 @@ public class DetailsModel : PageModelBase
 
     public async Task<IActionResult> OnPostAddChoiceAsync()
     {
-        var response = await Sender.Send(InputAddChoiceCommand);
+        var formData = await Request.ReadFormAsync();
+
+        var description = (string?)formData["Description"];
+        if (string.IsNullOrEmpty(description))
+        {
+            await LoadData();
+            Problem = new ProblemDetails { Title = "Oops", Detail = "not valid poll id" };
+            return Page();
+        }
+
+        var isValidPollId = Guid.TryParse(formData["PollId"], out var pollId);
+        var isDropdownAddMediaString = bool.TryParse(formData["DropdownAddMedia"], out var dropdownAddMedia);
+
+        if (!isValidPollId)
+        {
+            await LoadData();
+            Problem = new ProblemDetails { Title = "Oops", Detail = "not valid poll id" };
+            return Page();
+        }
+
+        if (!isDropdownAddMediaString)
+        {
+            await LoadData();
+            Problem = new ProblemDetails { Title = "Oops", Detail = "not valid dropdown" };
+            return Page();
+        }
+
+        var mediaItems = new List<AddChoiceMediaRequest>();
+        var index = 0;
+
+        if (dropdownAddMedia)
+        {
+            while (formData.ContainsKey($"MediaItems_{index}_Description"))
+            {
+                var file = formData.Files[$"MediaItems_{index}_File"];
+                if (file is null)
+                {
+                    await LoadData();
+                    Problem = new ProblemDetails { Title = "Oops", Detail = "file null" };
+                    return Page();
+                }
+
+                var fileDescription = (string?)formData[$"MediaItems_{index}_Description"];
+                if (string.IsNullOrEmpty(fileDescription))
+                {
+                    await LoadData();
+                    Problem = new ProblemDetails { Title = "Oops", Detail = "file description null" };
+                    return Page();
+                }
+
+                mediaItems.Add(new AddChoiceMediaRequest
+                {
+                    File = file,
+                    Description = fileDescription
+                });
+
+                index += 1;
+            }
+        }
+
+        Console.WriteLine("Sampai sini kah 65");
+        var command = new AddChoiceCommand
+        {
+            Description = description,
+            PollId = pollId,
+            MediaRequest = mediaItems
+        };
+
+        var response = await Sender.Send(command);
 
         if (response.Problem is not null)
         {
             Problem = response.Problem;
-            await LoadData();
-            return Page();
         }
 
         if (response.Result is not null)
         {
             TempData["success"] = "Success Add Choice";
-            return RedirectToPage("/Member/Polls/Details", new { pollId = PollId });
         }
         else
         {
             TempData["failed"] = "Failed to Add Choice";
-            await LoadData();
-            return Page();
         }
+
+        await LoadData();
+
+        return Page();
     }
 
     public async Task<IActionResult> OnPostStartPollAsync(StartPollCommand command)
@@ -587,4 +661,34 @@ public class DetailsModel : PageModelBase
             return new JsonResult(new { isValid = true, redirectUrl = redirectUrl });
         }
     }
+
+    public async Task<IActionResult> OnPostCheckSansAsync()
+    {
+        //Console.WriteLine("sini");
+        //Console.WriteLine(command.Description);
+        //Console.WriteLine(command.PollId);
+        ////Console.WriteLine(command.FileInput.Count());
+        //Console.WriteLine("sini");
+        await LoadData();
+        return Page();
+    }
+}
+
+public record AddChoiceFormDTO
+{
+    public required string Description { get; init; }
+    public required bool DropdownAddMedia { get; init; } = false;
+    public required Guid PollId { get; init; } = Guid.Empty;
+    public required AddChoiceMediaRequestTheFuck MediaRequest { get; init; } = default!;
+}
+
+public class AddChoiceMediaRequestTheFuck
+{
+    public List<MediaItem> MediaItems { get; set; } = [];
+}
+
+public record MediaItem
+{
+    public IFormFile File { get; init; } = default!;
+    public required string Description { get; set; }
 }

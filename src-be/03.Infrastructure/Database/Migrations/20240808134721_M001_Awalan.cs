@@ -167,6 +167,33 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ChoiceMedias",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ChoiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    Modified = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    ModifiedBy = table.Column<string>(type: "nvarchar(100)", nullable: true),
+                    FileName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    FileContentType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    FileSize = table.Column<long>(type: "bigint", nullable: false),
+                    StoredFileId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChoiceMedias", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ChoiceMedias_Choices_ChoiceId",
+                        column: x => x.ChoiceId,
+                        principalTable: "Choices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Answers",
                 columns: table => new
                 {
@@ -204,6 +231,11 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                 column: "VoterId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChoiceMedias_ChoiceId",
+                table: "ChoiceMedias",
+                column: "ChoiceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Choices_PollId",
                 table: "Choices",
                 column: "PollId");
@@ -236,16 +268,19 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                 name: "Answers");
 
             migrationBuilder.DropTable(
+                name: "ChoiceMedias");
+
+            migrationBuilder.DropTable(
                 name: "GroupMembers");
 
             migrationBuilder.DropTable(
                 name: "MoviePosters");
 
             migrationBuilder.DropTable(
-                name: "Choices");
+                name: "Voters");
 
             migrationBuilder.DropTable(
-                name: "Voters");
+                name: "Choices");
 
             migrationBuilder.DropTable(
                 name: "Movies");

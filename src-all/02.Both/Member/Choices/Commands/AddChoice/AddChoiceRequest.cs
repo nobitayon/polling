@@ -5,6 +5,7 @@ public record AddChoiceRequest
 {
     public required Guid PollId { get; init; }
     public required string Description { get; init; }
+    public IEnumerable<AddChoiceMediaRequest> MediaRequest { get; init; } = [];
 }
 
 public class AddChoiceRequestValidator : AbstractValidator<AddChoiceRequest>
@@ -17,5 +18,35 @@ public class AddChoiceRequestValidator : AbstractValidator<AddChoiceRequest>
         _ = RuleFor(x => x.Description)
             .NotEmpty()
             .MaximumLength(ChoicesMaxLengthFor.Description);
+
+        _ = RuleFor(x => x.MediaRequest)
+            .NotNull()
+            .When(x => x.MediaRequest.Count() > 0)
+            .DependentRules(() =>
+            {
+                _ = RuleFor(x => x.MediaRequest)
+                    .ForEach(mediaRequest =>
+                        mediaRequest.SetValidator(new AddChoiceMediaRequestValidator())
+                    )
+                    .WithMessage("Each media request must be valid.");
+            });
+    }
+}
+
+public record AddChoiceMediaRequest : FileRequest
+{
+    public required string Description { get; set; }
+}
+
+public class AddChoiceMediaRequestValidator : AbstractValidator<AddChoiceMediaRequest>
+{
+    public AddChoiceMediaRequestValidator()
+    {
+        Include(new FileRequestValidator());
+
+        _ = RuleFor(x => x.Description)
+         .NotEmpty()
+         .MaximumLength(ChoicesMaxLengthFor.Description);
+
     }
 }

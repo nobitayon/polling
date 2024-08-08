@@ -14,6 +14,7 @@ public class DatabaseService(DbContextOptions<DatabaseService> options)
 {
     public DbSet<Movie> Movies => Set<Movie>();
     public DbSet<MoviePoster> MoviePosters => Set<MoviePoster>();
+    public DbSet<ChoiceMedia> ChoiceMedias => Set<ChoiceMedia>();
     public DbSet<Group> Groups => Set<Group>();
     public DbSet<GroupMember> GroupMembers => Set<GroupMember>();
     public DbSet<Poll> Polls => Set<Poll>();

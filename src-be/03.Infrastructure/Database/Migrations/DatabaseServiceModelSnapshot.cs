@@ -87,6 +87,57 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                     b.ToTable("Choices", (string)null);
                 });
 
+            modelBuilder.Entity("Delta.Polling.Domain.Choices.Entities.ChoiceMedia", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ChoiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FileContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset?>("Modified")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("StoredFileId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChoiceId");
+
+                    b.ToTable("ChoiceMedias", (string)null);
+                });
+
             modelBuilder.Entity("Delta.Polling.Domain.Groups.Entities.Group", b =>
                 {
                     b.Property<Guid>("Id")
@@ -340,6 +391,17 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
                     b.Navigation("Poll");
                 });
 
+            modelBuilder.Entity("Delta.Polling.Domain.Choices.Entities.ChoiceMedia", b =>
+                {
+                    b.HasOne("Delta.Polling.Domain.Choices.Entities.Choice", "Choice")
+                        .WithMany("ChoiceMedias")
+                        .HasForeignKey("ChoiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Choice");
+                });
+
             modelBuilder.Entity("Delta.Polling.Domain.Groups.Entities.GroupMember", b =>
                 {
                     b.HasOne("Delta.Polling.Domain.Groups.Entities.Group", "Group")
@@ -387,6 +449,8 @@ namespace Delta.Polling.Infrastructure.Database.Migrations
             modelBuilder.Entity("Delta.Polling.Domain.Choices.Entities.Choice", b =>
                 {
                     b.Navigation("Answers");
+
+                    b.Navigation("ChoiceMedias");
                 });
 
             modelBuilder.Entity("Delta.Polling.Domain.Groups.Entities.Group", b =>

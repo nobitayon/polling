@@ -12,6 +12,7 @@ public interface IDatabaseService
 {
     DbSet<Movie> Movies { get; }
     DbSet<MoviePoster> MoviePosters { get; }
+    DbSet<ChoiceMedia> ChoiceMedias { get; }
     DbSet<Answer> Answers { get; }
     DbSet<Choice> Choices { get; }
     DbSet<Group> Groups { get; }

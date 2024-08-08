@@ -108,8 +108,8 @@
                     </li>
                 }
             </ul>
-            <form id="add-choice" asp-page-handler="AddChoice" method="post" class="col-8">
-                <input type="hidden" asp-for="@Model.InputAddChoiceCommand.PollId" value="@Model.PollId" class="form-control" required>
+            <form id="add-choice" enctype="multipart/form-data" asp-page-handler="AddChoice" method="post" class="col-8">
+                <input type="hidden" name="PollId" value="@Model.PollId" class="form-control" required>
 
                 <!-- Button trigger modal -->
                 <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addChoice">
@@ -126,10 +126,27 @@
                             </div>
                             <div class="modal-body">
                                 <div class="mb-3">
-                                    <label asp-for="@Model.InputAddChoiceCommand.Description" class="form-label"></label>
-                                    <input type="text" asp-for="@Model.InputAddChoiceCommand.Description" class="form-control" maxlength="@StaticChoice.MaxLengthFor.Description" required>
-                                    <span asp-validation-for="@Model.InputAddChoiceCommand.Description" class="text-danger"></span>
+                                    <label for="Description" class="form-label"></label>
+                                    <input type="text" name="Description" class="form-control" maxlength="@StaticChoice.MaxLengthFor.Description" required>
+                                    @* <span asp-validation-for="@Model.Description" class="text-danger"></span> *@
                                 </div>
+
+                                <div>
+                                    <label for="DropDownAddImage">Do you want to add media:</label>
+                                    <select id="DropDownAddImage" name="DropdownAddMedia" onchange="toggleFileInput()">
+                                        <option value="Select">--Select--</option>
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+
+                                <div id="fileInputsContainer" class="hidden">
+                                    <!-- File inputs will be added here dynamically -->
+                                    <div id="fileInputPlaceholder">
+                                        <span id="addIcon" class="icon" onclick="addFileInput()">+</span>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -403,7 +420,7 @@
                 @foreach (var choice in Model.Poll.ChoiceItems)
                 {
                     <li class="list-group-item d-flex justify-flex-start align-items-center @(choice.IsChosen ? "chosen" : "")">
-                        @if(choice.IsChosen)
+                        @if (choice.IsChosen)
                         {
                             <i class="bi bi-info-circle me-2" data-toggle="tooltip" title="You vote this before"></i>
                             <span>@choice.Description</span>
@@ -496,9 +513,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                                        <p>There was an error loading the content. Please try again later.</p>
-                                        <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                    `);
+                                                <p>There was an error loading the content. Please try again later.</p>
+                                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                            `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -524,9 +541,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                                        <p>There was an error loading the content. Please try again later.</p>
-                                        <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                    `);
+                                                <p>There was an error loading the content. Please try again later.</p>
+                                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                            `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -552,9 +569,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                                    <p>There was an error loading the content. Please try again later.</p>
-                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                `);
+                                            <p>There was an error loading the content. Please try again later.</p>
+                                            <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                        `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -584,9 +601,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                                <p>There was an error loading the content. Please try again later.</p>
-                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                            `);
+                                        <p>There was an error loading the content. Please try again later.</p>
+                                        <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                    `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -616,9 +633,9 @@
             })
             .catch((error) => {
                 $('#form-modal .modal-body').html(`
-                                    <p>There was an error loading the content. Please try again later.</p>
-                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                `);
+                                            <p>There was an error loading the content. Please try again later.</p>
+                                            <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                        `);
                 $('#form-modal .modal-title').html("Error");
                 $('#form-modal').modal('show');
 
@@ -646,9 +663,9 @@
             })
             .catch((error) => {
                 $('#form-modal .modal-body').html(`
-                                        <p>There was an error loading the content. Please try again later.</p>
-                                        <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                    `);
+                                                <p>There was an error loading the content. Please try again later.</p>
+                                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                            `);
                 $('#form-modal .modal-title').html("Error");
                 $('#form-modal').modal('show');
 
@@ -657,11 +674,60 @@
                 });
             });
     }
+
+    function toggleFileInput() {
+        var dropdown = document.getElementById('DropDownAddImage');
+        var fileInputsContainer = document.getElementById('fileInputsContainer');
+
+        if (dropdown.value === "true") {
+            fileInputsContainer.classList.remove('hidden');
+        } else {
+            fileInputsContainer.classList.add('hidden');
+        }
+    }
+
+    function addFileInput() {
+        var fileInputsContainer = document.getElementById('fileInputsContainer');
+        var fileInputCount = Math.floor(fileInputsContainer.getElementsByTagName('input').length / 2);
+        var newFileInputGroup = document.createElement('div');
+        newFileInputGroup.classList.add('file-input-group');
+
+        var fileInputId = `fileInput${fileInputCount + 1}`;
+
+        var deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('delete-button');
+
+        deleteButton.addEventListener('click', function () {
+            fileInputsContainer.removeChild(newFileInputGroup);
+        });
+
+        newFileInputGroup.innerHTML = `
+            <label for="MediaItems_${fileInputCount}_File">Upload File ${fileInputCount + 1}:</label>
+            <input type="file" id="MediaItems_${fileInputCount}_File" name="MediaItems_${fileInputCount}_File" />
+            <label for="MediaItems_${fileInputCount}_Description">Description</label>
+            <input type="text" id="MediaItems_${fileInputCount}_Description" name="MediaItems_${fileInputCount}_Description" />
+        `;
+
+        newFileInputGroup.appendChild(deleteButton);
+
+        fileInputsContainer.insertBefore(newFileInputGroup, document.getElementById('fileInputPlaceholder'));
+    }
+
 </script>
 
 <style>
     .chosen {
         background-color: #d4edda; /* Light green background */
         color: #155724; /* Dark green text */
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .icon {
+        cursor: pointer;
     }
 </style>
