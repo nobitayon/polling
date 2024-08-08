@@ -8,99 +8,102 @@
 
 @await Component.InvokeAsync("ErrorViewer", Model.Problem)
 
-<nav aria-label="breadcrumb" class="fixed-breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a class="text-decoration-none" asp-page="/Index">
-                Home
-            </a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-            @ViewData["Title"]
-        </li>
-    </ol>
-</nav>
 
-<div class="content">
-    @if (TempData["success"] is not null)
-    {
-        <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
-            <strong>Success!</strong> @TempData["success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
+@if (Model.Problem is null)
+{
+    <nav aria-label="breadcrumb" class="fixed-breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a class="text-decoration-none" asp-page="/Index">
+                    Home
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                @ViewData["Title"]
+            </li>
+        </ol>
+    </nav>
 
-    @if (TempData["failed"] is not null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
-            <strong>Failed!</strong> @TempData["failed"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
+    <div class="content">
+        @if (TempData["success"] is not null)
+        {
+            <div class="alert alert-primary alert-dismissible fade show col-5" role="alert">
+                <strong>Success!</strong> @TempData["success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
 
-    <div class="container mt-4">
-        <!-- Welcome Message -->
-        <div class="welcome-message">
-            <h1>Welcome, @User.Identity!.Name</h1>
-        </div>
+        @if (TempData["failed"] is not null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show col-5" role="alert">
+                <strong>Failed!</strong> @TempData["failed"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
 
-        <!-- Quick Links -->
-        <div class="mt-5">
-            <div class="row g-4 d-flex align-items-stretch">
-                <div class="col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="flex-column justify-content-around g-2 h-100">
-                                <div style="height:70%">
-                                    <h5 class="card-title">Ongoing Polls</h5>
-                                    <p class="card-text">View and participate in ongoing polls.</p>
-                                </div>
-                                <div style="height:30%">
-                                    <a asp-page="/Member/Polls/Index" class="btn btn-primary">View Polls</a>
+        <div class="container mt-4">
+            <!-- Welcome Message -->
+            <div class="welcome-message">
+                <h1>Welcome, @User.Identity!.Name</h1>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="mt-5">
+                <div class="row g-4 d-flex align-items-stretch">
+                    <div class="col-lg-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="flex-column justify-content-around g-2 h-100">
+                                    <div style="height:70%">
+                                        <h5 class="card-title">Ongoing Polls</h5>
+                                        <p class="card-text">View and participate in ongoing polls.</p>
+                                    </div>
+                                    <div style="height:30%">
+                                        <a asp-page="/Member/Polls/Index" class="btn btn-primary">View Polls</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="flex-column justify-content-around g-2 h-100">
-                                <div style="height:70%">
-                                    <h5 class="card-title">Group</h5>
-                                    <p class="card-text">View Groups</p>
-                                </div>
-                                <div style="height:30%">
-                                    <a asp-page="/Member/Groups/Index" class="btn btn-primary">View your groups</a>
+                    <div class="col-lg-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="flex-column justify-content-around g-2 h-100">
+                                    <div style="height:70%">
+                                        <h5 class="card-title">Group</h5>
+                                        <p class="card-text">View Groups</p>
+                                    </div>
+                                    <div style="height:30%">
+                                        <a asp-page="/Member/Groups/Index" class="btn btn-primary">View your groups</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="flex-column justify-content-around g-2 h-100">
-                                <div style="height:70%">
-                                    <h5 class="card-title">Votes</h5>
-                                    <p class="card-text">View Votes</p>
-                                </div>
-                                <div style="height:30%">
-                                    <a href="/Member/Votes/Index" class="btn btn-primary">View Votes</a>
+                    <div class="col-lg-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="flex-column justify-content-around g-2 h-100">
+                                    <div style="height:70%">
+                                        <h5 class="card-title">Votes</h5>
+                                        <p class="card-text">View Votes</p>
+                                    </div>
+                                    <div style="height:30%">
+                                        <a href="/Member/Votes/Index" class="btn btn-primary">View Votes</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Recent Activity -->
-        <div class="mt-4">
-            <h2>Recent Activity</h2>
-            <div id="container-recent-activity" class="list-group">
-                <!-- Example recent activities -->
-                @* <a href="#" class="list-group-item list-group-item-action">
+            <!-- Recent Activity -->
+            <div class="mt-4">
+                <h2>Recent Activity</h2>
+                <div id="container-recent-activity" class="list-group">
+                    <!-- Example recent activities -->
+                    @* <a href="#" class="list-group-item list-group-item-action">
                 <h5 class="mb-1">Poll Title 1</h5>
                 <p class="mb-1">You participated in this poll.</p>
                 <small>July 27, 2024</small>
@@ -110,83 +113,36 @@
                 <p class="mb-1">New poll created in your favorite category.</p>
                 <small>July 26, 2024</small>
                 </a> *@
-                <!-- Add more recent activities -->
-                @for (var i = 0; i < 3; i++)
-                {
-                    <div class="placeholder-glow list-group-item list-group-item-action">
-                        <span class="placeholder" style="width: 100%;"></span>
-                        <span class="placeholder" style="width: 100%;"></span>
-                        <span class="placeholder" style="width: 100%;"></span>
-                    </div>
-                }
-            </div>
-        </div>
-
-        <!-- Recently Finished Polls -->
-        <div class="mt-4">
-            <h2>Recently Finished Polls</h2>
-            <div class="list-group">
-                <!-- Example recently finished polls -->
-                <a href="#" class="list-group-item list-group-item-action">
-                    <h5 class="mb-1">Poll Title A</h5>
-                    <p class="mb-1">This poll was completed recently.</p>
-                    <small>July 24, 2024</small>
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <h5 class="mb-1">Poll Title B</h5>
-                    <p class="mb-1">See the results of this finished poll.</p>
-                    <small>July 23, 2024</small>
-                </a>
-                <!-- Add more recently finished polls -->
-            </div>
-        </div>
-
-        <!-- Optional Statistics/Overview Section -->
-        <div class="mt-4">
-            <h2>Your Statistics</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card dashboard-card">
-                        <div class="card-body">
-                            <h5 class="card-title">Polls Participated</h5>
-                            <p class="card-text">12</p> <!-- Example data -->
+                    <!-- Add more recent activities -->
+                    @for (var i = 0; i < 3; i++)
+                    {
+                        <div class="placeholder-glow list-group-item list-group-item-action">
+                            <span class="placeholder" style="width: 100%;"></span>
+                            <span class="placeholder" style="width: 100%;"></span>
+                            <span class="placeholder" style="width: 100%;"></span>
                         </div>
-                    </div>
+                    }
                 </div>
-                <div class="col-md-4">
-                    <div class="card dashboard-card">
-                        <div class="card-body">
-                            <h5 class="card-title">Active Polls</h5>
-                            <p class="card-text">5</p> <!-- Example data -->
+            </div>
+
+            <!-- Recently Finished Polls -->
+            <div class="mt-4">
+                <h2>Recently Ongoing Polls you not vote</h2>
+                <div id="placeholder-for-general">
+                    @for (var i = 0; i < 3; i++)
+                    {
+                        <div class="placeholder-glow list-group-item list-group-item-action">
+                            <span class="placeholder" style="width: 100%;"></span>
+                            <span class="placeholder" style="width: 100%;"></span>
+                            <span class="placeholder" style="width: 100%;"></span>
                         </div>
-                    </div>
+                    }
                 </div>
-                <!-- Add more statistics as needed -->
             </div>
         </div>
     </div>
+}
 
-
-    <div class="row">
-        @foreach (var poll in Model.Polls)
-        {
-            <div class="col-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <a class="text-decoration-none" asp-page="Polls/Details" asp-route-pollId="@poll.Id">
-                            <h5 class="card-title">
-                                @poll.Title
-                            </h5>
-                        </a>
-                        <p class="card-text">
-                            Something
-                        </p>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-</div>
 
 <style>
     .fixed-breadcrumb {
@@ -232,5 +188,6 @@
 
     $(document).ready(function () {
         $('#container-recent-activity').load('?handler=RecentPoll');
+        $('#placeholder-for-general').load('?handler=RecentGeneral');
     });
 </script>
