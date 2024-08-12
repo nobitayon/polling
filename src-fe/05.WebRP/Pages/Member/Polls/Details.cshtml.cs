@@ -197,13 +197,11 @@ public class DetailsModel : PageModelBase
             }
         }
 
-        Console.WriteLine("Sampai sini kah 65");
         var command = new AddChoiceCommand
         {
             Description = description,
             PollId = pollId,
-            MediaRequest = mediaItems,
-            File = mediaItems[0].File
+            MediaRequest = mediaItems
         };
 
         var response = await Sender.Send(command);

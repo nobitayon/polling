@@ -34,6 +34,7 @@ public class AddChoiceCommandHandler(IBackEndService backEndService)
         {
             if (media.File != null)
             {
+                Console.WriteLine("Ada kok masuk sini");
                 _ = restRequest.AddFile($"{nameof(AddChoiceCommand.MediaRequest)}[{index}].{nameof(AddChoiceMediaRequest.File)}", media.File.ToBytes(), media.File.FileName, contentType: media.File.ContentType);
                 _ = restRequest.AddParameter($"{nameof(AddChoiceCommand.MediaRequest)}[{index}].{nameof(AddChoiceMediaRequest.MediaDescription)}", media.MediaDescription);
             }
@@ -43,7 +44,7 @@ public class AddChoiceCommandHandler(IBackEndService backEndService)
 
         Console.WriteLine("haho");
         //var cek = request.MediaRequest.ToList();
-        _ = restRequest.AddFile($"{nameof(AddChoiceCommand.File)})", request.File.ToBytes(), request.File.FileName, contentType: request.File.ContentType);
+        //_ = restRequest.AddFile($"{nameof(AddChoiceCommand.File)})", request.File.ToBytes(), request.File.FileName, contentType: request.File.ContentType);
 
         return await backEndService.SendRequestAsync<AddChoiceOutput>(restRequest, cancellationToken);
     }

@@ -1,7 +1,7 @@
 ﻿namespace Delta.Polling.Both.Member.Choices.Commands.AddChoice;
 
 // TODO: Apa sekalian aja taro juga GroupId dalam request untuk kemudahan pengecekan
-public record AddChoiceRequest : FileRequest
+public record AddChoiceRequest
 {
     public required Guid PollId { get; init; }
     public required string Description { get; init; }
@@ -12,8 +12,6 @@ public class AddChoiceRequestValidator : AbstractValidator<AddChoiceRequest>
 {
     public AddChoiceRequestValidator()
     {
-        Include(new FileRequestValidator());
-
         _ = RuleFor(x => x.PollId)
            .NotEmpty();
 
@@ -21,7 +19,12 @@ public class AddChoiceRequestValidator : AbstractValidator<AddChoiceRequest>
             .NotEmpty()
             .MaximumLength(ChoicesMaxLengthFor.Description);
 
-        _ = RuleForEach(x => x.MediaRequest).SetValidator(new AddChoiceMediaRequestValidator());
+        _ = RuleFor(x => x.MediaRequest)
+           .Must(mr => mr.Count() <= 5)
+           .WithMessage("The number of elements in MediaRequest must be less than or equal to 5.");
+
+        _ = RuleForEach(x => x.MediaRequest)
+            .SetValidator(new AddChoiceMediaRequestValidator());
     }
 }
 

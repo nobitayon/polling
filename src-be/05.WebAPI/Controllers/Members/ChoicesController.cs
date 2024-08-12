@@ -31,16 +31,14 @@ public class ChoicesController : ApiControllerBase
     public async Task<AddChoiceOutput> AddChoice(
         [FromForm] Guid pollId,
         [FromForm] string description,
-        [FromForm] IEnumerable<AddChoiceMediaRequest> mediaRequest,
-        [FromForm] IFormFile file
+        [FromForm] IEnumerable<AddChoiceMediaRequest> mediaRequest
         )
     {
         return await Sender.Send(new AddChoiceCommand
         {
             Description = description,
             PollId = pollId,
-            MediaRequest = mediaRequest,
-            File = file
+            MediaRequest = mediaRequest
         });
     }
 
