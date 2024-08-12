@@ -97,6 +97,30 @@
                 {
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         @choice.Description
+                        @if (choice.MediaItems.Any())
+                        {
+
+                            @foreach (var media in choice.MediaItems)
+                            {
+                                <div class="col">
+                                    <div class="card h-100">
+                                        <div class="p-3">
+                                            <img src="@media.Url" class="card-img-top" alt="@media.Description">
+                                        </div>
+                                        <div class="card-body">
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="d-flex justify-content-between d-flex align-items-baseline d-flex mb-2">
+                                                <small class="text-body-secondary me-3">
+                                                    @media.Description
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        }
                         <div>
                             <a class="btn btn-primary btn-sm me-2" onclick="handleEdit()" data-poll-id="@Model.PollId" data-choice-id="@choice.Id">
                                 <i class="fa fa-edit"></i>
@@ -513,9 +537,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                                                <p>There was an error loading the content. Please try again later.</p>
-                                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                            `);
+                                                    <p>There was an error loading the content. Please try again later.</p>
+                                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                                `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -541,9 +565,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                                                <p>There was an error loading the content. Please try again later.</p>
-                                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                            `);
+                                                    <p>There was an error loading the content. Please try again later.</p>
+                                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                                `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -569,9 +593,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                                            <p>There was an error loading the content. Please try again later.</p>
-                                            <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                        `);
+                                                <p>There was an error loading the content. Please try again later.</p>
+                                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                            `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -601,9 +625,9 @@
                 })
                 .catch((error) => {
                     $('#form-modal .modal-body').html(`
-                                        <p>There was an error loading the content. Please try again later.</p>
-                                        <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                    `);
+                                            <p>There was an error loading the content. Please try again later.</p>
+                                            <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                        `);
                     $('#form-modal .modal-title').html("Error");
                     $('#form-modal').modal('show');
 
@@ -633,9 +657,9 @@
             })
             .catch((error) => {
                 $('#form-modal .modal-body').html(`
-                                            <p>There was an error loading the content. Please try again later.</p>
-                                            <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                        `);
+                                                <p>There was an error loading the content. Please try again later.</p>
+                                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                            `);
                 $('#form-modal .modal-title').html("Error");
                 $('#form-modal').modal('show');
 
@@ -663,9 +687,9 @@
             })
             .catch((error) => {
                 $('#form-modal .modal-body').html(`
-                                                <p>There was an error loading the content. Please try again later.</p>
-                                                <button id="refresh-button" class="btn btn-primary">Refresh</button>
-                                            `);
+                                                    <p>There was an error loading the content. Please try again later.</p>
+                                                    <button id="refresh-button" class="btn btn-primary">Refresh</button>
+                                                `);
                 $('#form-modal .modal-title').html("Error");
                 $('#form-modal').modal('show');
 
@@ -704,11 +728,11 @@
         });
 
         newFileInputGroup.innerHTML = `
-            <label for="MediaItems_${fileInputCount}_File">Upload File ${fileInputCount + 1}:</label>
-            <input type="file" id="MediaItems_${fileInputCount}_File" name="MediaItems_${fileInputCount}_File" />
-            <label for="MediaItems_${fileInputCount}_Description">Description</label>
-            <input type="text" id="MediaItems_${fileInputCount}_Description" name="MediaItems_${fileInputCount}_Description" />
-        `;
+                <label for="MediaItems_${fileInputCount}_File">Upload File ${fileInputCount + 1}:</label>
+                <input type="file" id="MediaItems_${fileInputCount}_File" name="MediaItems_${fileInputCount}_File" />
+                <label for="MediaItems_${fileInputCount}_Description">Description</label>
+                <input type="text" id="MediaItems_${fileInputCount}_Description" name="MediaItems_${fileInputCount}_Description" />
+            `;
 
         newFileInputGroup.appendChild(deleteButton);
 

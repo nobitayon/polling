@@ -1,4 +1,5 @@
 ﻿using Delta.Polling.Both.Contributor.Movies.Commands.UpdateMovie;
+using Delta.Polling.Domain.Movies.Entities;
 
 namespace Delta.Polling.Logics.Contributor.Movies.Commands.UpdateMovie;
 
@@ -24,16 +25,17 @@ public class UpdateMovieCommandHandler(
     {
         var movie = await databaseService.Movies
               .Where(movie => movie.Id == request.MovieId)
-              .SingleOrDefaultAsync(cancellationToken) ?? throw new Exception($"Movie dengan ID {request.MovieId} tidak dapat ditemukan.");
+              .SingleOrDefaultAsync(cancellationToken)
+              ?? throw new EntityNotFoundException(nameof(Movie), request.MovieId);
 
         if (movie.CreatedBy != currentUserService.Username)
         {
-            throw new Exception($"You cannot update Movie with Id {request.MovieId} because it is not yours.");
+            throw new ForbiddenException($"You cannot update Movie with Id {request.MovieId} because the Movie is not created by you.");
         }
 
         if (movie.Status is not MovieStatus.Draft)
         {
-            throw new Exception($"Movie with Id {request.MovieId} cannot be updated because its status is not Draft.");
+            throw new InvalidOperationException($"Movie with Id {request.MovieId} cannot be updated because its status is not Draft.");
         }
 
         movie.Title = request.Title;

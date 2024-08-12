@@ -190,7 +190,7 @@ public class DetailsModel : PageModelBase
                 mediaItems.Add(new AddChoiceMediaRequest
                 {
                     File = file,
-                    Description = fileDescription
+                    MediaDescription = fileDescription
                 });
 
                 index += 1;
@@ -202,14 +202,18 @@ public class DetailsModel : PageModelBase
         {
             Description = description,
             PollId = pollId,
-            MediaRequest = mediaItems
+            MediaRequest = mediaItems,
+            File = mediaItems[0].File
         };
 
         var response = await Sender.Send(command);
 
         if (response.Problem is not null)
         {
+            TempData["failed"] = "Ada problem keluar 1";
             Problem = response.Problem;
+            await LoadData();
+            return Page();
         }
 
         if (response.Result is not null)
@@ -218,7 +222,7 @@ public class DetailsModel : PageModelBase
         }
         else
         {
-            TempData["failed"] = "Failed to Add Choice";
+            TempData["failed"] = "Failed to Add Choice haha";
         }
 
         await LoadData();

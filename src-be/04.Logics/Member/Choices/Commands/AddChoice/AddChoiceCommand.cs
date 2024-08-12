@@ -89,7 +89,7 @@ public class AddChoiceCommandHandler(
                 ChoiceId = choice.Id,
                 Created = DateTimeOffset.Now,
                 CreatedBy = currentUserService.Username,
-                Description = mediaItem.Description,
+                Description = mediaItem.MediaDescription,
                 FileName = mediaItem.File.FileName,
                 FileContentType = mediaItem.File.ContentType,
                 FileSize = mediaItem.File.Length,

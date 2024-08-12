@@ -28,7 +28,7 @@ public class DeleteMovieCommandHandler(
 
         if (movie.CreatedBy != currentUserService.Username)
         {
-            throw new Exception($"You cannot delete Movie with Id {request.MovieId} because it is not yours.");
+            throw new ForbiddenException($"You cannot delete Movie with Id {request.MovieId} because the Movie is not created by you.");
         }
 
         _ = databaseService.Movies.Remove(movie);

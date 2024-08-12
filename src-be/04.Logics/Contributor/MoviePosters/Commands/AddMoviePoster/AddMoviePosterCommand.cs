@@ -36,19 +36,23 @@ public class AddMoviePosterCommandHandler(
             .SingleOrDefaultAsync(cancellationToken)
             ?? throw new EntityNotFoundException(nameof(Movie), request.MovieId);
 
-        //using var streamReader = new StreamReader(request.File.OpenReadStream());
-        //var stringContent = await streamReader.ReadToEndAsync(cancellationToken);
-        //var content = Convert.FromBase64String(stringContent);
+        if (movie.CreatedBy != currentUserService.Username)
+        {
+            throw new ForbiddenException($"You cannot add Movie Poster to Movie with Id {request.MovieId} because the Movie is not created by you.");
+        }
 
         using var memoryStream = new MemoryStream();
         await request.File.CopyToAsync(memoryStream, cancellationToken);
         memoryStream.Position = 0;
         var content = memoryStream.ToArray();
 
-        var storedFileId = await storageService.CreateAsync(content);
+        var moviePosterId = Guid.NewGuid();
+        var fileName = $"{moviePosterId}{Path.GetExtension(request.File.FileName)}";
+        var storedFileId = await storageService.CreateAsync(content, movie.Id.ToString(), fileName);
 
         var moviePoster = new MoviePoster
         {
+            Id = moviePosterId,
             Created = DateTimeOffset.Now,
             CreatedBy = currentUserService.Username,
             MovieId = request.MovieId,
@@ -58,6 +62,9 @@ public class AddMoviePosterCommandHandler(
             FileContentType = request.File.ContentType,
             StoredFileId = storedFileId
         };
+
+        _ = await databaseService.MoviePosters.AddAsync(moviePoster, cancellationToken);
+        _ = await databaseService.SaveAsync(cancellationToken);
 
         return new AddMoviePosterOutput
         {

@@ -1,8 +1,8 @@
 using Delta.Polling.Infrastructure;
 using Delta.Polling.Infrastructure.Database;
 using Delta.Polling.Infrastructure.Documentation;
+using Delta.Polling.Infrastructure.StaticFiles;
 
-//using Delta.Polling.Infrastructure.Storage.LocalFolder;
 using Delta.Polling.Logics;
 using Delta.Polling.Logics.SignalR;
 using Delta.Polling.WebAPI;
@@ -31,7 +31,7 @@ var app = builder.Build();
 await app.InitializeDatabaseAsync();
 app.UseDocumentation();
 app.UseHttpsRedirection();
-//app.UseLocalFolderStorage(app.Configuration);
+app.UseStaticFiles(app.Configuration);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers().RequireAuthorization();

@@ -28,9 +28,20 @@ public class ChoicesController : ApiControllerBase
 
     // TODO: Apakah lebih baik dalam PollsController
     [HttpPost]
-    public async Task<AddChoiceOutput> AddChoice([FromForm] AddChoiceCommand request)
+    public async Task<AddChoiceOutput> AddChoice(
+        [FromForm] Guid pollId,
+        [FromForm] string description,
+        [FromForm] IEnumerable<AddChoiceMediaRequest> mediaRequest,
+        [FromForm] IFormFile file
+        )
     {
-        return await Sender.Send(request);
+        return await Sender.Send(new AddChoiceCommand
+        {
+            Description = description,
+            PollId = pollId,
+            MediaRequest = mediaRequest,
+            File = file
+        });
     }
 
     [HttpPut]

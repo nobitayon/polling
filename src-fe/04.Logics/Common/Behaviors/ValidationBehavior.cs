@@ -20,8 +20,8 @@ public class ValidationBehavior<TRequest>(
                 .Where(result => result.Errors.Count is not 0)
                 .SelectMany(result => result.Errors)
                 .Select(failure => failure.ErrorMessage);
-
-            if (errorMessages.Any())
+            logger.LogError("Cek error messages {ErrorMessages} length:{Length}", errorMessages, errorMessages.Count());
+            if (errorMessages.Count() > 0)
             {
                 var requestName = typeof(TRequest).Name;
                 var username = currentUserService.Username;

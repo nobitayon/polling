@@ -11,6 +11,7 @@ public class LoggingBehavior<TRequest>(
     public Task Process(TRequest request, CancellationToken cancellationToken)
     {
         var requestName = typeof(TRequest).Name;
+
         var formattedRequest = request.ToPrettyJson();
         var username = currentUserService.Username;
 

@@ -10,17 +10,6 @@ public class LocalFolderStorageService(
 {
     private readonly string _folderPath = localFolderStorageOptions.Value.FolderPath;
 
-    public async Task<string> CreateAsync(byte[] content)
-    {
-        var storedFileId = $"{Guid.NewGuid()}{Guid.NewGuid()}";
-        var filePath = Path.Combine(_folderPath, storedFileId);
-
-        using var fileStream = File.Create(filePath);
-        await fileStream.WriteAsync(content.AsMemory(0, content.Length));
-
-        return storedFileId;
-    }
-
     public async Task<string> CreateAsync(byte[] content, string folderName, string fileName)
     {
         var directory = Directory.CreateDirectory(Path.Combine(_folderPath, folderName));
@@ -59,10 +48,10 @@ public class LocalFolderStorageService(
         return File.ReadAllBytesAsync(Path.Combine(_folderPath, storedFileId));
     }
 
-    public async Task<string> UpdateAsync(string storedFileId, byte[] newContent)
+    public async Task<string> UpdateAsync(string storedFileId, byte[] newContent, string folderName, string fileName)
     {
         await DeleteAsync(storedFileId);
 
-        return await CreateAsync(newContent);
+        return await CreateAsync(newContent, folderName, fileName);
     }
 }

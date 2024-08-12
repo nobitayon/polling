@@ -32,6 +32,7 @@ public record ChoiceItem
     public required bool IsDisabled { get; set; }
     public required int NumVote { get; set; }
     public required string CreatedBy { get; init; }
+    public IEnumerable<MediaItem> MediaItems { get; init; } = [];
 }
 
 // TODO: Apakah menggunakan list Guid saja
@@ -41,3 +42,10 @@ public record AnswerItem
     public required string Description { get; init; } // TODO: Mungkin ini dihapus saja nanti
 }
 
+public record MediaItem
+{
+    public required Guid Id { get; init; }
+    public required string Url { get; init; }
+    public required string FileName { get; init; }
+    public required string Description { get; init; }
+}

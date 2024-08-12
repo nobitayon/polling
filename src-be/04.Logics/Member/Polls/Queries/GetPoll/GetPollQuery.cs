@@ -1,5 +1,6 @@
 ﻿using Delta.Polling.Base.Polls.Enums;
 using Delta.Polling.Both.Member.Polls.Queries.GetPoll;
+using Delta.Polling.Services.Storage;
 
 namespace Delta.Polling.Logics.Member.Polls.Queries.GetPoll;
 
@@ -32,7 +33,8 @@ public static class Helper
 
 public class GetPollQueryHandler(
     IDatabaseService databaseService,
-    ICurrentUserService currentUserService)
+    ICurrentUserService currentUserService,
+    IStorageService storageService)
     : IRequestHandler<GetPollQuery, GetPollOutput>
 {
     public async Task<GetPollOutput> Handle(GetPollQuery request, CancellationToken cancellationToken)
@@ -105,6 +107,7 @@ public class GetPollQueryHandler(
 
         var choiceItems = await databaseService.Choices
                             .Include(c => c.Answers)
+                            .Include(c => c.ChoiceMedias)
                             .Where(c => c.PollId == request.PollId)
                             .Select(c => new ChoiceItem
                             {
@@ -114,7 +117,14 @@ public class GetPollQueryHandler(
                                 IsChosen = Helper.IsItChosen(c.Id, answerItems),
                                 NumVote = c.Answers.Count,
                                 CreatedBy = c.CreatedBy,
-                                IsDisabled = c.IsOther && c.CreatedBy == currentUserService.Username
+                                IsDisabled = c.IsOther && c.CreatedBy == currentUserService.Username,
+                                MediaItems = c.ChoiceMedias.Select(cm => new MediaItem
+                                {
+                                    Description = cm.Description,
+                                    FileName = cm.FileName,
+                                    Id = cm.Id,
+                                    Url = storageService.GetUrl(cm.StoredFileId)
+                                }).ToList()
                             }).ToListAsync(cancellationToken);
 
         var pollItem = new PollItem

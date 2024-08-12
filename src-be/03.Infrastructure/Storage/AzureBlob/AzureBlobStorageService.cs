@@ -12,39 +12,6 @@ public class AzureBlobStorageService(
     private readonly string _containerName = azureBlobStorageOptions.Value.ContainerName;
     private readonly BlobContainerClient _blobContainerClient = new(azureBlobStorageOptions.Value.ConnectionString, azureBlobStorageOptions.Value.ContainerName);
 
-    public async Task<string> CreateAsync(byte[] content)
-    {
-        var storedFileId = $"{Guid.NewGuid()}{Guid.NewGuid()}";
-
-        try
-        {
-            var isContainerExist = await _blobContainerClient.ExistsAsync();
-
-            if (!isContainerExist)
-            {
-                _ = await _blobContainerClient.CreateIfNotExistsAsync();
-            }
-
-            var blobClient = _blobContainerClient.GetBlobClient(storedFileId);
-
-            using var dataStream = new MemoryStream(content)
-            {
-                Position = 0
-            };
-
-            _ = await blobClient.UploadAsync(dataStream);
-
-            return storedFileId;
-        }
-        catch (Exception exception)
-        {
-            logger.LogError(exception, "Failed to upload content {StoredFileId} to container {ContainerName} in Azure Blob Storage",
-                storedFileId, _containerName);
-
-            throw;
-        }
-    }
-
     public async Task<string> CreateAsync(byte[] content, string folderName, string fileName)
     {
         try
@@ -119,13 +86,13 @@ public class AzureBlobStorageService(
         }
     }
 
-    public async Task<string> UpdateAsync(string storedFileId, byte[] newContent)
+    public async Task<string> UpdateAsync(string storedFileId, byte[] newContent, string folderName, string fileName)
     {
         try
         {
             await DeleteAsync(storedFileId);
 
-            return await CreateAsync(newContent);
+            return await CreateAsync(newContent, folderName, fileName);
         }
         catch (Exception exception)
         {

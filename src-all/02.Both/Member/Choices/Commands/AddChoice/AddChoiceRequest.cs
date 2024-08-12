@@ -1,7 +1,7 @@
 ﻿namespace Delta.Polling.Both.Member.Choices.Commands.AddChoice;
 
 // TODO: Apa sekalian aja taro juga GroupId dalam request untuk kemudahan pengecekan
-public record AddChoiceRequest
+public record AddChoiceRequest : FileRequest
 {
     public required Guid PollId { get; init; }
     public required string Description { get; init; }
@@ -12,6 +12,8 @@ public class AddChoiceRequestValidator : AbstractValidator<AddChoiceRequest>
 {
     public AddChoiceRequestValidator()
     {
+        Include(new FileRequestValidator());
+
         _ = RuleFor(x => x.PollId)
            .NotEmpty();
 
@@ -19,23 +21,13 @@ public class AddChoiceRequestValidator : AbstractValidator<AddChoiceRequest>
             .NotEmpty()
             .MaximumLength(ChoicesMaxLengthFor.Description);
 
-        _ = RuleFor(x => x.MediaRequest)
-            .NotNull()
-            .When(x => x.MediaRequest.Count() > 0)
-            .DependentRules(() =>
-            {
-                _ = RuleFor(x => x.MediaRequest)
-                    .ForEach(mediaRequest =>
-                        mediaRequest.SetValidator(new AddChoiceMediaRequestValidator())
-                    )
-                    .WithMessage("Each media request must be valid.");
-            });
+        _ = RuleForEach(x => x.MediaRequest).SetValidator(new AddChoiceMediaRequestValidator());
     }
 }
 
 public record AddChoiceMediaRequest : FileRequest
 {
-    public required string Description { get; set; }
+    public required string MediaDescription { get; set; }
 }
 
 public class AddChoiceMediaRequestValidator : AbstractValidator<AddChoiceMediaRequest>
@@ -44,9 +36,9 @@ public class AddChoiceMediaRequestValidator : AbstractValidator<AddChoiceMediaRe
     {
         Include(new FileRequestValidator());
 
-        _ = RuleFor(x => x.Description)
+        _ = RuleFor(x => x.MediaDescription)
          .NotEmpty()
-         .MaximumLength(ChoicesMaxLengthFor.Description);
+         .MaximumLength(ChoicesMaxLengthFor.MediaDescription);
 
     }
 }

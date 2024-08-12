@@ -30,12 +30,12 @@ public class SubmitMovieCommandHandler(
 
         if (movie.CreatedBy != currentUserService.Username)
         {
-            throw new Exception($"You cannot update Movie with Id {request.MovieId} because it is not yours.");
+            throw new ForbiddenException($"You cannot update Movie with Id {request.MovieId} because the Movie is not created by you.");
         }
 
         if (movie.Status is not MovieStatus.Draft and not MovieStatus.Returned)
         {
-            throw new Exception($"Movie with Id {request.MovieId} cannot be submitted.");
+            throw new InvalidOperationException($"Movie with Id {request.MovieId} cannot be submitted.");
         }
 
         movie.Status = MovieStatus.Pending;

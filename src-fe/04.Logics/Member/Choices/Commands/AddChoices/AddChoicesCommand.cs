@@ -20,8 +20,30 @@ public class AddChoiceCommandHandler(IBackEndService backEndService)
 {
     public async Task<ResponseResult<AddChoiceOutput>> Handle(AddChoiceCommand request, CancellationToken cancellationToken)
     {
-        var restRequest = new RestRequest("member/choices", Method.Post);
-        restRequest.AddParameters(request);
+        var restRequest = new RestRequest("member/Choices", Method.Post);
+        //restRequest.AddParameters(request);
+        //_ = restRequest.AddHeader("Content-Type", "multipart/form-data");
+
+        //// Add basic fields
+        _ = restRequest.AddParameter(nameof(AddChoiceCommand.PollId), request.PollId.ToString());
+        _ = restRequest.AddParameter(nameof(AddChoiceCommand.Description), request.Description.ToString());
+
+        // Add media items
+        var index = 0;
+        foreach (var media in request.MediaRequest)
+        {
+            if (media.File != null)
+            {
+                _ = restRequest.AddFile($"{nameof(AddChoiceCommand.MediaRequest)}[{index}].{nameof(AddChoiceMediaRequest.File)}", media.File.ToBytes(), media.File.FileName, contentType: media.File.ContentType);
+                _ = restRequest.AddParameter($"{nameof(AddChoiceCommand.MediaRequest)}[{index}].{nameof(AddChoiceMediaRequest.MediaDescription)}", media.MediaDescription);
+            }
+
+            index++;
+        }
+
+        Console.WriteLine("haho");
+        //var cek = request.MediaRequest.ToList();
+        _ = restRequest.AddFile($"{nameof(AddChoiceCommand.File)})", request.File.ToBytes(), request.File.FileName, contentType: request.File.ContentType);
 
         return await backEndService.SendRequestAsync<AddChoiceOutput>(restRequest, cancellationToken);
     }
