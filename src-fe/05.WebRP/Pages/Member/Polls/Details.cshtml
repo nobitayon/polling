@@ -114,6 +114,45 @@
                                     }
                                 </div>
                             </div>
+
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-5">
+                                            <div id="carouselExample1" class="carousel slide" data-bs-ride="carousel">
+                                                <div class="carousel-inner">
+                                                    @foreach(var mediaItem in choice.MediaItems)
+                                                    {
+                                                        <div class="carousel-item active position-relative">
+                                                            <img src="@mediaItem.Url" class="d-block w-100" alt="@mediaItem.Description">
+                                                            <div class="carousel-controls">
+                                                                <button class="btn btn-sm btn-secondary" onclick="changeImage('@mediaItem.Id')">Change</button>
+                                                                <button class="btn btn-sm btn-danger" onclick="deleteImage('@mediaItem.Id')">Delete</button>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample1" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Previous</span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample1" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Next</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <div class="mb-2">
+                                                <input type="text" class="form-control" placeholder="Title 1 (optional)">
+                                            </div>
+                                            <div>
+                                                <input type="text" class="form-control" placeholder="Description 1 (optional)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         }
                         <div class="mt-2">
                             <a class="btn btn-primary btn-sm me-2" onclick="handleEdit()" data-poll-id="@Model.PollId" data-choice-id="@choice.Id">
