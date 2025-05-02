@@ -1,4 +1,4 @@
-name: Manual Trigger Workflow
+run-name: Manual Trigger Workflow
 
 on:
   workflow_dispatch:  # This makes the workflow manual via a button in the GitHub UI
