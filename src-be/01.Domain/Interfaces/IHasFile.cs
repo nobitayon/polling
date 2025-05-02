@@ -2,8 +2,8 @@
 
 public interface IHasFile : IModifiable
 {
-    string FileName { get; init; }
-    long FileSize { get; init; }
-    string FileContentType { get; init; }
-    string StoredFileId { get; init; }
+    public string FileName { get; init; }
+    public long FileSize { get; init; }
+    public string FileContentType { get; init; }
+    public string StoredFileId { get; init; }
 }

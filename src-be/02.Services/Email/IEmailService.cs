@@ -2,7 +2,7 @@
 
 public interface IEmailService
 {
-    void SendEmail(SendEmailInput input);
+    public void SendEmail(SendEmailInput input);
 }
 
 public record SendEmailInput

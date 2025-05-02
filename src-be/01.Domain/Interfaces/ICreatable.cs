@@ -2,7 +2,7 @@
 
 public interface ICreatable
 {
-    Guid Id { get; init; }
-    DateTimeOffset Created { get; init; }
-    string CreatedBy { get; init; }
+    public Guid Id { get; init; }
+    public DateTimeOffset Created { get; init; }
+    public string CreatedBy { get; init; }
 }

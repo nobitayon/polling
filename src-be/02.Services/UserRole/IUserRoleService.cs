@@ -2,5 +2,5 @@
 
 public interface IUserRoleService
 {
-    Task<IEnumerable<string>> GetMyRolesAsync(string jwt, CancellationToken cancellationToken = default);
+    public Task<IEnumerable<string>> GetMyRolesAsync(string jwt, CancellationToken cancellationToken = default);
 }

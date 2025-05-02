@@ -1,5 +1,4 @@
-﻿using Delta.Polling.Domain.Abstracts;
-using Delta.Polling.Domain.Answers.Entities;
+﻿using Delta.Polling.Domain.Answers.Entities;
 using Delta.Polling.Domain.Polls.Entities;
 
 namespace Delta.Polling.Domain.Choices.Entities;
