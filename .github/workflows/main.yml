@@ -1,0 +1,13 @@
+name: Manual Trigger Workflow
+
+on:
+  workflow_dispatch:  # This makes the workflow manual via a button in the GitHub UI
+
+jobs:
+  dummy:
+    runs-on: self-hosted  # If you're using a self-hosted runner
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Dummy echo step
+        run: echo "This is a dummy message from my workflow!"
