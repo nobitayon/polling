@@ -2,9 +2,9 @@
 
 public interface IUserProfileService
 {
-    Task<UserProfileItem> GetMyProfileAsync(string jwt, CancellationToken cancellationToken = default);
-    Task<UserProfileItem?> GetUserProfileAsync(string username, CancellationToken cancellationToken = default);
-    Task<IEnumerable<FullUserProfileItem>> GetUsersAsync(CancellationToken cancellationToken = default);
+    public Task<UserProfileItem> GetMyProfileAsync(string jwt, CancellationToken cancellationToken = default);
+    public Task<UserProfileItem?> GetUserProfileAsync(string username, CancellationToken cancellationToken = default);
+    public Task<IEnumerable<FullUserProfileItem>> GetUsersAsync(CancellationToken cancellationToken = default);
 }
 
 public record UserProfileItem

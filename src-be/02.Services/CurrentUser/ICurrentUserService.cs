@@ -2,6 +2,6 @@
 
 public interface ICurrentUserService
 {
-    string? Username { get; }
-    string? AccessToken { get; }
+    public string? Username { get; }
+    public string? AccessToken { get; }
 }

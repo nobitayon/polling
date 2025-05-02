@@ -2,6 +2,6 @@
 
 public interface IModifiable : ICreatable
 {
-    DateTimeOffset? Modified { get; set; }
-    string? ModifiedBy { get; set; }
+    public DateTimeOffset? Modified { get; set; }
+    public string? ModifiedBy { get; set; }
 }

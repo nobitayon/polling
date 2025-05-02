@@ -10,15 +10,15 @@ namespace Delta.Polling.Services.Database;
 
 public interface IDatabaseService
 {
-    DbSet<Movie> Movies { get; }
-    DbSet<MoviePoster> MoviePosters { get; }
-    DbSet<ChoiceMedia> ChoiceMedias { get; }
-    DbSet<Answer> Answers { get; }
-    DbSet<Choice> Choices { get; }
-    DbSet<Group> Groups { get; }
-    DbSet<GroupMember> GroupMembers { get; }
-    DbSet<Poll> Polls { get; }
-    DbSet<Voter> Voters { get; }
+    public DbSet<Movie> Movies { get; }
+    public DbSet<MoviePoster> MoviePosters { get; }
+    public DbSet<ChoiceMedia> ChoiceMedias { get; }
+    public DbSet<Answer> Answers { get; }
+    public DbSet<Choice> Choices { get; }
+    public DbSet<Group> Groups { get; }
+    public DbSet<GroupMember> GroupMembers { get; }
+    public DbSet<Poll> Polls { get; }
+    public DbSet<Voter> Voters { get; }
 
-    Task<int> SaveAsync(CancellationToken cancellationToken = default);
+    public Task<int> SaveAsync(CancellationToken cancellationToken = default);
 }

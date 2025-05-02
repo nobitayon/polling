@@ -2,7 +2,7 @@
 
 public interface ICurrentUserService
 {
-    string? Username { get; }
-    string? AccessToken { get; }
-    IEnumerable<string> RoleNames { get; }
+    public string? Username { get; }
+    public string? AccessToken { get; }
+    public IEnumerable<string> RoleNames { get; }
 }
