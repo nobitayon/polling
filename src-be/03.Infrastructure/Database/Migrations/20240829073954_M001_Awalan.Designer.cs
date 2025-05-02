@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Delta.Polling.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(DatabaseService))]
-    [Migration("20240808134721_M001_Awalan")]
+    [Migration("20240829073954_M001_Awalan")]
     partial class M001_Awalan
     {
         /// <inheritdoc />

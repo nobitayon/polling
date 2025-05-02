@@ -1,4 +1,5 @@
-﻿using Delta.Polling.FrontEnd.Infrastructure.Authentication.SimpleTen;
+﻿using Delta.Polling.FrontEnd.Infrastructure.Authentication.Another;
+using Delta.Polling.FrontEnd.Infrastructure.Authentication.SimpleTen;
 
 namespace Delta.Polling.FrontEnd.Infrastructure.Authentication;
 
@@ -15,6 +16,7 @@ public static class ConfigureAuthentication
         _ = authenticationOptions.Provider switch
         {
             AuthenticationProvider.SimpleTen => services.AddSimpleTenAuthenticationService(configuration),
+            AuthenticationProvider.Another => services.AddAnotherAuthenticationService(configuration),
             _ => throw new UnsupportedServiceProviderException(nameof(Authentication), authenticationOptions.Provider),
         };
 

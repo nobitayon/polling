@@ -10,4 +10,5 @@ public record AuthenticationOptions
 public static class AuthenticationProvider
 {
     public const string SimpleTen = nameof(SimpleTen);
+    public const string Another = nameof(Another);
 }
